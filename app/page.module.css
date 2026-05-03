@@ -1,0 +1,74 @@
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+.layout {
+  display: flex;
+  gap: 60px;
+}
+
+.leaderboardSection {
+  margin: 32px 0;
+}
+
+.sidebar {
+  width: 220px;
+}
+
+.content {
+  flex: 1;
+}
+
+.announcement {
+  background: var(--electric-blue);
+  border-radius: var(--radius);
+  padding: 32px 40px;
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  color: #FFFFFF;
+}
+
+.announcementText {
+  flex: 1;
+}
+
+.announcementTitle {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.announcementSub {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.announcementBtn {
+  background: #FFFFFF;
+  color: var(--electric-blue);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.announcementBtn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}

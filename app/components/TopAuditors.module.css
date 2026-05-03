@@ -1,0 +1,89 @@
+.card {
+  background: var(--bg-card);
+  border: none;
+  border-radius: var(--radius);
+  padding: 24px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: background 0.15s;
+}
+
+.row:hover {
+  background: var(--bg-base);
+}
+
+.rank {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  width: 28px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.role {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.repWrap {
+  text-align: right;
+}
+
+.rep {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.repLabel {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: 4px;
+  font-weight: 500;
+}
