@@ -7,7 +7,7 @@
 .main {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 60px 24px 120px;
+  padding: 60px 24px 40vh;
 }
 
 /* Page Header */
@@ -140,6 +140,7 @@
   margin-top: 80px;
   margin-bottom: 120px;
   align-items: flex-start;
+  scroll-margin-top: 160px;
 }
 
 .infoLeft {
@@ -149,14 +150,15 @@
 }
 
 .mainSummary {
-  font-size: 32px;
+  font-size: 28px;
   line-height: 1.3;
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
-.aboutSection, .techSection {
+.aboutSection,
+.techSection {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -170,7 +172,7 @@
 }
 
 .longDescription {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--text-secondary);
 }
@@ -285,7 +287,7 @@
   padding: 10px 24px;
   background: #f8f9fb;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -389,6 +391,7 @@
 /* UX Truth Big Vertical Section */
 .uxTruthSection {
   /* Inherits whiteCard */
+  scroll-margin-top: 160px;
 }
 
 .truthTitleRow {
@@ -483,6 +486,7 @@
   z-index: 10;
   transition: all 0.2s;
 }
+
 .showcaseSection {
   margin-bottom: 80px;
 }
@@ -516,6 +520,7 @@
 .auditSection {
   /* Inherits whiteCard */
   padding-top: 60px;
+  scroll-margin-top: 160px;
 }
 
 .auditPromo {
@@ -777,4 +782,89 @@
   .truthRowBar {
     display: none;
   }
+}
+
+/* Mini Header on Scroll */
+.miniHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  z-index: 2000;
+  transform: translateY(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.miniHeaderVisible {
+  transform: translateY(0);
+}
+
+.miniHeaderInner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.miniHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.miniLogo {
+  width: 36px;
+  height: 36px;
+  background: #FFF;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.miniLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.miniHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.headerActionsMini {
+  display: flex;
+  gap: 12px;
+}
+
+.miniScore {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
 }

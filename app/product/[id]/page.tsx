@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import ProductCard from "../../components/ProductCard";
@@ -16,6 +16,28 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const similarProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const [activeTab, setActiveTab] = useState("Overview");
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowMiniHeader(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    if (id === "Overview") {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setActiveTab(id);
+      return;
+    }
+    const element = document.getElementById(id.toLowerCase());
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveTab(id);
+    }
+  };
   const [selectedAuditId, setSelectedAuditId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -27,6 +49,33 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   return (
     <div className={styles.page}>
       <Navbar />
+      {/* Sticky Mini Header on Scroll */}
+      <div className={`${styles.miniHeader} ${showMiniHeader ? styles.miniHeaderVisible : ""}`}>
+        <div className={styles.miniHeaderInner}>
+          <div className={styles.miniHeaderLeft}>
+            <div className={styles.miniLogo}>
+              {product.logo ? <img src={product.logo} alt="" /> : <span>{getInitials(product.name)}</span>}
+            </div>
+            <span className={styles.miniTitle}>{product.name}</span>
+          </div>
+          
+          <div className={styles.miniHeaderRight}>
+            <div className={styles.headerActionsMini}>
+              <a href={product.url} target="_blank" className={styles.headerActionBtn}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                Visit Website
+              </a>
+              <button className={styles.headerActionBtn}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
+                Share
+              </button>
+            </div>
+            <div className={styles.miniScore} style={{ color: scoreColor, borderColor: scoreColor }}>
+              {product.revvScore}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main className={styles.main}>
         {/* Header Section */}
@@ -79,7 +128,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </section>
 
         {/* Info Section */}
-        <div className={styles.infoSection}>
+        <div className={styles.infoSection} id="overview">
           <div className={styles.infoLeft}>
             <p className={styles.mainSummary}>
               {product.longDescription}
@@ -127,7 +176,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* UX Truth Section - BIG FULL WIDTH VERTICAL */}
-        <section className={`${styles.uxTruthSection} ${styles.whiteCard}`}>
+        <section className={`${styles.uxTruthSection} ${styles.whiteCard}`} id="stats">
           <div className={styles.truthList}>
             {(["usability", "performance", "value", "trust"] as const).map((key) => (
               <div key={key} className={styles.truthRowNew}>
@@ -151,7 +200,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
 
         {/* Verified Audit History Table */}
-        <section className={`${styles.auditSection} ${styles.whiteCard}`}>
+        <section className={`${styles.auditSection} ${styles.whiteCard}`} id="audits">
           <div className={styles.auditPromo}>
             <p className={styles.promoText}>
               Have your say, if you used <strong>{product.name}</strong> make your audit here!
@@ -250,7 +299,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         {["Overview", "Audits", "Stats"].map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => scrollToSection(tab)}
             className={`${styles.tabBtn} ${activeTab === tab ? styles.tabBtnActive : ""}`}
           >
             {tab}
