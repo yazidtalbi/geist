@@ -3,6 +3,10 @@ export interface Product {
   name: string;
   url: string;
   tagline: string;
+  longDescription: string;
+  services: string[];
+  tags: string[];
+  gallery: string[];
   category: string;
   screenshot: string;
   logo: string;
@@ -11,9 +15,10 @@ export interface Product {
   metrics: { usability: number; performance: number; value: number; trust: number };
   retentionYes: number;
   retentionTotal: number;
-  activeAuditors: number;
-  totalAudits: number;
+  activeUsers: number;
+  reviewsTotal: number;
   createdAt: string;
+  socials: { twitter?: string; github?: string; website?: string; discord?: string };
 }
 
 export interface Audit {
@@ -51,38 +56,67 @@ export const users: User[] = [
 export const products: Product[] = [
   {
     id: "p1", name: "Linear", url: "https://linear.app", tagline: "Streamline issues, sprints, and product roadmaps.",
+    longDescription: "Linear is the system for modern software development. It helps teams streamline their software development workflow, from issue tracking and sprint planning to product roadmaps and automated workflows. Designed for speed and focus, Linear is built to help teams build better products.",
+    services: ["Issue Tracking", "Sprint Planning", "Roadmaps", "Automated Workflows", "Team Collaboration"],
+    tags: ["Productivity", "DevTools", "SaaS", "Management"],
+    gallery: [
+      "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2FFramer_Marketplace___3-zLngoUHhHCQYGq69nNkVplv4S3c4vi.jpg&w=3840&q=100",
+      "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2FFramer_Marketplace___2-BqQCggvua6yHmCesbVJAqSGZvanTWj.jpg&w=3840&q=100",
+      "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2Fkokoro-iesEntdorhXt0F5B8YRGUFCjGi5Ygb&w=3840&q=100"
+    ],
     category: "DEV TOOL", screenshot: "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2FFramer_Marketplace___1-apvlfv7nuGCCsv18MBE23NMm0mdHBh.jpg&w=1920&q=100", logo: "",
     creatorId: "u4", revvScore: 92,
     metrics: { usability: 9.4, performance: 9.6, value: 8.8, trust: 9.2 },
-    retentionYes: 142, retentionTotal: 156, activeAuditors: 12, totalAudits: 156, createdAt: "2026-05-01",
+    retentionYes: 142, retentionTotal: 156, activeUsers: 12, reviewsTotal: 156, createdAt: "2026-05-01",
+    socials: { twitter: "linear", github: "linear", website: "https://linear.app" }
   },
   {
     id: "p2", name: "Raycast", url: "https://raycast.com", tagline: "Your shortcut to everything on your Mac.",
+    longDescription: "Raycast is a blazingly fast, extendable launcher that lets you control your tools with a few keystrokes. It's built to help you get things done faster and more efficiently, with a focus on simplicity and performance.",
+    services: ["App Launcher", "System Controls", "Developer Tools", "Custom Extensions", "Clipboard History"],
+    tags: ["Productivity", "Utility", "Mac", "DevTools"],
+    gallery: ["https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"],
     category: "PRODUCTIVITY", screenshot: "", logo: "",
     creatorId: "u4", revvScore: 88,
     metrics: { usability: 9.0, performance: 9.2, value: 8.6, trust: 8.8 },
-    retentionYes: 98, retentionTotal: 115, activeAuditors: 8, totalAudits: 115, createdAt: "2026-05-01",
+    retentionYes: 98, retentionTotal: 115, activeUsers: 8, reviewsTotal: 115, createdAt: "2026-05-01",
+    socials: { twitter: "raycastapp", github: "raycast", website: "https://raycast.com" }
   },
   {
     id: "p3", name: "Cal.com", url: "https://cal.com", tagline: "Open-source scheduling for absolutely everyone.",
+    longDescription: "Cal.com is the open-source alternative to Calendly. It gives you full control over your data and scheduling experience, with powerful features and a focus on privacy and openness.",
+    services: ["Scheduling", "Team Coordination", "Calendar Integration", "API Access", "Self-Hosting"],
+    tags: ["Scheduling", "Open Source", "SaaS", "Privacy"],
+    gallery: ["https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068&auto=format&fit=crop"],
     category: "SAAS", screenshot: "", logo: "",
     creatorId: "u4", revvScore: 81,
     metrics: { usability: 8.2, performance: 7.8, value: 8.6, trust: 8.0 },
-    retentionYes: 67, retentionTotal: 89, activeAuditors: 5, totalAudits: 89, createdAt: "2026-04-30",
+    retentionYes: 67, retentionTotal: 89, activeUsers: 5, reviewsTotal: 89, createdAt: "2026-04-30",
+    socials: { twitter: "calcom", github: "calcom", website: "https://cal.com" }
   },
   {
     id: "p4", name: "Resend", url: "https://resend.com", tagline: "Email API for developers that just works.",
+    longDescription: "Resend is the best way to send emails from your application. It's built for developers, with a simple API and powerful features that make email integration a breeze.",
+    services: ["Email API", "Domain Verification", "Email Templates", "Analytics", "Webhooks"],
+    tags: ["Email", "DevTools", "API", "Marketing"],
+    gallery: ["https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=2070&auto=format&fit=crop"],
     category: "DEV TOOL", screenshot: "", logo: "",
     creatorId: "u4", revvScore: 85,
     metrics: { usability: 8.8, performance: 8.4, value: 8.6, trust: 8.2 },
-    retentionYes: 54, retentionTotal: 66, activeAuditors: 6, totalAudits: 66, createdAt: "2026-04-29",
+    retentionYes: 54, retentionTotal: 66, activeUsers: 6, reviewsTotal: 66, createdAt: "2026-04-29",
+    socials: { twitter: "resend", github: "resendlabs", website: "https://resend.com" }
   },
   {
     id: "p5", name: "Vercel", url: "https://vercel.com", tagline: "Develop. Preview. Ship. The frontend cloud.",
+    longDescription: "Vercel is the platform for frontend developers, providing the speed and reliability needed to create at the moment of inspiration. We enable the world's most innovative teams to deploy faster and with confidence.",
+    services: ["Frontend Hosting", "Serverless Functions", "Edge Computing", "Analytics", "Global CDN"],
+    tags: ["Hosting", "Cloud", "Frontend", "Next.js"],
+    gallery: ["https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"],
     category: "PLATFORM", screenshot: "", logo: "",
     creatorId: "u4", revvScore: 90,
     metrics: { usability: 9.2, performance: 9.0, value: 8.8, trust: 9.0 },
-    retentionYes: 188, retentionTotal: 210, activeAuditors: 15, totalAudits: 210, createdAt: "2026-04-28",
+    retentionYes: 188, retentionTotal: 210, activeUsers: 15, reviewsTotal: 210, createdAt: "2026-04-28",
+    socials: { twitter: "vercel", github: "vercel", website: "https://vercel.com" }
   },
 ];
 

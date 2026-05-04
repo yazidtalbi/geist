@@ -10,7 +10,8 @@ export default function Navbar({ onSubmitOpen }: { onSubmitOpen: () => void }) {
     <nav className={styles.nav}>
       <div className={styles.inner}>
         <Link href="/" className={styles.logo}>
-          revvview
+          <img src="/logo.png" alt="revvview" className={styles.logoImg} />
+          <span>revvview</span>
         </Link>
 
         <div className={`${styles.searchWrap} ${searchFocused ? styles.searchFocused : ""}`}>

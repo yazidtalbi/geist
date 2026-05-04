@@ -1,11 +1,14 @@
 .card {
   position: relative;
   background: var(--bg-card);
-  border: none;
-  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   padding: 28px;
   animation: fadeInUp 0.5s ease both;
   transition: transform 0.2s, background-color 0.2s;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
@@ -13,7 +16,10 @@
 }
 
 .mainLink {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   text-decoration: none;
   color: inherit;
 }
@@ -88,6 +94,10 @@
 /* Screenshot area */
 .screenshotWrap {
   margin-bottom: 24px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .screenshotFrame {
@@ -95,6 +105,10 @@
   overflow: hidden;
   background: #F8F8F8;
   border: 1px solid var(--border);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .screenshotBar {
@@ -114,12 +128,14 @@
 }
 
 .screenshotBody {
-  aspect-ratio: 16 / 9;
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background: #fff;
 }
 
 .screenshotImage {

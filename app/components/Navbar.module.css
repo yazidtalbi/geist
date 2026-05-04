@@ -19,6 +19,14 @@
   letter-spacing: -0.02em;
   white-space: nowrap;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logoImg {
+  height: 24px;
+  width: auto;
+  display: block;
 }
 .searchWrap {
   flex: 1;

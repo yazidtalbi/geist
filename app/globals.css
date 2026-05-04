@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap');
 
 :root {
-  --bg-base: #F5F5F5;
+  --bg-base: #FFFFFF;
   --bg-card: #FFFFFF;
-  --border: #E5E5E5;
-  --border-input: #E0E0E0;
-  --text-primary: #111111;
-  --text-secondary: #666666;
+  --border: #EEEEEE;
+  --border-input: #EAEAEA;
+  --text-primary: #000000;
+  --text-secondary: #4B4B4B;
   --text-tertiary: #999999;
-  --accent: #111111;
-  --accent-hover: #333333;
+  --accent: #000000;
+  --accent-hover: #222222;
   --radius: 16px;
   --radius-pill: 24px;
   --radius-modal: 20px;
@@ -36,7 +36,8 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 18px;
   background: var(--bg-base);
   color: var(--text-primary);
   line-height: 1.6;
@@ -70,6 +71,8 @@ h1, h2, h3, h4 {
   border: none;
   border-radius: var(--radius);
   padding: 24px;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 
