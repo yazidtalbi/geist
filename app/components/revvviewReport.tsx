@@ -1,19 +1,20 @@
 "use client";
 import { useState } from "react";
-import { audits, products, users, getInitials, getScoreColor, getMetricColor } from "../lib/data";
-import styles from "./AuditReport.module.css";
+import Link from "next/link";
+import { revvvviews, products, users, getInitials, getScoreColor, getMetricColor } from "../lib/data";
+import styles from "./revvviewReport.module.css";
 
-interface AuditReportProps {
-  auditId: string;
+interface revvviewReportProps {
+  revvviewId: string;
 }
 
 type TabType = "overview" | "fixes" | "screenshots";
 
-export default function AuditReport({ auditId }: AuditReportProps) {
-  const audit = audits.find((a) => a.id === auditId) || audits[0];
-  const product = products.find((p) => p.id === audit.productId) || products[0];
-  const user = users.find((u) => u.id === audit.auditorId) || users[0];
-  const avgScore = Math.round(((audit.metrics.usability + audit.metrics.performance + audit.metrics.value + audit.metrics.trust) / 4) * 10);
+export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
+  const revvview = revvvviews.find((a) => a.id === revvviewId) || revvvviews[0];
+  const product = products.find((p) => p.id === revvview.productId) || products[0];
+  const user = users.find((u) => u.id === revvview.auditorId) || users[0];
+  const avgScore = Math.round(((revvview.metrics.usability + revvview.metrics.performance + revvview.metrics.value + revvview.metrics.trust) / 4) * 10);
   const scoreColor = getScoreColor(avgScore);
 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
@@ -32,8 +33,8 @@ export default function AuditReport({ auditId }: AuditReportProps) {
             <span className={styles.miniScoreValue} style={{ color: scoreColor }}>{avgScore}</span>
           </div>
           <div>
-            <div className={styles.miniTitle}>{product.name} Audit</div>
-            <div className={styles.miniMeta}>Version {audit.version} · {audit.createdAt}</div>
+            <div className={styles.miniTitle}>{product.name} revvview</div>
+            <div className={styles.miniMeta}>Version {revvview.version} · {revvview.createdAt}</div>
           </div>
         </div>
         <div className={styles.tabs}>
@@ -44,7 +45,7 @@ export default function AuditReport({ auditId }: AuditReportProps) {
               onClick={() => setActiveTab(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              {tab === "fixes" && <span className={styles.countBadge}>{audit.suggestions.length}</span>}
+              {tab === "fixes" && <span className={styles.countBadge}>{revvview.suggestions.length}</span>}
             </button>
           ))}
         </div>
@@ -61,17 +62,17 @@ export default function AuditReport({ auditId }: AuditReportProps) {
                   <div className={styles.auditorRole}>{user.role}</div>
                 </div>
               </div>
-              <div className={styles.verdictTag} style={{ color: audit.wouldUse ? "var(--green)" : "var(--red)" }}>
-                {audit.wouldUse ? "Recommended" : "Not Recommended"}
+              <div className={styles.verdictTag} style={{ color: revvview.wouldUse ? "var(--green)" : "var(--red)" }}>
+                {revvview.wouldUse ? "Recommended" : "Not Recommended"}
               </div>
             </div>
 
             <div className={styles.metricsGrid}>
-              {Object.entries(audit.metrics).map(([key, val]) => (
+              {Object.entries(revvview.metrics).map(([key, val]) => (
                 <div key={key} className={styles.metricItem}>
                   <div className={styles.metricHeader}>
                     <span className={styles.metricLabel}>{key}</span>
-                    <span className={styles.metricValue}>{val}/10</span>
+                    <span className={styles.metricValue}>{val}</span>
                   </div>
                   <div className={styles.barTrack}>
                     <div className={styles.barFill} style={{ width: `${(val as number) * 10}%`, background: getMetricColor(val as number) }} />
@@ -83,7 +84,7 @@ export default function AuditReport({ auditId }: AuditReportProps) {
             <div className={styles.pointsSection}>
               <h3 className={styles.subTitle}>Highlights</h3>
               <div className={styles.pointsList}>
-                {audit.engaged.map((p, i) => (
+                {revvview.engaged.map((p, i) => (
                   <div key={i} className={styles.point}>
                     <span className={styles.checkIcon}>✓</span>
                     <span className={styles.pointText}>{p}</span>
@@ -93,7 +94,7 @@ export default function AuditReport({ auditId }: AuditReportProps) {
 
               <h3 className={styles.subTitle} style={{ marginTop: "32px" }}>Friction Points</h3>
               <div className={styles.pointsList}>
-                {audit.confused.map((p, i) => (
+                {revvview.confused.map((p, i) => (
                   <div key={i} className={styles.point}>
                     <span className={styles.crossIcon}>×</span>
                     <span className={styles.pointText}>{p}</span>
@@ -112,7 +113,7 @@ export default function AuditReport({ auditId }: AuditReportProps) {
             </div>
             
             <div className={styles.checklist}>
-              {audit.suggestions.map((s, i) => (
+              {revvview.suggestions.map((s, i) => (
                 <div 
                   key={i} 
                   className={`${styles.checkItem} ${checkedActions[i] ? styles.checkItemDone : ""}`}
@@ -123,7 +124,7 @@ export default function AuditReport({ auditId }: AuditReportProps) {
                   </div>
                   <div className={styles.checkContent}>
                     <div className={styles.checkText}>{s}</div>
-                    <div className={styles.checkMeta}>High Priority · Version {audit.version}</div>
+                    <div className={styles.checkMeta}>High Priority · Version {revvview.version}</div>
                   </div>
                 </div>
               ))}
@@ -140,6 +141,13 @@ export default function AuditReport({ auditId }: AuditReportProps) {
             </div>
           </div>
         )}
+      </div>
+
+      <div className={styles.reportFooter}>
+        <Link href={`/revvview/deep-dive/${revvviewId}`} className={styles.fullReportBtn}>
+          View Exhaustive Editorial Report
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </Link>
       </div>
     </div>
   );

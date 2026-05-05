@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./SubmitModal.module.css";
 
 type Step = "url" | "fetching" | "verify" | "done";
@@ -9,9 +9,6 @@ export default function SubmitModal({ open, onClose }: { open: boolean; onClose:
   const [url, setUrl] = useState("");
   const [fetched, setFetched] = useState({ title: "", description: "", category: "SAAS" });
 
-  useEffect(() => {
-    if (!open) { setStep("url"); setUrl(""); }
-  }, [open]);
 
   const handlePaste = (val: string) => {
     setUrl(val);
@@ -69,7 +66,7 @@ export default function SubmitModal({ open, onClose }: { open: boolean; onClose:
               onChange={(e) => handlePaste(e.target.value)}
               autoFocus
             />
-            <p className={styles.hint}>We'll automatically fetch product details in seconds.</p>
+            <p className={styles.hint}>We&apos;ll automatically fetch product details in seconds.</p>
           </div>
         )}
 
@@ -95,7 +92,7 @@ export default function SubmitModal({ open, onClose }: { open: boolean; onClose:
               </div>
             </div>
             <button className="btn-primary" style={{ width: "100%", justifyContent: "center", marginTop: 16 }} onClick={handlePublish}>
-              Publish & Start Audit
+              Publish & Start revvview
             </button>
           </div>
         )}

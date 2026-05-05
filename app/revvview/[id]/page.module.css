@@ -1,0 +1,315 @@
+.page {
+  background: #f8f9fb;
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+.topNav {
+  background: #FFF;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.topNavInner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.topNavLeft, .topNavRight {
+  flex: 1;
+}
+
+.topNavCenter {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.topNavRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.backLinkTool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.backLinkTool:hover {
+  background: #e8eaed;
+  color: var(--text-primary);
+}
+
+.toolTimer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f1f3f4;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.navActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #FFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navActionBtn:hover {
+  border-color: #000;
+  color: #000;
+}
+
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 24px 160px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 80px;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 40px;
+}
+
+.pageTitle {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.pageSubtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.headerScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scoreCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.headerScore label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.formSection {
+  margin-bottom: 80px;
+}
+
+.sectionHeader {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.sectionHint {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.pointsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auditInput {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.auditInput:focus {
+  border-color: #000;
+  background: #FFF;
+}
+
+.addBtn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px dashed #E5E7EB;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addBtn:hover {
+  border-color: #000;
+  color: #000;
+}
+
+.metricsContainer {
+  background: #FFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.metricRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.metricLabel {
+  width: 100px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rangeInput {
+  flex: 1;
+  cursor: pointer;
+}
+
+.metricVal {
+  width: 24px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.submitWrapper {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 20px;
+  background: #000;
+  color: #FFF;
+  border: none;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitBtn:hover {
+  transform: translateY(-2px);
+  background: #222;
+}
+
+.submitNotice {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-align: center;
+  max-width: 400px;
+}
+
+.successContainer {
+  max-width: 600px;
+  margin: 160px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.checkCircleLarge {
+  width: 80px;
+  height: 80px;
+  background: var(--green);
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 32px;
+}
+
+.successTitle {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 16px;
+}
+
+.successDesc {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+}
+
+.successActions {
+  display: flex;
+  gap: 16px;
+}

@@ -1,5 +1,8 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
+import Navbar from "../../../components/Navbar";
+import SubmitModal from "../../../components/SubmitModal";
 import { products, users, getInitials, getScoreColor } from "../../lib/data";
 import styles from "./page.module.css";
 
@@ -19,17 +22,11 @@ const inboxItems = [
 export default function AnalyticsPage() {
   const product = products[0];
   const scoreColor = getScoreColor(product.revvScore);
+  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.page}>
-      {/* Minimal header */}
-      <nav className={styles.nav}>
-        <div className={styles.navInner}>
-          <Link href="/" className={styles.logo}>revvview</Link>
-          <span className={styles.navLabel}>Founder Dashboard</span>
-          <div className={styles.avatar}><span>{getInitials(users[3].name)}</span></div>
-        </div>
-      </nav>
+      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
 
       <main className={styles.main}>
         {/* Product overview */}
@@ -39,8 +36,8 @@ export default function AnalyticsPage() {
             <div className={styles.overviewTagline}>{product.tagline}</div>
             <div className={styles.overviewMeta}>
               <span className="pill">{product.category}</span>
-              <span className={styles.metaItem}>{product.totalAudits} total audits</span>
-              <span className={styles.metaItem}>{product.activeAuditors} active now</span>
+              <span className={styles.metaItem}>{product.reviewsTotal} total revvvviews</span>
+              <span className={styles.metaItem}>{product.activeUsers} active now</span>
             </div>
           </div>
           <div className={styles.overviewScore}>
@@ -51,8 +48,8 @@ export default function AnalyticsPage() {
 
         {/* Funnel */}
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Audit Performance Funnel</h2>
-          <p className={styles.cardDesc}>Track where auditors drop off during the evaluation process.</p>
+          <h2 className={styles.cardTitle}>revvview Performance Funnel</h2>
+          <p className={styles.cardDesc}>Track where revvviewers drop off during the evaluation process.</p>
           <div className={styles.funnel}>
             {funnelData.map((item, i) => (
               <div key={item.stage} className={styles.funnelRow}>
@@ -92,7 +89,7 @@ export default function AnalyticsPage() {
         {/* Founder's Inbox */}
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Founder&apos;s Inbox</h2>
-          <p className={styles.cardDesc}>Critical friction points flagged by top auditors.</p>
+          <p className={styles.cardDesc}>Critical friction points flagged by top revvviewers.</p>
           <div className={styles.inbox}>
             {inboxItems.map((item, i) => (
               <div key={i} className={styles.inboxItem}>
@@ -118,6 +115,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </main>
+      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

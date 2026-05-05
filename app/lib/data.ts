@@ -19,9 +19,10 @@ export interface Product {
   reviewsTotal: number;
   createdAt: string;
   socials: { twitter?: string; github?: string; website?: string; discord?: string };
+  awards?: { name: string; emoji: string }[];
 }
 
-export interface Audit {
+export interface revvview {
   id: string;
   auditorId: string;
   productId: string;
@@ -42,15 +43,15 @@ export interface User {
   role: string;
   reputation: number;
   badges: string[];
-  auditsCount: number;
+  revvvviewsCount: number;
 }
 
 export const users: User[] = [
-  { id: "u1", name: "Sarah Chen", avatar: "", role: "UX Researcher", reputation: 2840, badges: ["UX Expert", "Early Hunter"], auditsCount: 47 },
-  { id: "u2", name: "Marcus Webb", avatar: "", role: "Frontend Engineer", reputation: 2120, badges: ["Honest Critic", "Early Hunter"], auditsCount: 33 },
-  { id: "u3", name: "Jane Doe", avatar: "", role: "Product Designer", reputation: 1950, badges: ["UX Expert"], auditsCount: 28 },
-  { id: "u4", name: "Alex Rivera", avatar: "", role: "Startup Founder", reputation: 1780, badges: ["Early Hunter"], auditsCount: 22 },
-  { id: "u5", name: "Priya Patel", avatar: "", role: "Design Lead", reputation: 1540, badges: ["Honest Critic", "UX Expert"], auditsCount: 19 },
+  { id: "u1", name: "Sarah Chen", avatar: "", role: "product Researcher", reputation: 2840, badges: ["product Expert", "Early Hunter"], revvvviewsCount: 47 },
+  { id: "u2", name: "Marcus Webb", avatar: "", role: "Frontend Engineer", reputation: 2120, badges: ["Honest Critic", "Early Hunter"], revvvviewsCount: 33 },
+  { id: "u3", name: "Jane Doe", avatar: "", role: "Product Designer", reputation: 1950, badges: ["product Expert"], revvvviewsCount: 28 },
+  { id: "u4", name: "Alex Rivera", avatar: "", role: "Startup Founder", reputation: 1780, badges: ["Early Hunter"], revvvviewsCount: 22 },
+  { id: "u5", name: "Priya Patel", avatar: "", role: "Design Lead", reputation: 1540, badges: ["Honest Critic", "product Expert"], revvvviewsCount: 19 },
 ];
 
 export const products: Product[] = [
@@ -68,7 +69,13 @@ export const products: Product[] = [
     creatorId: "u4", revvScore: 92,
     metrics: { usability: 9.4, performance: 9.6, value: 8.8, trust: 9.2 },
     retentionYes: 142, retentionTotal: 156, activeUsers: 12, reviewsTotal: 156, createdAt: "2026-05-01",
-    socials: { twitter: "linear", github: "linear", website: "https://linear.app" }
+    socials: { twitter: "linear", github: "linear", website: "https://linear.app" },
+    awards: [
+      { name: "Product of the Year", emoji: "🏆" },
+      { name: "Best Design 2024", emoji: "✨" },
+      { name: "Developer Choice", emoji: "💻" },
+      { name: "Golden Pixel", emoji: "💎" }
+    ]
   },
   {
     id: "p2", name: "Raycast", url: "https://raycast.com", tagline: "Your shortcut to everything on your Mac.",
@@ -120,7 +127,7 @@ export const products: Product[] = [
   },
 ];
 
-export const audits: Audit[] = [
+export const revvvviews: revvview[] = [
   { 
     id: "a1", 
     auditorId: "u1", 

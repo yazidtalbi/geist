@@ -2,18 +2,21 @@
 import { use } from "react";
 import Link from "next/link";
 import Navbar from "../../../components/Navbar";
-import AuditReport from "../../../components/AuditReport";
-import { products, audits } from "../../../lib/data";
+import revvviewReport from "../../../components/revvviewReport";
+import SubmitModal from "../../../components/SubmitModal";
+import { products, revvvviews } from "../../../lib/data";
 import styles from "./page.module.css";
+import { useState } from "react";
 
-export default function AuditHistoryPage({ params }: { params: Promise<{ id: string }> }) {
+export default function revvviewHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const audit = audits.find((a) => a.id === id) || audits[0];
-  const product = products.find((p) => p.id === audit.productId) || products[0];
+  const revvview = revvvviews.find((a) => a.id === id) || revvvviews[0];
+  const product = products.find((p) => p.id === revvview.productId) || products[0];
+  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
       
       <main className={styles.container}>
         <div className={styles.topNav}>
@@ -31,9 +34,10 @@ export default function AuditHistoryPage({ params }: { params: Promise<{ id: str
         </div>
 
         <div className={styles.reportCard}>
-          <AuditReport auditId={id} />
+          <revvviewReport revvviewId={id} />
         </div>
       </main>
+      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

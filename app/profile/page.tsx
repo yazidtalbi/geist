@@ -1,21 +1,19 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
-import { users, audits, products, getInitials, getScoreColor } from "../lib/data";
+import Navbar from "../components/Navbar";
+import SubmitModal from "../components/SubmitModal";
+import { users, revvvviews, products, getInitials, getScoreColor } from "../lib/data";
 import styles from "./page.module.css";
 
 export default function ProfilePage() {
   const user = users[0];
-  const userAudits = audits.filter((a) => a.auditorId === user.id);
+  const userrevvvviews = revvvviews.filter((a) => a.auditorId === user.id);
+  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.page}>
-      <nav className={styles.nav}>
-        <div className={styles.navInner}>
-          <Link href="/" className={styles.logo}>revvview</Link>
-          <span className={styles.navLabel}>Profile</span>
-          <div className={styles.avatar}><span>{getInitials(user.name)}</span></div>
-        </div>
-      </nav>
+      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
 
       <main className={styles.main}>
         {/* Profile header */}
@@ -38,8 +36,8 @@ export default function ProfilePage() {
               <span className={styles.statLabel}>Reputation XP</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statValue}>{user.auditsCount}</span>
-              <span className={styles.statLabel}>Audits</span>
+              <span className={styles.statValue}>{user.revvvviewsCount}</span>
+              <span className={styles.statLabel}>Revvvviews</span>
             </div>
             <div className={styles.stat}>
               <span className={styles.statValue}>#1</span>
@@ -48,27 +46,27 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Audit history */}
+        {/* Revvview history */}
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Audit History</h2>
+          <h2 className={styles.cardTitle}>Revvview History</h2>
           <div className={styles.auditList}>
-            {userAudits.map((audit) => {
-              const product = products.find((p) => p.id === audit.productId)!;
+            {userrevvvviews.map((revvview) => {
+              const product = products.find((p) => p.id === revvview.productId)!;
               const score = Math.round(
-                ((audit.metrics.usability + audit.metrics.performance + audit.metrics.value + audit.metrics.trust) / 40) * 100
+                ((revvview.metrics.usability + revvview.metrics.performance + revvview.metrics.value + revvview.metrics.trust) / 40) * 100
               );
               return (
-                <div key={audit.id} className={styles.auditItem}>
+                <div key={revvview.id} className={styles.auditItem}>
                   <div className={styles.auditLeft}>
                     <div className={styles.auditLogo}>{getInitials(product.name)}</div>
                     <div>
                       <div className={styles.auditProduct}>{product.name}</div>
-                      <div className={styles.auditDate}>{audit.createdAt} · {Math.round(audit.timeSpent / 60)} min</div>
+                      <div className={styles.auditDate}>{revvview.createdAt} · {Math.round(revvview.timeSpent / 60)} min</div>
                     </div>
                   </div>
                   <div className={styles.auditRight}>
                     <span className={styles.auditScore} style={{ color: getScoreColor(score) }}>{score}</span>
-                    <span className={styles.auditVerdict}>{audit.wouldUse ? "✓ Would use" : "✗ Would not"}</span>
+                    <span className={styles.auditVerdict}>{revvview.wouldUse ? "✓ Would use" : "✗ Would not"}</span>
                   </div>
                 </div>
               );
@@ -76,6 +74,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

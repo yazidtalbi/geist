@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "revvview — Experience-Based Product Evaluation",
+  title: "Revvview - Experience-Based Evaluation - Best Product Truth Trends",
   description:
-    "Where real users audit real digital products. Get a UX Truth score that goes beyond shallow upvotes.",
+    "Where real users revvview real digital products. Get a product Truth score that goes beyond shallow upvotes.",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

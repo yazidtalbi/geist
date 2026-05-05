@@ -1,29 +1,90 @@
 "use client";
 import React, { use, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import ProductCard from "../../components/ProductCard";
-import { products, users, getInitials, getScoreColor, getMetricColor, audits } from "../../lib/data";
+import { products, users, getInitials, getScoreColor, getMetricColor, revvvviews } from "../../lib/data";
 import { Drawer } from "../../components/Drawer";
-import AuditReport from "../../components/AuditReport";
+import RevvviewReport from "../../components/revvviewReport";
+import SubmitModal from "../../components/SubmitModal";
 import styles from "./page.module.css";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const product = products.find((p) => p.id === id) || products[0];
   const scoreColor = getScoreColor(product.revvScore);
-  const productAudits = audits.filter((a) => a.productId === product.id);
+  const productrevvvviews = revvvviews.filter((a) => a.productId === product.id);
   const similarProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const [activeTab, setActiveTab] = useState("Overview");
   const [showMiniHeader, setShowMiniHeader] = useState(false);
+  const router = useRouter();
+  const [submitOpen, setSubmitOpen] = useState(false);
+  const [clientInfo, setClientInfo] = useState({ date: "", browser: "", os: "" });
+
+  useEffect(() => {
+    // Detect Browser
+    const ua = navigator.userAgent;
+    let browser = "Other";
+    if (ua.includes("Firefox")) browser = "Firefox";
+    else if (ua.includes("Chrome")) browser = "Chrome";
+    else if (ua.includes("Safari")) browser = "Safari";
+    else if (ua.includes("Edge")) browser = "Edge";
+
+    // Detect OS
+    let os = "Other";
+    if (ua.includes("Win")) os = "Windows";
+    else if (ua.includes("Mac")) os = "macOS";
+    else if (ua.includes("Linux")) os = "Linux";
+    else if (ua.includes("Android")) os = "Android";
+    else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+
+    setClientInfo({
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      browser,
+      os
+    });
+  }, []);
+
+  useEffect(() => {
+    document.title = `${product.name} — ${product.tagline} | revvview.com`;
+  }, [product]);
 
   useEffect(() => {
     const handleScroll = () => {
       setShowMiniHeader(window.scrollY > 400);
+      if (window.scrollY < 300) {
+        setActiveTab("Overview");
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = ["overview", "awards", "metrics", "revvvviews"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-40% 0px -40% 0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          setActiveTab(sectionId.charAt(0).toUpperCase() + sectionId.slice(1));
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -38,17 +99,24 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       setActiveTab(id);
     }
   };
-  const [selectedAuditId, setSelectedAuditId] = useState<string | null>(null);
+
+  const metricIcons = {
+    usability: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l3 0" /><path d="M12 3l0 3" /><path d="M7.8 7.8l-2.2 -2.2" /><path d="M16.2 7.8l2.2 -2.2" /><path d="M7.8 16.2l-2.2 2.2" /><path d="M12 12l9 3l-4 2l-2 4l-3 -9" /></svg>,
+    performance: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" /></svg>,
+    value: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1 -1.8 -1" /><path d="M12 6v2m0 8v2" /></svg>,
+    trust: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2l4 -4" /><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
+  };
+  const [selectedrevvviewId, setSelectedrevvviewId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleOpenAudit = (auditId: string) => {
-    setSelectedAuditId(auditId);
-    setDrawerOpen(true);
+  const handleOpenrevvview = (revvviewId: string) => {
+    router.push(`/revvview/deep-dive/${revvviewId}`);
   };
 
   return (
     <div className={styles.page}>
-      <Navbar />
+      <div className={styles.pageWrapper}>
+        <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
       {/* Sticky Mini Header on Scroll */}
       <div className={`${styles.miniHeader} ${showMiniHeader ? styles.miniHeaderVisible : ""}`}>
         <div className={styles.miniHeaderInner}>
@@ -58,7 +126,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
             <span className={styles.miniTitle}>{product.name}</span>
           </div>
-          
+
           <div className={styles.miniHeaderRight}>
             <div className={styles.headerActionsMini}>
               <a href={product.url} target="_blank" className={styles.headerActionBtn}>
@@ -87,21 +155,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <div className={styles.titleArea}>
               <h1 className={styles.titleMain}>{product.name}</h1>
               <p className={styles.taglineMain}>{product.tagline}</p>
-              
-              <div className={styles.headerActions}>
-                <a href={product.url} target="_blank" className={styles.headerActionBtn}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-                  Visit Website
-                </a>
-                <button className={styles.headerActionBtn}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
-                  Share
-                </button>
-              </div>
             </div>
           </div>
-          <div className={styles.overallScoreCircle} style={{ color: scoreColor, borderColor: scoreColor }}>
-            {product.revvScore}
+          <div className={styles.headerRight}>
+            <div className={styles.headerActions}>
+              <a href={product.url} target="_blank" className={styles.headerActionBtn}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                Visit Website
+              </a>
+              <button className={styles.headerActionBtn}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
+                Share
+              </button>
+            </div>
+            <div className={styles.overallScoreCircle} style={{ color: scoreColor, borderColor: scoreColor }}>
+              {product.revvScore}
+            </div>
           </div>
         </header>
 
@@ -130,58 +199,87 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         {/* Info Section */}
         <div className={styles.infoSection} id="overview">
           <div className={styles.infoLeft}>
-            <p className={styles.mainSummary}>
-              {product.longDescription}
-            </p>
-            
-            <div className={styles.techSection}>
-              <h3 className={styles.sectionTitle}>Tech Stack & Tags</h3>
-              <div className={styles.tagsWrapper}>
-                {product.tags?.map((tag, i) => (
-                  <span key={i} className={styles.tag}>{tag}</span>
-                ))}
-              </div>
+            <div className={styles.metaGroup}>
+              <h4 className={styles.metaGroupTitle}>Description</h4>
+              <p className={styles.mainSummary}>
+                {product.longDescription}
+              </p>
             </div>
           </div>
 
           <aside className={styles.infoRight}>
             <div className={styles.metaGroup}>
-              <h4 className={styles.metaGroupTitle}>Details</h4>
-              <div className={styles.metaListItem}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <span>{product.reviewsTotal} verified audits</span>
-              </div>
-              <div className={styles.metaListItem}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2H2v10h10V2z"/><path d="m17 15 3-3 3 3"/><path d="m17 21 3-3 3 3"/><path d="M2 12h20"/><path d="M7 2v10"/><path d="M12 2v10"/><path d="M17 2v10"/><path d="M2 17h10"/><path d="M2 21h10"/></svg>
-                <span>{product.category}</span>
-              </div>
+              <h4 className={styles.metaGroupTitle}>Published</h4>
+              <p className={styles.metaValue}>
+                {product.createdAt ? new Date(product.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : clientInfo.date}
+              </p>
+            </div>
+
+            <div className={styles.metaGroup}>
+              <h4 className={styles.metaGroupTitle}>Environment</h4>
+              <p className={styles.metaValue}>{clientInfo.browser} / {clientInfo.os}</p>
             </div>
 
             <div className={styles.metaGroup}>
               <h4 className={styles.metaGroupTitle}>Socials</h4>
-              {product.socials?.twitter && (
-                <a href={`https://twitter.com/${product.socials.twitter}`} target="_blank" className={styles.metaListItem}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" /></svg>
-                  <span>Twitter</span>
-                </a>
-              )}
-              {product.socials?.github && (
-                <a href={`https://github.com/${product.socials.github}`} target="_blank" className={styles.metaListItem}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>
-                  <span>Github</span>
-                </a>
-              )}
+              <div className={styles.socialButtonsRow}>
+                {product.socials?.twitter && (
+                  <a href={`https://twitter.com/${product.socials.twitter}`} target="_blank" className={styles.socialCircleBtn} aria-label="Twitter">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.294 19.497h2.039L6.486 3.24H4.298l13.31 17.41z" /></svg>
+                  </a>
+                )}
+                {product.socials?.github && (
+                  <a href={`https://github.com/${product.socials.github}`} target="_blank" className={styles.socialCircleBtn} aria-label="Github">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>
+                  </a>
+                )}
+                {product.socials?.website && (
+                  <a href={product.socials.website} target="_blank" className={styles.socialCircleBtn} aria-label="Website">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                  </a>
+                )}
+              </div>
             </div>
           </aside>
         </div>
 
-        {/* UX Truth Section - BIG FULL WIDTH VERTICAL */}
-        <section className={`${styles.uxTruthSection} ${styles.whiteCard}`} id="stats">
+        <section className={styles.tagsFullWidthSection}>
+          <div className={styles.tagsContent}>
+            <p className={styles.tagsLabel}>This website was built with...</p>
+            <div className={styles.tagsWrapperFull}>
+              {product.tags?.map((tag, i) => (
+                <span key={i} className={styles.tagFull}>{tag}</span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Awards Section */}
+        {product.awards && (
+          <section className={`${styles.awardsSection} ${styles.whiteCard}`} id="awards">
+            <h4 className={styles.metaGroupTitle} style={{ marginBottom: 32 }}>Awards</h4>
+            <div className={styles.awardsGrid}>
+              {product.awards.map((award, i) => (
+                <div key={i} className={styles.awardCard}>
+                  <span className={styles.awardEmoji}>{award.emoji}</span>
+                  <span className={styles.awardName}>{award.name}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* product Truth Section - BIG FULL WIDTH VERTICAL */}
+        <section className={`${styles.uxTruthSection} ${styles.whiteCard}`} id="metrics">
+          <h4 className={styles.metaGroupTitle} style={{ marginBottom: 32 }}>Metrics</h4>
           <div className={styles.truthList}>
             {(["usability", "performance", "value", "trust"] as const).map((key) => (
               <div key={key} className={styles.truthRowNew}>
                 <div className={styles.truthHeaderRow}>
-                  <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                  <div className={styles.truthLabelWrapper}>
+                    <span className={styles.truthIcon}>{metricIcons[key]}</span>
+                    <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                  </div>
                   <span className={styles.truthScoreNew}>{product.metrics[key].toFixed(1)}</span>
                 </div>
                 <div className={styles.truthRowBar}>
@@ -199,16 +297,16 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </section>
 
 
-        {/* Verified Audit History Table */}
-        <section className={`${styles.auditSection} ${styles.whiteCard}`} id="audits">
+        {/* Verified revvview History Table */}
+        <section className={`${styles.auditSection} ${styles.whiteCard}`} id="revvvviews">
           <div className={styles.auditPromo}>
             <p className={styles.promoText}>
-              Have your say, if you used <strong>{product.name}</strong> make your audit here!
+              Have your say, if you used <strong>{product.name}</strong> make your revvview here!
             </p>
-            <Link href={`/audit/${product.id}`} style={{ textDecoration: 'none' }}>
+            <Link href={`/revvview/${product.id}`} style={{ textDecoration: 'none' }}>
               <button className={styles.promoButton}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                Start deep audits
+                Start deep revvvviews
               </button>
             </Link>
           </div>
@@ -217,7 +315,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <table className={styles.auditTable}>
               <thead>
                 <tr>
-                  <th>Auditor</th>
+                  <th>revvviewer</th>
                   <th>Usability</th>
                   <th>Performance</th>
                   <th>Value</th>
@@ -226,12 +324,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 </tr>
               </thead>
               <tbody>
-                {productAudits.map((review) => {
+                {productrevvvviews.map((review) => {
                   const reviewer = users.find(u => u.id === review.auditorId) || users[0];
                   const avgScore = Math.round(((review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4) * 10);
 
                   return (
-                    <tr key={review.id} onClick={() => handleOpenAudit(review.id)} className={styles.clickableRow}>
+                    <tr key={review.id} onClick={() => handleOpenrevvview(review.id)} className={styles.clickableRow}>
                       <td>
                         <div className={styles.reviewerInfo}>
                           <div className={styles.avatarCircle}><span>{getInitials(reviewer.name)}</span></div>
@@ -296,23 +394,23 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className={styles.fabLogo}>
           <img src="/logo.png" alt="" style={{ width: 22, height: 22, display: 'block' }} />
         </div>
-        {["Overview", "Audits", "Stats"].map((tab) => (
+        {["Overview", "Awards", "Metrics", "Revvvviews"].map((tab) => (
           <button
             key={tab}
             onClick={() => scrollToSection(tab)}
             className={`${styles.tabBtn} ${activeTab === tab ? styles.tabBtnActive : ""}`}
           >
-            {tab}
+            {tab === "Revvvviews" ? "Reviews" : tab}
           </button>
         ))}
         <a href={product.url} target="_blank" className={styles.visitLink}>
           Visit Website
         </a>
       </nav>
+      </div>
 
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} title="Deep Audit Deep Dive">
-        {selectedAuditId && <AuditReport auditId={selectedAuditId} />}
-      </Drawer>
+
+      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

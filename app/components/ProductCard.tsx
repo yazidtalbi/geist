@@ -18,10 +18,10 @@ export default function ProductCard({ product, index }: { product: Product; inde
   const retentionPct = Math.round((product.retentionYes / product.retentionTotal) * 100);
 
   const metricValues: Record<string, string> = {
-    usability: `${product.metrics.usability.toFixed(1)}/10`,
-    performance: `${product.metrics.performance.toFixed(1)}/10`,
-    value: `${product.metrics.value.toFixed(1)}/10`,
-    trust: `${product.metrics.trust.toFixed(1)}/10`,
+    usability: `${product.metrics.usability.toFixed(1)}`,
+    performance: `${product.metrics.performance.toFixed(1)}`,
+    value: `${product.metrics.value.toFixed(1)}`,
+    trust: `${product.metrics.trust.toFixed(1)}`,
     retention: `${retentionPct}%`,
   };
 
@@ -52,9 +52,6 @@ export default function ProductCard({ product, index }: { product: Product; inde
         {/* Screenshot area */}
         <div className={styles.screenshotWrap}>
           <div className={styles.screenshotFrame}>
-            <div className={styles.screenshotBar}>
-              <span className={styles.dot} /><span className={styles.dot} /><span className={styles.dot} />
-            </div>
             <div className={styles.screenshotBody}>
               {product.screenshot ? (
                 <img src={product.screenshot} alt={product.name} className={styles.screenshotImage} />
@@ -92,16 +89,28 @@ export default function ProductCard({ product, index }: { product: Product; inde
       {/* Footer with Audit Action */}
       <div className={styles.footer}>
         <div className={styles.footerMeta}>
-          <span>{product.reviewsTotal} audits</span>
-          <span className={styles.sep}>•</span>
-          <span>{product.activeUsers} active</span>
+          <div className={styles.avatarStack}>
+            <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Felix" className={styles.miniAvatar} alt="revvviewer" />
+            <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Aneka" className={styles.miniAvatar} alt="revvviewer" />
+            <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Jasper" className={styles.miniAvatar} alt="revvviewer" />
+          </div>
+          <span className={styles.auditNumber}>{product.reviewsTotal}</span>
         </div>
-        <Link href={`/audit/${product.id}`} className={styles.auditBtn}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-          </svg>
-          Join Audit
-        </Link>
+        <div className={styles.footerActions}>
+          <a href={product.url} target="_blank" className={styles.iconAction} aria-label="Visit Website">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+          </a>
+          <button className={styles.iconAction} aria-label="Share">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
+          </button>
+          <Link href={`/revvview/${product.id}`} className={styles.auditBtn}>
+            <span style={{ fontWeight: 600, marginRight: 4 }}>Start</span>
+            <span className="logoType" style={{ fontSize: 18, color: 'inherit', position: 'relative', bottom: '1.5px' }}>revvview</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 2 }}>
+              <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </div>
   );

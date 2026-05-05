@@ -2,12 +2,41 @@
   min-height: 100vh;
   background: #FFF;
   position: relative;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.pageWrapper {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.pushed {
+  transform: translateX(-800px);
+}
+
+@media (max-width: 1024px) {
+  .pushed {
+    transform: translateX(-95%);
+  }
+}
+
+@media (max-width: 768px) {
+  .pushed {
+    transform: translateX(-100%);
+  }
 }
 
 .main {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 24px 40vh;
+  padding: 60px 24px 100px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 32px 16px 80px;
+  }
 }
 
 /* Page Header */
@@ -15,9 +44,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 80px;
+  margin-bottom: 48px;
   padding-bottom: 0;
   border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+  }
 }
 
 .headerLeft {
@@ -71,7 +108,6 @@
 .headerActions {
   display: flex;
   gap: 12px;
-  margin-top: 20px;
 }
 
 .headerActionBtn {
@@ -115,9 +151,8 @@
 
 .headerRight {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
+  align-items: center;
+  gap: 32px;
 }
 
 .creationDate {
@@ -135,12 +170,23 @@
 /* Info Section */
 .infoSection {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 300px;
   gap: 80px;
   margin-top: 80px;
-  margin-bottom: 120px;
+  margin-bottom: 80px;
   align-items: flex-start;
   scroll-margin-top: 160px;
+}
+
+@media (max-width: 1024px) {
+  .infoSection {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .infoRight {
+    position: static;
+  }
 }
 
 .infoLeft {
@@ -157,8 +203,7 @@
   letter-spacing: -0.02em;
 }
 
-.aboutSection,
-.techSection {
+.aboutSection {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -205,31 +250,50 @@
   gap: 16px;
 }
 
+.metaValue {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-top: -8px;
+}
+
 .metaGroupTitle {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 
-.metaListItem {
+.socialButtonsRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.socialCircleBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 16px;
-  font-weight: 500;
+  justify-content: center;
   color: var(--text-secondary);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFF;
   text-decoration: none;
-  transition: color 0.2s;
 }
 
-.metaListItem:hover {
+.socialCircleBtn:hover {
+  border-color: var(--text-primary);
   color: var(--text-primary);
+  transform: translateY(-2px);
+  background: #f8f9fb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.metaListItem svg {
-  color: var(--text-tertiary);
+.socialCircleBtn svg {
   flex-shrink: 0;
 }
 
@@ -276,20 +340,51 @@
   color: var(--text-secondary);
 }
 
-.tagsWrapper {
+.tagsFullWidthSection {
+  margin-bottom: 80px;
+  padding: 80px 0;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 12px;
+  justify-content: center;
 }
 
-.tag {
-  padding: 10px 24px;
-  background: #f8f9fb;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 500;
+.tagsContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.tagsLabel {
+  font-size: 20px;
   color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+}
+
+.tagsWrapperFull {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.tagFull {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.tagFull:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: #f8f9fb;
 }
 
 /* CTA Sidebar Card */
@@ -392,6 +487,7 @@
 .uxTruthSection {
   /* Inherits whiteCard */
   scroll-margin-top: 160px;
+  padding-top: 120px;
 }
 
 .truthTitleRow {
@@ -429,14 +525,29 @@
 .truthHeaderRow {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+}
+
+.truthLabelWrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.truthIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
 }
 
 .truthLabelNew {
-  font-family: var(--font-heading);
-  font-size: 36px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
   font-weight: 500;
+  font-style: italic;
   letter-spacing: -0.03em;
+  color: var(--text-primary);
 }
 
 .truthScoreNew {
@@ -495,6 +606,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .dualGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .showcaseItem {
@@ -567,6 +685,8 @@
 
 .tableWrapper {
   border: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .auditTable {
@@ -713,6 +833,12 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
+@media (max-width: 768px) {
+  .tabsFab {
+    display: none;
+  }
+}
+
 .fabLogo {
   font-weight: 800;
   font-size: 15px;
@@ -753,7 +879,6 @@
 
 /* Similar Products */
 .similarSection {
-  background: #f5f6f9;
   padding: 100px 0;
   width: 100%;
 }
@@ -781,6 +906,19 @@
 
   .truthRowBar {
     display: none;
+  }
+
+  .tagFull {
+    font-size: 18px;
+    padding: 8px 20px;
+  }
+
+  .truthLabelNew {
+    font-size: 28px;
+  }
+
+  .tagsFullWidthSection {
+    padding: 40px 0;
   }
 }
 
@@ -867,4 +1005,40 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 800;
+}
+/* Awards Section */
+.awardsSection {
+  scroll-margin-top: 160px;
+  padding-top: 120px;
+}
+
+.awardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.awardCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 32px 24px;
+  background: #FFF;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.awardEmoji {
+  font-family: var(--font-emoji);
+  font-size: 48px;
+  line-height: 1;
+}
+
+.awardName {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
 }

@@ -16,15 +16,14 @@ export function Drawer({ open, onOpenChange, children, title }: DrawerProps) {
       <VaulDrawer.Portal>
         <VaulDrawer.Overlay className={styles.overlay} />
         <VaulDrawer.Content className={styles.content}>
-          <div className={styles.header}>
-            <div className={styles.handle} />
-            {title && <VaulDrawer.Title className={styles.title}>{title}</VaulDrawer.Title>}
-            <button className={styles.closeBtn} onClick={() => onOpenChange(false)}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-          </div>
-          <div className={styles.body}>
-            {children}
+          <div className={styles.handle} />
+          <div className={styles.inner}>
+            <div className={styles.header}>
+              {title && <VaulDrawer.Title className={styles.title}>{title}</VaulDrawer.Title>}
+            </div>
+            <div className={styles.body}>
+              {children}
+            </div>
           </div>
         </VaulDrawer.Content>
       </VaulDrawer.Portal>

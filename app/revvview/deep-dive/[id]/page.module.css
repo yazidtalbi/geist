@@ -1,0 +1,491 @@
+.page {
+  background: #FFFFFF;
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: 'Geist', sans-serif;
+}
+
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 120px 40px 100px;
+}
+
+.topNav {
+  background: #FFF;
+  position: sticky;
+  top: 60px; /* Reduced to touch Navbar */
+  z-index: 50;
+}
+
+.topNavInner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.topNavLeft, .topNavRight {
+  flex: 1;
+}
+
+.topNavCenter {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.topNavRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.backLinkTool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.backLinkTool:hover {
+  background: #e8eaed;
+  color: var(--text-primary);
+}
+
+.reportTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.navActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #FFF;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navActionBtn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: #f8f9fb;
+}
+
+.navActionBtn svg {
+  color: var(--text-tertiary);
+}
+
+.hero {
+  margin-bottom: 120px;
+}
+
+.heroMeta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+.envLabel {
+  opacity: 0.5;
+}
+
+.heroFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 60px;
+}
+
+.heroTitleContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.heroTitle {
+  font-family: var(--font-logo);
+  font-size: 80px;
+  line-height: 0.9;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.integratedAuditor {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: fit-content;
+}
+
+.auditorAvatarSmall {
+  width: 40px;
+  height: 40px;
+  background: #000;
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.auditorDetailsSmall {
+  display: flex;
+  flex-direction: column;
+}
+
+.auditorNameSmall {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auditorRoleSmall {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.italic {
+  font-style: italic;
+}
+
+.heroImageWrap {
+  width: 360px;
+  flex-shrink: 0;
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+
+.firstImpressionHeader {
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.noBorderHeader {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.sectionTitle {
+  font-family: var(--font-logo);
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.sectionSubtitle {
+  font-size: 16px;
+  color: var(--text-tertiary);
+}
+
+.firstImpressionSection,
+.metricsSection,
+.observationsSection,
+.roadmapSection {
+  margin-bottom: 160px;
+}
+
+.firstImpressionContent {
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  max-width: 900px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 64px 80px;
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metricCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.metricKey {
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.metricVal {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metricBarTrack {
+  height: 6px;
+  background: #F0F0F0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.metricBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metricDesc {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.obsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.obsHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.obsIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.obsTitle {
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.obsList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.obsItem {
+  display: flex;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.obsIndex {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.obsText {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.roadmapList {
+  display: flex;
+  flex-direction: column;
+}
+
+.roadmapItem {
+  display: grid;
+  grid-template-columns: 150px 1fr 200px;
+  gap: 40px;
+  align-items: center;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.roadmapStatus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: var(--electric-blue);
+  border-radius: 50%;
+}
+
+.roadmapTask {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.roadmapImpact {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.roadmapMetric {
+  text-align: right;
+}
+
+.roadmapMetric span {
+  display: block;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+}
+
+.roadmapMetric label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+.conclusionTitle {
+  font-family: var(--font-logo);
+  font-size: 48px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.conclusion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 80px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 24px;
+  padding: 60px 80px;
+  margin-bottom: 120px;
+}
+
+.conclusionText {
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  max-width: 900px;
+}
+
+.globalRating {
+  width: 96px;
+  height: 96px;
+  border: 4px solid currentColor;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  font-family: 'Geist', sans-serif;
+  flex-shrink: 0;
+  letter-spacing: -0.04em;
+}
+
+.pageExitActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+@media (max-width: 1024px) {
+  .heroTitle {
+    font-size: 56px;
+  }
+
+  .heroFlex {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .heroImageWrap {
+    width: 100%;
+  }
+
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .obsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmapItem {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .roadmapMetric {
+    text-align: left;
+  }
+
+  .conclusion {
+    padding: 60px 24px;
+  }
+}

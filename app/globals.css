@@ -1,28 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Instrument+Serif:ital,wght@0,400;0,800;1,400;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
+
+/* Global Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 100px;
+  border: 2px solid var(--bg-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
 :root {
   --bg-base: #FFFFFF;
   --bg-card: #FFFFFF;
-  --border: #EEEEEE;
-  --border-input: #EAEAEA;
-  --text-primary: #000000;
-  --text-secondary: #4B4B4B;
-  --text-tertiary: #999999;
+  --border: #e2e8f0;
+  --border-input: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
   --accent: #000000;
   --accent-hover: #222222;
   --radius: 16px;
   --radius-pill: 24px;
   --radius-modal: 20px;
-  --max-width: 900px;
+  --max-width: 1100px;
+  --nav-height: 70px;
   --spacing-card: 32px;
-  --spacing-section: 48px;
+  --spacing-section: 64px;
   --green: #22C55E;
   --red: #EF4444;
   --blue: #3B82F6;
   --electric-blue: #0070F3;
   --amber: #F59E0B;
   --purple: #8B5CF6;
-  --font-heading: 'Outfit', sans-serif;
+  --font-heading: 'Geist', sans-serif;
+  --font-logo: 'Instrument Serif', serif;
+  --font-emoji: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}
+
+.logoType {
+  font-family: var(--font-logo);
+  text-transform: lowercase;
+  letter-spacing: -0.05em;
+  font-weight: 500;
+  font-style: italic;
+  -webkit-text-stroke: 0.5px currentColor;
+  text-shadow: 0 0 0.2px currentColor;
 }
 
 * {
@@ -95,15 +129,17 @@ h1, h2, h3, h4 {
 .btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  height: 40px;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 0 24px;
   background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 100px;
   font-size: 14px;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .btn-primary:hover {
