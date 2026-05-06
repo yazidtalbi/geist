@@ -8,15 +8,15 @@ interface DrawerProps {
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
   title?: string;
+  className?: string;
 }
 
-export function Drawer({ open, onOpenChange, children, title }: DrawerProps) {
+export function Drawer({ open, onOpenChange, children, title, className }: DrawerProps) {
   return (
     <VaulDrawer.Root direction="right" open={open} onOpenChange={onOpenChange}>
       <VaulDrawer.Portal>
         <VaulDrawer.Overlay className={styles.overlay} />
-        <VaulDrawer.Content className={styles.content}>
-          <div className={styles.handle} />
+        <VaulDrawer.Content className={`${styles.content} ${className || ""}`}>
           <div className={styles.inner}>
             <div className={styles.header}>
               {title && <VaulDrawer.Title className={styles.title}>{title}</VaulDrawer.Title>}

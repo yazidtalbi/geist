@@ -216,11 +216,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
 
             <div className={styles.metaGroup}>
-              <h4 className={styles.metaGroupTitle}>Environment</h4>
-              <p className={styles.metaValue}>{clientInfo.browser} / {clientInfo.os}</p>
-            </div>
-
-            <div className={styles.metaGroup}>
               <h4 className={styles.metaGroupTitle}>Socials</h4>
               <div className={styles.socialButtonsRow}>
                 {product.socials?.twitter && (

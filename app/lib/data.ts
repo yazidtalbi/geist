@@ -28,10 +28,12 @@ export interface revvview {
   productId: string;
   version: string;
   metrics: { usability: number; performance: number; value: number; trust: number };
+  firstImpression?: string;
   engaged: string[];
   confused: string[];
   wouldUse: boolean;
   suggestions: string[];
+  strategicOutlook?: string;
   timeSpent: number;
   createdAt: string;
 }
@@ -148,7 +150,7 @@ export const revvvviews: revvview[] = [
     version: "v2.4.0",
     metrics: { usability: 9.2, performance: 9.4, value: 8.6, trust: 9.0 }, 
     engaged: ["Issue tracking feels natural", "Dark mode is perfectly balanced"], 
-    confused: ["The roadmap view needs better filtering options"], 
+    confused: ["The current roadmap view lacks granular filtering capabilities, making it increasingly difficult for stakeholders to isolate specific project milestones or filter by strategic priority. This leads to information overload and significantly slows down the decision-making process for larger product dossiers."], 
     wouldUse: true, 
     suggestions: ["Add multi-select filtering to roadmap", "Allow custom status colors"],
     timeSpent: 360, 

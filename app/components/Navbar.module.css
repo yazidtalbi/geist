@@ -1,173 +1,212 @@
 .nav {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  background: var(--bg-base);
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: #FFF;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
 }
 
 .inner {
-  width: 100%;
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
-  gap: 20px;
-}
-
-.desktopOnly {
-  display: flex !important;
-}
-
-.mobileOnly {
-  display: none !important;
 }
 
 .logo {
-  font-family: var(--font-logo);
-  font-size: 26px;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: -0.05em;
-  color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-decoration: none;
-  text-transform: lowercase;
-  -webkit-text-stroke: 0.5px currentColor;
-  text-shadow: 0 0 0.2px currentColor;
+  color: #000;
+  font-size: 22px;
 }
 
 .logoImg {
-  height: 24px;
-  width: auto;
-  display: block;
-  transform: translateY(1.5px);
-}
-
-.logoMobile {
-  display: flex;
-  align-items: center;
+  height: 28px;
 }
 
 .searchWrap {
-  width: 480px;
-  max-width: 100%;
-  height: 44px;
+  flex: 0 1 480px;
+  height: 48px;
+  background: #F3F4F6;
+  border-radius: 50px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: #f1f3f4;
+  padding: 0 20px;
   transition: all 0.2s;
+  border: 1px solid transparent;
 }
 
 .searchFocused {
-  background: #fff;
-  border-color: var(--border);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: #FFF;
+  border-color: #000;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
 }
 
 .searchIcon {
-  color: var(--text-tertiary);
-  flex-shrink: 0;
+  color: #6B7280;
+  margin-right: 12px;
 }
 
 .searchInput {
-  flex: 1;
   border: none;
-  background: transparent;
-  font-size: 15px;
-  color: var(--text-primary);
+  background: none;
+  width: 100%;
+  height: 100%;
   outline: none;
-  font-weight: 400;
-}
-
-.searchInput::placeholder {
-  color: #70757a;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.rightSection {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
+  gap: 16px;
 }
 
 .iconBtn {
-  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #E5E7EB;
+  background: #FFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  transition: background 0.2s;
+  color: #000;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
 }
 
 .iconBtn:hover {
-  background: #f1f3f4;
+  background: #F9FAFB;
+  border-color: #000;
 }
 
 .notifDot {
   position: absolute;
-  top: 8px;
-  right: 9px;
-  width: 7px;
-  height: 7px;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background: #EF4444;
   border-radius: 50%;
-  background: var(--red);
+  border: 2px solid #FFF;
 }
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.desktopOnly {
+  display: flex;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .desktopOnly { display: none; }
+  .mobileOnly { display: flex; }
+  .logoMobile { display: flex; }
+  .searchWrap { flex: 1; margin: 0 16px; }
+}
+
+.notifList {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.notifItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notifItem:hover {
+  background: #f8f9fb;
+}
+
+.notifUnread {
+  background: #fcfdfe;
+}
+
+.notifAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
   font-size: 12px;
+  flex-shrink: 0;
+}
+
+.notifContent {
+  flex: 1;
+}
+
+.notifText {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.notifTime {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.unreadDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0070F3;
+  margin-top: 6px;
+}
+
+.allNotifBtn {
+  width: calc(100% - 32px);
+  margin: 0 16px 16px;
+  padding: 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 50px;
+  background: #FFF;
+  font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-@media (max-width: 768px) {
-  .desktopOnly {
-    display: none !important;
-  }
-  
-  .mobileOnly {
-    display: flex !important;
-  }
-
-  .inner {
-    padding: 12px 16px;
-    gap: 12px;
-  }
-  
-  .searchWrap {
-    width: auto;
-    height: 40px;
-    flex: 1;
-  }
-}
-
-@media (max-width: 480px) {
-  .searchWrap {
-    display: none !important;
-  }
+.allNotifBtn:hover {
+  background: #f8f9fb;
+  border-color: #000;
 }

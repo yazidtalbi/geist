@@ -30,12 +30,12 @@
 .main {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 24px 100px;
+  padding: 110px 24px 100px;
 }
 
 @media (max-width: 768px) {
   .main {
-    padding: 32px 16px 80px;
+    padding: 100px 16px 80px;
   }
 }
 
@@ -59,7 +59,7 @@
 
 .headerLeft {
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* Changed from flex-start to center */
   gap: 24px;
 }
 
@@ -75,7 +75,6 @@
   font-size: 28px;
   font-weight: 800;
   overflow: hidden;
-  margin-top: 4px;
 }
 
 .logoIconLarge img {
@@ -91,10 +90,10 @@
 
 .titleMain {
   font-family: var(--font-heading);
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
   color: var(--text-primary);
 }
 
