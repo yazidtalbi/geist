@@ -2,15 +2,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-import SubmitModal from "../components/SubmitModal";
 import styles from "../auth.module.css";
 
 export default function SignupPage() {
-  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.container}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar  />
       <div className={styles.card}>
         <div className={styles.header}>
           <Link href="/" className={styles.logo}>
@@ -55,7 +53,6 @@ export default function SignupPage() {
           Already have an account? <Link href="/login" className={styles.link}>Log in</Link>
         </div>
       </div>
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

@@ -51,20 +51,29 @@ export default function ProductCard({ product, index }: { product: Product; inde
 
         {/* Screenshot area */}
         <div className={styles.screenshotWrap}>
-          <div className={styles.screenshotFrame}>
-            <div className={styles.screenshotBody}>
+          <div className={styles.screenshotGrid}>
+            <div className={styles.screenshotMain}>
               {product.screenshot ? (
                 <img src={product.screenshot} alt={product.name} className={styles.screenshotImage} />
               ) : (
-                <div className={styles.screenshotPlaceholder}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="1.2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <path d="m21 15-5-5L5 21" />
-                  </svg>
-                  <span>{product.url}</span>
-                </div>
+                <div className={styles.screenshotPlaceholder}>Preview</div>
               )}
+            </div>
+            <div className={styles.screenshotSide}>
+              <div className={styles.screenshotSmall}>
+                {product.gallery?.[0] ? (
+                  <img src={product.gallery[0]} alt="" className={styles.screenshotImage} />
+                ) : (
+                  <div className={styles.screenshotPlaceholder}>Gallery 1</div>
+                )}
+              </div>
+              <div className={styles.screenshotSmall}>
+                {product.gallery?.[1] ? (
+                  <img src={product.gallery[1]} alt="" className={styles.screenshotImage} />
+                ) : (
+                  <div className={styles.screenshotPlaceholder}>Gallery 2</div>
+                )}
+              </div>
             </div>
           </div>
         </div>

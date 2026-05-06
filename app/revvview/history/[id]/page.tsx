@@ -2,8 +2,7 @@
 import { use } from "react";
 import Link from "next/link";
 import Navbar from "../../../components/Navbar";
-import revvviewReport from "../../../components/revvviewReport";
-import SubmitModal from "../../../components/SubmitModal";
+import RevvviewReport from "../../../components/revvviewReport";
 import { products, revvvviews } from "../../../lib/data";
 import styles from "./page.module.css";
 import { useState } from "react";
@@ -12,11 +11,10 @@ export default function revvviewHistoryPage({ params }: { params: Promise<{ id: 
   const { id } = use(params);
   const revvview = revvvviews.find((a) => a.id === id) || revvvviews[0];
   const product = products.find((p) => p.id === revvview.productId) || products[0];
-  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.page}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar  />
       
       <main className={styles.container}>
         <div className={styles.topNav}>
@@ -34,10 +32,9 @@ export default function revvviewHistoryPage({ params }: { params: Promise<{ id: 
         </div>
 
         <div className={styles.reportCard}>
-          <revvviewReport revvviewId={id} />
+          <RevvviewReport revvviewId={id} />
         </div>
       </main>
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

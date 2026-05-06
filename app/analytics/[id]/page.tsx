@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Navbar from "../../../components/Navbar";
-import SubmitModal from "../../../components/SubmitModal";
+import Navbar from "../../components/Navbar";
 import { products, users, getInitials, getScoreColor } from "../../lib/data";
 import styles from "./page.module.css";
 
@@ -22,11 +21,10 @@ const inboxItems = [
 export default function AnalyticsPage() {
   const product = products[0];
   const scoreColor = getScoreColor(product.revvScore);
-  const [submitOpen, setSubmitOpen] = useState(false);
 
   return (
     <div className={styles.page}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar  />
 
       <main className={styles.main}>
         {/* Product overview */}
@@ -115,7 +113,6 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </main>
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

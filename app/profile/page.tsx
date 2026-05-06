@@ -2,18 +2,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-import SubmitModal from "../components/SubmitModal";
 import { users, revvvviews, products, getInitials, getScoreColor } from "../lib/data";
 import styles from "./page.module.css";
 
 export default function ProfilePage() {
   const user = users[0];
   const userrevvvviews = revvvviews.filter((a) => a.auditorId === user.id);
-  const [submitOpen, setSubmitOpen] = useState(false);
-
   return (
     <div className={styles.page}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar />
 
       <main className={styles.main}>
         {/* Profile header */}
@@ -74,7 +71,6 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

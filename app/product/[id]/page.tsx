@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import ProductCard from "../../components/ProductCard";
-import { products, users, getInitials, getScoreColor, getMetricColor, revvvviews } from "../../lib/data";
+import { products, users, getInitials, getScoreColor, getMetricColor, revvvviews, User } from "../../lib/data";
 import { Drawer } from "../../components/Drawer";
 import RevvviewReport from "../../components/revvviewReport";
-import SubmitModal from "../../components/SubmitModal";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../components/ui/collapsible";
 import styles from "./page.module.css";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -15,12 +15,17 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const product = products.find((p) => p.id === id) || products[0];
   const scoreColor = getScoreColor(product.revvScore);
   const productrevvvviews = revvvviews.filter((a) => a.productId === product.id);
-  const similarProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const categorySimilar = products.filter(p => p.category === product.category && p.id !== product.id);
+  const linear = products.find(p => p.name === "Linear" && p.id !== product.id);
+  const combinedSimilar = [...categorySimilar];
+  if (linear && !combinedSimilar.some(p => p.id === linear.id)) {
+    combinedSimilar.push(linear);
+  }
+  const similarProducts = combinedSimilar.slice(0, 4);
 
   const [activeTab, setActiveTab] = useState("Overview");
   const [showMiniHeader, setShowMiniHeader] = useState(false);
   const router = useRouter();
-  const [submitOpen, setSubmitOpen] = useState(false);
   const [clientInfo, setClientInfo] = useState({ date: "", browser: "", os: "" });
 
   useEffect(() => {
@@ -116,7 +121,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   return (
     <div className={styles.page}>
       <div className={styles.pageWrapper}>
-        <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+        <Navbar />
       {/* Sticky Mini Header on Scroll */}
       <div className={`${styles.miniHeader} ${showMiniHeader ? styles.miniHeaderVisible : ""}`}>
         <div className={styles.miniHeaderInner}>
@@ -254,7 +259,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <section className={`${styles.awardsSection} ${styles.whiteCard}`} id="awards">
             <h4 className={styles.metaGroupTitle} style={{ marginBottom: 32 }}>Awards</h4>
             <div className={styles.awardsGrid}>
-              {product.awards.map((award, i) => (
+              {product.awards.slice(0, 3).map((award, i) => (
                 <div key={i} className={styles.awardCard}>
                   <span className={styles.awardEmoji}>{award.emoji}</span>
                   <span className={styles.awardName}>{award.name}</span>
@@ -268,26 +273,76 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <section className={`${styles.uxTruthSection} ${styles.whiteCard}`} id="metrics">
           <h4 className={styles.metaGroupTitle} style={{ marginBottom: 32 }}>Metrics</h4>
           <div className={styles.truthList}>
-            {(["usability", "performance", "value", "trust"] as const).map((key) => (
-              <div key={key} className={styles.truthRowNew}>
-                <div className={styles.truthHeaderRow}>
-                  <div className={styles.truthLabelWrapper}>
-                    <span className={styles.truthIcon}>{metricIcons[key]}</span>
-                    <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+            {(["usability", "performance", "value", "trust"] as const).map((key) => {
+              const reviewersForMetric = productrevvvviews.filter(r => r.metrics[key] !== undefined);
+              
+              return (
+                <Collapsible key={key} className={styles.truthRowNew}>
+                  <CollapsibleTrigger asChild>
+                    <div className={styles.truthHeaderRow}>
+                      <div className={styles.truthLabelWrapper}>
+                        <span className={styles.truthIcon}>{metricIcons[key]}</span>
+                        <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div className={styles.metricsAvatars}>
+                          {reviewersForMetric.slice(0, 5).map((rev, idx) => {
+                            const reviewer = users.find(u => u.id === rev.auditorId);
+                            return (
+                              <div key={idx} className={styles.miniAvatar} title={reviewer?.name}>
+                                {reviewer ? getInitials(reviewer.name) : "?"}
+                              </div>
+                            );
+                          })}
+                          {reviewersForMetric.length > 5 && (
+                            <div className={styles.miniAvatar}>+{reviewersForMetric.length - 5}</div>
+                          )}
+                        </div>
+                        <span className={styles.truthScoreNew}>{product.metrics[key].toFixed(1)}</span>
+                      </div>
+                    </div>
+                  </CollapsibleTrigger>
+                  
+                  <div className={styles.truthRowBar}>
+                    <div
+                      className={styles.truthRowFill}
+                      style={{
+                        width: `${product.metrics[key] * 10}%`,
+                        background: getMetricColor(product.metrics[key])
+                      }}
+                    />
                   </div>
-                  <span className={styles.truthScoreNew}>{product.metrics[key].toFixed(1)}</span>
-                </div>
-                <div className={styles.truthRowBar}>
-                  <div
-                    className={styles.truthRowFill}
-                    style={{
-                      width: `${product.metrics[key] * 10}%`,
-                      background: getMetricColor(product.metrics[key])
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+
+                  <CollapsibleContent>
+                    <div className={styles.collapsibleContent}>
+                      {reviewersForMetric.map((rev, idx) => {
+                        const reviewer = users.find(u => u.id === rev.auditorId);
+                        if (!reviewer) return null;
+                        return (
+                          <div key={idx} className={styles.reviewerFeedbackItem}>
+                            <div className={styles.feedbackReviewerHeader}>
+                              <div className={styles.feedbackAvatar}>
+                                {getInitials(reviewer.name)}
+                              </div>
+                              <div className={styles.feedbackReviewerInfo}>
+                                <span className={styles.feedbackReviewerName}>{reviewer.name}</span>
+                                <span className={styles.feedbackReviewerRole}>{reviewer.role}</span>
+                              </div>
+                            </div>
+                            <p className={styles.feedbackText}>
+                              {rev.metricFeedback[key]}
+                            </p>
+                            <div className={styles.feedbackScore} style={{ color: getMetricColor(rev.metrics[key]) }}>
+                              {rev.metrics[key].toFixed(1)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
           </div>
         </section>
 
@@ -306,69 +361,71 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </Link>
           </div>
 
-          <div className={styles.tableWrapper}>
-            <table className={styles.auditTable}>
-              <thead>
-                <tr>
-                  <th>revvviewer</th>
-                  <th>Usability</th>
-                  <th>Performance</th>
-                  <th>Value</th>
-                  <th>Trust</th>
-                  <th style={{ textAlign: 'right' }}>Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productrevvvviews.map((review) => {
-                  const reviewer = users.find(u => u.id === review.auditorId) || users[0];
-                  const avgScore = Math.round(((review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4) * 10);
+          {productrevvvviews.length > 0 && (
+            <div className={styles.tableWrapper}>
+              <table className={styles.auditTable}>
+                <thead>
+                  <tr>
+                    <th>revvviewer</th>
+                    <th>Usability</th>
+                    <th>Performance</th>
+                    <th>Value</th>
+                    <th>Trust</th>
+                    <th style={{ textAlign: 'right' }}>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productrevvvviews.map((review) => {
+                    const reviewer = users.find(u => u.id === review.auditorId) || users[0];
+                    const avgScore = Math.round(((review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4) * 10);
 
-                  return (
-                    <tr key={review.id} onClick={() => handleOpenrevvview(review.id)} className={styles.clickableRow}>
-                      <td>
-                        <div className={styles.reviewerInfo}>
-                          <div className={styles.avatarCircle}><span>{getInitials(reviewer.name)}</span></div>
-                          <div>
-                            <div className={styles.reviewerNameMini}>{reviewer.name}</div>
-                            <div className={styles.reviewerRole}>{reviewer.role}</div>
+                    return (
+                      <tr key={review.id} onClick={() => handleOpenrevvview(review.id)} className={styles.clickableRow}>
+                        <td>
+                          <div className={styles.reviewerInfo}>
+                            <div className={styles.avatarCircle}><span>{getInitials(reviewer.name)}</span></div>
+                            <div>
+                              <div className={styles.reviewerNameMini}>{reviewer.name}</div>
+                              <div className={styles.reviewerRole}>{reviewer.role}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.tableMetric}>
-                          <span className={styles.tableMetricValue}>{review.metrics.usability.toFixed(1)}</span>
-                          <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.usability * 10}%`, background: getMetricColor(review.metrics.usability) }} /></div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.tableMetric}>
-                          <span className={styles.tableMetricValue}>{review.metrics.performance.toFixed(1)}</span>
-                          <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.performance * 10}%`, background: getMetricColor(review.metrics.performance) }} /></div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.tableMetric}>
-                          <span className={styles.tableMetricValue}>{review.metrics.value.toFixed(1)}</span>
-                          <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.value * 10}%`, background: getMetricColor(review.metrics.value) }} /></div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.tableMetric}>
-                          <span className={styles.tableMetricValue}>{review.metrics.trust.toFixed(1)}</span>
-                          <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.trust * 10}%`, background: getMetricColor(review.metrics.trust) }} /></div>
-                        </div>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore) + "15", color: getScoreColor(avgScore), fontSize: 16 }}>
-                          {(avgScore / 10).toFixed(1)}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                        <td>
+                          <div className={styles.tableMetric}>
+                            <span className={styles.tableMetricValue}>{review.metrics.usability.toFixed(1)}</span>
+                            <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.usability * 10}%`, background: getMetricColor(review.metrics.usability) }} /></div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className={styles.tableMetric}>
+                            <span className={styles.tableMetricValue}>{review.metrics.performance.toFixed(1)}</span>
+                            <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.performance * 10}%`, background: getMetricColor(review.metrics.performance) }} /></div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className={styles.tableMetric}>
+                            <span className={styles.tableMetricValue}>{review.metrics.value.toFixed(1)}</span>
+                            <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.value * 10}%`, background: getMetricColor(review.metrics.value) }} /></div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className={styles.tableMetric}>
+                            <span className={styles.tableMetricValue}>{review.metrics.trust.toFixed(1)}</span>
+                            <div className={styles.tableMetricBar}><div style={{ width: `${review.metrics.trust * 10}%`, background: getMetricColor(review.metrics.trust) }} /></div>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore) + "15", color: getScoreColor(avgScore), fontSize: 16 }}>
+                            {(avgScore / 10).toFixed(1)}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
 
       </main>
@@ -405,7 +462,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
 
 
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

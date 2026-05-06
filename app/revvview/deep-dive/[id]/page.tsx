@@ -2,7 +2,6 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "../../../components/Navbar";
-import SubmitModal from "../../../components/SubmitModal";
 import { products, users, revvvviews, getInitials, getScoreColor, getMetricColor } from "../../../lib/data";
 import styles from "./page.module.css";
 
@@ -16,7 +15,6 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
 
   const [scrolled, setScrolled] = useState(false);
   const [clientInfo, setClientInfo] = useState({ browser: "", os: "" });
-  const [submitOpen, setSubmitOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 100);
@@ -46,7 +44,7 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
 
   return (
     <div className={styles.page}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar  />
 
       <main className={styles.main}>
         {/* Hero Section */}
@@ -204,7 +202,6 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
           </Link>
         </div>
       </main>
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }

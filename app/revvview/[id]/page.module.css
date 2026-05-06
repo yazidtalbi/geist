@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   color: var(--text-primary);
-  padding-top: 72px; /* Space for fixed header */
+  padding-top: 100px; /* Space for fixed header */
 }
 
 .topHeader {
@@ -49,11 +49,72 @@
   color: var(--text-primary);
 }
 
-.headerTitle {
+.mainHeader {
+  width: 100%;
+  max-width: 680px;
+  margin-bottom: 48px;
+  text-align: left;
+}
+
+.contextLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.mainTitle {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-top: 56px;
+}
+
+.productContext {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+}
+
+.productIcon {
+  width: 48px;
+  height: 48px;
+  background: #f8fafc;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.productMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.productName {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin: 0;
+  line-height: 1.2;
+}
+
+.productTagline {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
 }
 
 .sidebar {
@@ -69,6 +130,7 @@
   border-right: 1px solid #E5E7EB;
   overflow-y: auto;
   scrollbar-width: none;
+  justify-content: space-between;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -195,9 +257,27 @@
   margin-bottom: 4px;
 }
 
+.requiredMark {
+  color: var(--red);
+  margin-left: 2px;
+}
+
+.optionalMark {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+}
+
 .sectionHint {
   font-size: 13px;
   color: var(--text-secondary);
+}
+
+.sectionSubtitle {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
 }
 
 .internalNote {
@@ -227,12 +307,21 @@
   outline: none;
   transition: all 0.2s;
   resize: vertical;
-  min-height: 80px;
+  min-height: 120px;
 }
 
 .auditInput:focus {
   border-color: #000;
   background: #FFF;
+}
+
+.charCounter {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: right;
+  margin-top: 6px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 .pointsGrid {
@@ -259,6 +348,86 @@
   border-color: #000;
   color: #000;
   background: #FFF;
+}
+
+.roadmapGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.roadmapFormItem {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: #f8fafc;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+}
+
+.roadmapItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.roadmapPhaseLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.removeBtn:hover {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.roadmapInputsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.roadmapInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roadmapMetaRow {
+  display: flex;
+  gap: 24px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+}
+
+.metaSelector {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .metricsList {
@@ -380,6 +549,7 @@
 
 .awardEmoji {
   font-size: 32px;
+  font-family: var(--font-emoji);
 }
 
 .awardName {
@@ -421,6 +591,14 @@
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+.submitBtnDisabled {
+  background: var(--text-tertiary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .submitNotice {
   font-size: 13px;
   color: var(--text-tertiary);
@@ -450,6 +628,29 @@
   font-size: 40px;
   font-weight: 800;
   margin-bottom: 32px;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.sidebarLogo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.sidebarLogo:hover {
+  opacity: 1;
+}
+
+.logoImgSmall {
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 1024px) {

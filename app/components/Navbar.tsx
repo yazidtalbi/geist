@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Drawer } from "./Drawer";
 import styles from "./Navbar.module.css";
 
-export default function Navbar({ onSubmitOpen = () => {} }: { onSubmitOpen?: () => void }) {
+export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -45,13 +45,13 @@ export default function Navbar({ onSubmitOpen = () => {} }: { onSubmitOpen?: () 
 
         {/* Desktop Actions */}
         <div className={`${styles.actions} ${styles.desktopOnly}`}>
-          <button className="btn-primary" onClick={onSubmitOpen}>
+          <Link href="/submit-product" className="btn-primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14" />
               <path d="M5 12h14" />
             </svg>
             Submit
-          </button>
+          </Link>
 
           <button className={styles.iconBtn} aria-label="Notifications" onClick={() => setNotificationsOpen(true)}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

@@ -1,19 +1,17 @@
 "use client";
 import { useState, Fragment } from "react";
+import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Trails from "./components/Trails";
 import ProductCard from "./components/ProductCard";
 import Toprevvviewers from "./components/Toprevvviewers";
-import SubmitModal from "./components/SubmitModal";
 import { products } from "./lib/data";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const [submitOpen, setSubmitOpen] = useState(false);
-
   return (
     <>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar />
 
       <main className={styles.main}>
         <div className={styles.layout}>
@@ -21,11 +19,10 @@ export default function Home() {
             <div className={styles.announcement}>
               <div className={styles.announcementContent}>
                 <div className={styles.announcementText}>
-                  <h1 className={styles.announcementTitle}>revvview your product.</h1>
                   <p className={styles.announcementSub}>Get reviewed by the community.</p>
-                  <button className={styles.announcementBtn} onClick={() => setSubmitOpen(true)}>
+                  <Link href="/submit-product" className={styles.announcementBtn}>
                     Submit product
-                  </button>
+                  </Link>
                 </div>
                 <div className={styles.announcementIllus}>
                   <img src="/hero-illustration.jpg" alt="Illustration" />
@@ -94,7 +91,7 @@ export default function Home() {
         </div>
       </main>
 
-      <SubmitModal key={submitOpen ? "open" : "closed"} open={submitOpen} onClose={() => setSubmitOpen(false)} />
+      {/* Removed SubmitModal */}
     </>
   );
 }

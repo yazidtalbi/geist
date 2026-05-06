@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 import styles from "./page.module.css";
 
 export default function NotificationsPage() {
-  const [submitOpen, setSubmitOpen] = useState(false);
   
   const notifications = [
     { id: 1, type: "review", user: "Sarah Chen", action: "reviewed Linear", time: "2m ago", unread: true, detail: "Sarah provided an exhaustive v2.4.0 dossier for Linear, focusing on the new roadmap features." },
@@ -18,7 +17,7 @@ export default function NotificationsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar onSubmitOpen={() => setSubmitOpen(true)} />
+      <Navbar />
       
       <main className={styles.main}>
         <header className={styles.header}>

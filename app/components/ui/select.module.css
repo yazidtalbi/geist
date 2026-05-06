@@ -1,0 +1,93 @@
+.trigger {
+  display: flex;
+  height: 40px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background-color: #f8fafc;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trigger:focus {
+  border-color: #000;
+  background-color: #FFF;
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.icon {
+  height: 16px;
+  width: 16px;
+  opacity: 0.5;
+}
+
+.content {
+  position: relative;
+  z-index: 1000;
+  min-width: 8rem;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background-color: #FFF;
+  color: #0f172a;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.popper {
+  margin-top: 4px;
+}
+
+.viewport {
+  padding: 4px;
+}
+
+.viewportPopper {
+  height: var(--radix-select-trigger-height);
+  width: 100%;
+  min-width: var(--radix-select-trigger-width);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  border-radius: 4px;
+  padding: 6px 32px 6px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: background-color 0.1s;
+}
+
+.item:focus {
+  background-color: #f1f5f9;
+}
+
+.itemIndicator {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  height: 14px;
+  width: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkIcon {
+  height: 14px;
+  width: 14px;
+}

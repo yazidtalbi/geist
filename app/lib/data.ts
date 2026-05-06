@@ -28,6 +28,7 @@ export interface revvview {
   productId: string;
   version: string;
   metrics: { usability: number; performance: number; value: number; trust: number };
+  metricFeedback: { usability: string; performance: string; value: string; trust: string };
   firstImpression?: string;
   engaged: string[];
   confused: string[];
@@ -136,10 +137,17 @@ export const revvvviews: revvview[] = [
     productId: "p1", 
     version: "v2.4.0",
     metrics: { usability: 9.5, performance: 9.8, value: 9.0, trust: 9.4 }, 
+    metricFeedback: {
+      usability: "Linear's navigation is buttery smooth. The keyboard shortcuts are a game changer for power users, making issue management feel effortless.",
+      performance: "Blazingly fast. No lag even with thousands of issues. The optimistic UI updates make the application feel instantaneous.",
+      value: "High value for money if you're a scaling startup. The time saved on sprint planning pays for itself within the first month.",
+      trust: "Solid security practices and transparent communication about updates. Feels like a mature, reliable piece of infrastructure."
+    },
     engaged: ["Lightning fast response times", "Clean and well-documented SDKs"], 
     confused: ["Error messages in the dashboard can be slightly cryptic"], 
     wouldUse: true, 
     suggestions: ["Add detailed error code reference table", "Implement copy-to-clipboard in docs"],
+    strategicOutlook: "Linear continues to set the benchmark for developer tools. By addressing the minor cryptographic friction in error reporting, they can achieve near-perfect UX parity across their entire ecosystem.",
     timeSpent: 480, 
     createdAt: "2026-05-02" 
   },
@@ -149,10 +157,17 @@ export const revvvviews: revvview[] = [
     productId: "p1", 
     version: "v2.4.0",
     metrics: { usability: 9.2, performance: 9.4, value: 8.6, trust: 9.0 }, 
+    metricFeedback: {
+      usability: "Extremely intuitive once you learn the hotkeys. The layout is clean and the hierarchy is well-defined.",
+      performance: "Impressive speed. The app is highly optimized for fast workflows and doesn't buckle under pressure.",
+      value: "Good value, although some advanced features could be more accessible for smaller teams.",
+      trust: "Very trustworthy. Consistent performance and clear documentation build strong confidence in the platform."
+    },
     engaged: ["Issue tracking feels natural", "Dark mode is perfectly balanced"], 
     confused: ["The current roadmap view lacks granular filtering capabilities, making it increasingly difficult for stakeholders to isolate specific project milestones or filter by strategic priority. This leads to information overload and significantly slows down the decision-making process for larger product dossiers."], 
     wouldUse: true, 
     suggestions: ["Add multi-select filtering to roadmap", "Allow custom status colors"],
+    strategicOutlook: "The roadmap experience is currently the primary bottleneck for power users. Resolving this will transform the tool from a tactical issue tracker into a truly strategic project management engine.",
     timeSpent: 360, 
     createdAt: "2026-05-01" 
   },
@@ -162,10 +177,17 @@ export const revvvviews: revvview[] = [
     productId: "p1", 
     version: "v2.3.8",
     metrics: { usability: 4.2, performance: 4.0, value: 5.0, trust: 4.2 }, 
+    metricFeedback: {
+      usability: "Major friction on mobile. Many buttons are too small or completely unresponsive. The layout breaks on smaller screens.",
+      performance: "Poor performance on mobile devices. Heavy assets and lack of optimization lead to slow load times and stuttering animations.",
+      value: "Value is diminished due to the poor mobile experience. It's hard to justify the price when the product is unusable on the go.",
+      trust: "Low trust due to the broken state of the mobile app. It feels unfinished and unpolished."
+    },
     engaged: ["Beautiful typography"], 
     confused: ["Onboarding flow is broken on mobile", "API key is hidden in settings"], 
     wouldUse: false, 
     suggestions: ["Fix mobile onboarding layout", "Move API keys to Developer tab"],
+    strategicOutlook: "A classic case of 'form over function' on mobile. While the desktop experience is divine, the mobile onboarding requires an immediate structural overhaul to avoid massive churn at the top of the funnel.",
     timeSpent: 1200, 
     createdAt: "2026-04-28" 
   },

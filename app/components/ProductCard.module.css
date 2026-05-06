@@ -6,8 +6,6 @@
   padding: 20px;
   animation: fadeInUp 0.5s ease both;
   transition: background 0.2s ease, border-color 0.2s ease;
-  height: calc(100vh - var(--nav-height) - 40px);
-  /* 40px is main padding top */
   display: flex;
   flex-direction: column;
 }
@@ -37,7 +35,7 @@
 /* Header: product name left, score badge right */
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 24px;
@@ -126,7 +124,40 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin-left: 64px;
+}
+
+.screenshotGrid {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 4px;
+  height: 340px;
+}
+
+.screenshotMain {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.screenshotSide {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.screenshotSmall {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.screenshotSmall:first-child {
+  border-top-right-radius: 12px;
+}
+
+.screenshotSmall:last-child {
+  border-bottom-right-radius: 12px;
 }
 
 .screenshotFrame {
@@ -171,7 +202,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 1px solid #F3F4F6;
 }
 
 .screenshotPlaceholder {
@@ -197,7 +227,6 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px 28px;
   margin-bottom: 28px;
-  margin-left: 64px;
 }
 
 @media (max-width: 640px) {
@@ -261,7 +290,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-left: 64px;
 }
 
 .auditNumber {

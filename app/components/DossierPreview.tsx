@@ -20,6 +20,8 @@ interface DossierPreviewProps {
     performanceDesc?: string;
     valueDesc?: string;
     trustDesc?: string;
+    firstImpression?: string;
+    strategicOutlook?: string;
   };
 }
 

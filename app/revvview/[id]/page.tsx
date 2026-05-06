@@ -2,8 +2,14 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
-import SubmitModal from "../../components/SubmitModal";
 import { products, users, getScoreColor } from "../../lib/data";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "../../components/ui/select";
 import styles from "./page.module.css";
 
 const AWARDS = [
@@ -19,9 +25,9 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   const { id } = use(params);
   const product = products.find((p) => p.id === id) || products[0];
   const [firstImpression, setFirstImpression] = useState("");
-  const [engagedPoints, setEngagedPoints] = useState<string[]>([""]);
-  const [confusedPoints, setConfusedPoints] = useState<string[]>([""]);
-  const [suggestions, setSuggestions] = useState<string[]>([""]);
+  const [roadmapItems, setRoadmapItems] = useState<{ friction: string, resolution: string, priority: string, impact: string }[]>([
+    { friction: "", resolution: "", priority: "Critical", impact: "High" }
+  ]);
   const [strategicOutlook, setStrategicOutlook] = useState("");
   const [usability, setUsability] = useState(7);
   const [performance, setPerformance] = useState(7);
@@ -34,27 +40,24 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   const [selectedAwards, setSelectedAwards] = useState<string[]>([]);
   const [awardsExpanded, setAwardsExpanded] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [submitOpen, setSubmitOpen] = useState(false);
 
-  const handleAddPoint = (type: "engaged" | "confused" | "suggestions") => {
-    if (type === "engaged") setEngagedPoints([...engagedPoints, ""]);
-    else if (type === "confused") setConfusedPoints([...confusedPoints, ""]);
-    else setSuggestions([...suggestions, ""]);
+  const handleAddRoadmapItem = () => {
+    setRoadmapItems([...roadmapItems, { friction: "", resolution: "", priority: "Medium", impact: "Medium" }]);
   };
 
-  const handleUpdatePoint = (type: "engaged" | "confused" | "suggestions", index: number, val: string) => {
-    if (type === "engaged") {
-      const newPoints = [...engagedPoints];
-      newPoints[index] = val;
-      setEngagedPoints(newPoints);
-    } else if (type === "confused") {
-      const newPoints = [...confusedPoints];
-      newPoints[index] = val;
-      setConfusedPoints(newPoints);
+  const handleUpdateRoadmapItem = (index: number, field: "friction" | "resolution" | "priority" | "impact", val: string) => {
+    const newItems = [...roadmapItems];
+    newItems[index][field] = val;
+    setRoadmapItems(newItems);
+  };
+
+  const handleRemoveRoadmapItem = (index: number) => {
+    if (roadmapItems.length > 1) {
+      const newItems = roadmapItems.filter((_, i) => i !== index);
+      setRoadmapItems(newItems);
     } else {
-      const newPoints = [...suggestions];
-      newPoints[index] = val;
-      setSuggestions(newPoints);
+      // Just clear the first one if it's the only one
+      setRoadmapItems([{ friction: "", resolution: "", priority: "Critical", impact: "High" }]);
     }
   };
 
@@ -69,7 +72,19 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   const liveScore = Math.round(((usability + performance + value + trust) / 40) * 100);
   const scoreColor = getScoreColor(liveScore);
 
+  const isFormValid = 
+    firstImpression.trim().length > 0 &&
+    usabilityDesc.trim().length > 0 &&
+    performanceDesc.trim().length > 0 &&
+    valueDesc.trim().length > 0 &&
+    trustDesc.trim().length > 0 &&
+    strategicOutlook.trim().length > 0;
+
   const handleSubmit = () => {
+    if (!isFormValid) {
+      alert("Please complete all required editorial sections before publishing.");
+      return;
+    }
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -130,11 +145,9 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
 
   const MENU_ITEMS = [
     { id: "impression", label: "Impression" },
-    { id: "highlights", label: "Highlights" },
-    { id: "friction", label: "Friction" },
-    { id: "ratings", label: "Ratings" },
+    { id: "ratings", label: "Metrics" },
     { id: "roadmap", label: "Roadmap" },
-    { id: "outlook", label: "Outlook" },
+    { id: "outlook", label: "The Verdict" },
     { id: "awards", label: "Awards" },
   ];
 
@@ -148,7 +161,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
           </Link>
         </div>
         <div className={styles.topHeaderCenter}>
-          <h1 className={styles.headerTitle}>Submit a revvview: {product.name}</h1>
+          {/* Title moved to main flow */}
         </div>
         <div className={styles.topHeaderRight}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -177,12 +190,34 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             </div>
           ))}
         </nav>
+
+        <div className={styles.sidebarFooter}>
+          <Link href="/" className={styles.sidebarLogo}>
+            <img src="/logo.png" alt="revvview" className={styles.logoImgSmall} />
+          </Link>
+        </div>
       </aside>
 
       <main className={styles.main}>
+        <div className={styles.mainHeader}>
+          <div className={styles.contextLabel}>You are reviewing</div>
+          <div className={styles.productContext}>
+            <div className={styles.productIcon}>
+              <span>{product.name[0]}</span>
+            </div>
+            <div className={styles.productMeta}>
+              <h2 className={styles.productName}>{product.name}</h2>
+              <p className={styles.productTagline}>{product.tagline || "Streamline issues, sprints, and product roadmaps."}</p>
+            </div>
+          </div>
+          <h1 className={styles.mainTitle}>Submit a revvview</h1>
+        </div>
+
         <section id="impression" className={styles.formSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>First Impression</h2>
+            <h2 className={styles.sectionTitle}>
+              First Impression <span className={styles.requiredMark}>*</span>
+            </h2>
             <p className={styles.sectionHint}>Summarize the initial impact and immediate UX feelings in a single statement.</p>
           </div>
           <textarea
@@ -191,52 +226,20 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             onChange={(e) => setFirstImpression(e.target.value)}
             placeholder="e.g. Upon initial landing, the product communicates an immediate sense of sophistication..."
             rows={4}
+            maxLength={250}
           />
+          <div className={styles.charCounter}>
+            {firstImpression.length} / 250
+          </div>
         </section>
 
-        <section id="highlights" className={styles.formSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Engagement Highlights</h2>
-            <p className={styles.sectionHint}>Identify specific areas where the product excels at user engagement.</p>
-          </div>
-          <div className={styles.pointsGrid}>
-            {engagedPoints.map((p, i) => (
-              <textarea
-                key={i}
-                className={styles.auditInput}
-                value={p}
-                onChange={(e) => handleUpdatePoint("engaged", i, e.target.value)}
-                placeholder="e.g. Navigation is surprisingly fluid..."
-                rows={2}
-              />
-            ))}
-          </div>
-          <button className={styles.addBtn} onClick={() => handleAddPoint("engaged")}>+ Add highlight</button>
-        </section>
 
-        <section id="friction" className={styles.formSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Friction Observations</h2>
-            <p className={styles.sectionHint}>Identify specific friction points or confusing interactions.</p>
-          </div>
-          <div className={styles.pointsGrid}>
-            {confusedPoints.map((p, i) => (
-              <textarea
-                key={i}
-                className={styles.auditInput}
-                value={p}
-                onChange={(e) => handleUpdatePoint("confused", i, e.target.value)}
-                placeholder="e.g. Search results are often irrelevant..."
-                rows={2}
-              />
-            ))}
-          </div>
-          <button className={styles.addBtn} onClick={() => handleAddPoint("confused")}>+ Add friction point</button>
-        </section>
 
         <section id="ratings" className={styles.formSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Expert Ratings</h2>
+            <h2 className={styles.sectionTitle}>
+              Metrics <span className={styles.requiredMark}>*</span>
+            </h2>
             <p className={styles.sectionHint}>Provide quantitative scores across key product metrics.</p>
           </div>
 
@@ -252,7 +255,11 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                 onChange={(e) => setUsabilityDesc(e.target.value)}
                 placeholder="Technical justification for Usability score..."
                 rows={2}
+                maxLength={375}
               />
+              <div className={styles.charCounter}>
+                {usabilityDesc.length} / 375
+              </div>
             </div>
 
             <div className={styles.metricBlock}>
@@ -266,7 +273,11 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                 onChange={(e) => setPerformanceDesc(e.target.value)}
                 placeholder="Technical justification for Performance score..."
                 rows={2}
+                maxLength={375}
               />
+              <div className={styles.charCounter}>
+                {performanceDesc.length} / 375
+              </div>
             </div>
 
             <div className={styles.metricBlock}>
@@ -280,7 +291,11 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                 onChange={(e) => setValueDesc(e.target.value)}
                 placeholder="Technical justification for Value score..."
                 rows={2}
+                maxLength={375}
               />
+              <div className={styles.charCounter}>
+                {valueDesc.length} / 375
+              </div>
             </div>
 
             <div className={styles.metricBlock}>
@@ -294,34 +309,106 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                 onChange={(e) => setTrustDesc(e.target.value)}
                 placeholder="Technical justification for Trust score..."
                 rows={2}
+                maxLength={375}
               />
+              <div className={styles.charCounter}>
+                {trustDesc.length} / 375
+              </div>
             </div>
           </div>
         </section>
 
         <section id="roadmap" className={styles.formSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Technical Roadmap</h2>
-            <p className={styles.sectionHint}>Define the top prioritized fixes to improve product truth.</p>
+            <h2 className={styles.sectionTitle}>
+              The execution roadmap <span className={styles.optionalMark}>(optional)</span>
+            </h2>
+            <p className={styles.sectionHint}>Define specific friction points and their strategic resolutions. These will be paired as prioritized phases in the final dossier.</p>
           </div>
-          <div className={styles.pointsGrid}>
-            {suggestions.map((p, i) => (
-              <textarea
-                key={i}
-                className={styles.auditInput}
-                value={p}
-                onChange={(e) => handleUpdatePoint("suggestions", i, e.target.value)}
-                placeholder="e.g. Implement global hotkey for search..."
-                rows={2}
-              />
+          <div className={styles.roadmapGrid}>
+            {roadmapItems.map((item, i) => (
+              <div key={i} className={styles.roadmapFormItem}>
+                <div className={styles.roadmapItemHeader}>
+                  <div className={styles.roadmapPhaseLabel}>PHASE 0{i + 1}</div>
+                  <button 
+                    className={styles.removeBtn} 
+                    onClick={() => handleRemoveRoadmapItem(i)}
+                    aria-label="Remove phase"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+                
+                <div className={styles.roadmapInputsRow}>
+                  <div className={styles.roadmapInputGroup}>
+                    <label className={styles.inputLabel}>Strategic Resolution</label>
+                    <textarea
+                      className={styles.auditInput}
+                      value={item.resolution}
+                      onChange={(e) => handleUpdateRoadmapItem(i, "resolution", e.target.value)}
+                      placeholder="e.g. Implement multi-select filtering to roadmap..."
+                      rows={2}
+                    />
+                  </div>
+                  
+                  <div className={styles.roadmapInputGroup}>
+                    <label className={styles.inputLabel}>The Friction</label>
+                    <textarea
+                      className={styles.auditInput}
+                      value={item.friction}
+                      onChange={(e) => handleUpdateRoadmapItem(i, "friction", e.target.value)}
+                      placeholder="e.g. The current roadmap view lacks granular filtering capabilities..."
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className={styles.roadmapMetaRow}>
+                    <div className={styles.metaSelector}>
+                      <label className={styles.inputLabel}>Priority</label>
+                      <Select 
+                        value={item.priority}
+                        onValueChange={(val) => handleUpdateRoadmapItem(i, "priority", val)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Critical">Critical</SelectItem>
+                          <SelectItem value="High">High</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Low">Low</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className={styles.metaSelector}>
+                      <label className={styles.inputLabel}>Impact</label>
+                      <Select 
+                        value={item.impact}
+                        onValueChange={(val) => handleUpdateRoadmapItem(i, "impact", val)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select impact" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="High">High</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Low">Low</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-          <button className={styles.addBtn} onClick={() => handleAddPoint("suggestions")}>+ Add remediation</button>
+          <button className={styles.addBtn} onClick={handleAddRoadmapItem}>+ Add phase</button>
         </section>
 
         <section id="outlook" className={styles.formSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Strategic Outlook</h2>
+            <h2 className={styles.sectionTitle}>
+              The Verdict <span className={styles.requiredMark}>*</span>
+            </h2>
             <p className={styles.sectionHint}>Final expert conclusion on the product's future trajectory.</p>
           </div>
           <textarea
@@ -330,7 +417,11 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             onChange={(e) => setStrategicOutlook(e.target.value)}
             placeholder="e.g. The product shows strong foundational promise, but needs immediate refinement..."
             rows={4}
+            maxLength={250}
           />
+          <div className={styles.charCounter}>
+            {strategicOutlook.length} / 250
+          </div>
         </section>
 
         <section id="awards" className={styles.formSection}>
@@ -340,7 +431,9 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             style={{ cursor: 'pointer' }}
           >
             <div className={styles.sectionHeader} style={{ marginBottom: 0 }}>
-              <h2 className={styles.sectionTitle}>Awards Selection</h2>
+              <h2 className={styles.sectionTitle}>
+                Awards Selection <span className={styles.optionalMark}>(optional)</span>
+              </h2>
               <p className={styles.sectionHint}>Select up to two awards for this product.</p>
             </div>
             <div className={`${styles.chevron} ${awardsExpanded ? styles.chevronRotated : ""}`}>
@@ -373,15 +466,18 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
         </section>
 
         <div className={styles.submitWrapper}>
-          <button className={styles.submitBtn} onClick={handleSubmit}>
+          <button 
+            className={`${styles.submitBtn} ${!isFormValid ? styles.submitBtnDisabled : ""}`} 
+            onClick={handleSubmit}
+            disabled={!isFormValid}
+          >
             Publish
           </button>
-          <p className={styles.submitNotice}>By publishing, your audit will be integrated into the global dossier for {product.name}.</p>
+          <p className={styles.submitNotice}>Your review will be integrated into the main page for {product.name}</p>
         </div>
       </main>
 
 
-      <SubmitModal open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </div>
   );
 }
