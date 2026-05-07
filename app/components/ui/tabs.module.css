@@ -1,0 +1,48 @@
+.list {
+  display: inline-flex;
+  height: 60px;
+  /* Matched to DateRangePicker */
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f1f5f9;
+  padding: 6px;
+  color: var(--text-secondary);
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: 0 32px;
+  /* Increased padding */
+  height: 100%;
+  /* Full height of parent */
+  font-size: 16px;
+  /* Slightly larger font */
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.trigger:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.trigger[data-state="active"] {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: none;
+  /* Removed shadow */
+  font-weight: 600;
+}
+
+.content {
+  margin-top: 24px;
+  outline: none;
+}

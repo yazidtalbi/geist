@@ -137,14 +137,14 @@
 }
 
 .overallScoreCircle {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: 4px solid;
+  border: 3px solid;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -556,15 +556,15 @@
 }
 
 .truthRowBar {
-  height: 10px;
+  height: 4px;
   background: #F5F5F5;
-  border-radius: 5px;
+  border-radius: 0;
   overflow: hidden;
 }
 
 .truthRowFill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 0;
   transition: width 1s ease-out;
 }
 
@@ -1136,9 +1136,77 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 800;
+  flex-shrink: 0;
 }
 
 /* Awards Section */
+.labelWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltipTrigger {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--text-tertiary);
+  color: var(--text-tertiary);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.tooltipTrigger:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.tooltipContent {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: #000;
+  color: #FFF;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 200px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltipContent::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+
+.tooltipContainer:hover .tooltipContent {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
 .awardsSection {
   scroll-margin-top: 160px;
   padding-top: 60px;
@@ -1173,4 +1241,64 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .miniHeader {
+    display: none !important;
+  }
+
+  .logoIconLarge {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .titleMain {
+    font-size: 24px;
+  }
+
+  .taglineMain {
+    font-size: 15px;
+  }
+
+  .truthLabelNew {
+    font-size: 56px;
+  }
+
+  .truthRowBar {
+    height: 8px;
+    background: #E5E7EB;
+  }
+
+  .similarGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .auditTable thead th:nth-child(2),
+  .auditTable thead th:nth-child(3),
+  .auditTable thead th:nth-child(4),
+  .auditTable thead th:nth-child(5),
+  .auditTable tbody td:nth-child(2),
+  .auditTable tbody td:nth-child(3),
+  .auditTable tbody td:nth-child(4),
+  .auditTable tbody td:nth-child(5) {
+    display: none;
+  }
+
+  .auditTable {
+    display: table;
+    width: 100%;
+  }
+
+  .auditTable th:first-child,
+  .auditTable td:first-child {
+    width: auto;
+  }
+
+  .auditTable th:last-child,
+  .auditTable td:last-child {
+    text-align: right;
+    width: 80px;
+  }
 }

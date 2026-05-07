@@ -1,0 +1,85 @@
+.page {
+  min-height: 100vh;
+  background-color: var(--bg-base);
+}
+
+.main {
+  padding-top: 120px;
+  padding-bottom: 80px;
+}
+
+.layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.header {
+  margin-bottom: 64px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: var(--font-logo);
+  font-size: 48px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.empty {
+  padding: 120px 0;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: 24px;
+  background: #f8fafc;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+
+.emptyTitle {
+  font-family: var(--font-logo);
+  font-size: 24px;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.emptyDesc {
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .title {
+    font-size: 36px;
+  }
+}

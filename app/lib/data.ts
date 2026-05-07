@@ -13,8 +13,6 @@ export interface Product {
   creatorId: string;
   revvScore: number;
   metrics: { usability: number; performance: number; value: number; trust: number };
-  retentionYes: number;
-  retentionTotal: number;
   activeUsers: number;
   reviewsTotal: number;
   createdAt: string;
@@ -69,13 +67,13 @@ export const products: Product[] = [
       "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2Fkokoro-iesEntdorhXt0F5B8YRGUFCjGi5Ygb&w=3840&q=100"
     ],
     category: "DEV TOOL", screenshot: "https://www.framer.com/creators-assets/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46825%2FFramer_Marketplace___1-apvlfv7nuGCCsv18MBE23NMm0mdHBh.jpg&w=1920&q=100", logo: "",
-    creatorId: "u4", revvScore: 92,
+    creatorId: "u4", revvScore: 9.2,
     metrics: { usability: 9.4, performance: 9.6, value: 8.8, trust: 9.2 },
-    retentionYes: 142, retentionTotal: 156, activeUsers: 12, reviewsTotal: 156, createdAt: "2026-05-01",
+    activeUsers: 12, reviewsTotal: 156, createdAt: "2026-05-01",
     socials: { twitter: "linear", github: "linear", website: "https://linear.app" },
     awards: [
       { name: "Product of the Year", emoji: "🏆" },
-      { name: "Best Design 2024", emoji: "✨" },
+      { name: "Best Design 2026", emoji: "✨" },
       { name: "Developer Choice", emoji: "💻" },
       { name: "Golden Pixel", emoji: "💎" }
     ]
@@ -87,9 +85,9 @@ export const products: Product[] = [
     tags: ["Productivity", "Utility", "Mac", "DevTools"],
     gallery: ["https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"],
     category: "PRODUCTIVITY", screenshot: "", logo: "",
-    creatorId: "u4", revvScore: 88,
+    creatorId: "u4", revvScore: 8.8,
     metrics: { usability: 9.0, performance: 9.2, value: 8.6, trust: 8.8 },
-    retentionYes: 98, retentionTotal: 115, activeUsers: 8, reviewsTotal: 115, createdAt: "2026-05-01",
+    activeUsers: 8, reviewsTotal: 115, createdAt: "2026-05-01",
     socials: { twitter: "raycastapp", github: "raycast", website: "https://raycast.com" }
   },
   {
@@ -99,9 +97,9 @@ export const products: Product[] = [
     tags: ["Scheduling", "Open Source", "SaaS", "Privacy"],
     gallery: ["https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068&auto=format&fit=crop"],
     category: "SAAS", screenshot: "", logo: "",
-    creatorId: "u4", revvScore: 81,
+    creatorId: "u4", revvScore: 8.1,
     metrics: { usability: 8.2, performance: 7.8, value: 8.6, trust: 8.0 },
-    retentionYes: 67, retentionTotal: 89, activeUsers: 5, reviewsTotal: 89, createdAt: "2026-04-30",
+    activeUsers: 5, reviewsTotal: 89, createdAt: "2026-04-30",
     socials: { twitter: "calcom", github: "calcom", website: "https://cal.com" }
   },
   {
@@ -111,9 +109,9 @@ export const products: Product[] = [
     tags: ["Email", "DevTools", "API", "Marketing"],
     gallery: ["https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=2070&auto=format&fit=crop"],
     category: "DEV TOOL", screenshot: "", logo: "",
-    creatorId: "u4", revvScore: 85,
+    creatorId: "u4", revvScore: 8.5,
     metrics: { usability: 8.8, performance: 8.4, value: 8.6, trust: 8.2 },
-    retentionYes: 54, retentionTotal: 66, activeUsers: 6, reviewsTotal: 66, createdAt: "2026-04-29",
+    activeUsers: 6, reviewsTotal: 66, createdAt: "2026-04-29",
     socials: { twitter: "resend", github: "resendlabs", website: "https://resend.com" }
   },
   {
@@ -123,73 +121,73 @@ export const products: Product[] = [
     tags: ["Hosting", "Cloud", "Frontend", "Next.js"],
     gallery: ["https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"],
     category: "PLATFORM", screenshot: "", logo: "",
-    creatorId: "u4", revvScore: 90,
+    creatorId: "u4", revvScore: 9.0,
     metrics: { usability: 9.2, performance: 9.0, value: 8.8, trust: 9.0 },
-    retentionYes: 188, retentionTotal: 210, activeUsers: 15, reviewsTotal: 210, createdAt: "2026-04-28",
+    activeUsers: 15, reviewsTotal: 210, createdAt: "2026-04-28",
     socials: { twitter: "vercel", github: "vercel", website: "https://vercel.com" }
   },
 ];
 
 export const revvvviews: revvview[] = [
-  { 
-    id: "a1", 
-    auditorId: "u1", 
-    productId: "p1", 
+  {
+    id: "a1",
+    auditorId: "u1",
+    productId: "p1",
     version: "v2.4.0",
-    metrics: { usability: 9.5, performance: 9.8, value: 9.0, trust: 9.4 }, 
+    metrics: { usability: 9.5, performance: 9.8, value: 9.0, trust: 9.4 },
     metricFeedback: {
       usability: "Linear's navigation is buttery smooth. The keyboard shortcuts are a game changer for power users, making issue management feel effortless.",
       performance: "Blazingly fast. No lag even with thousands of issues. The optimistic UI updates make the application feel instantaneous.",
       value: "High value for money if you're a scaling startup. The time saved on sprint planning pays for itself within the first month.",
       trust: "Solid security practices and transparent communication about updates. Feels like a mature, reliable piece of infrastructure."
     },
-    engaged: ["Lightning fast response times", "Clean and well-documented SDKs"], 
-    confused: ["Error messages in the dashboard can be slightly cryptic"], 
-    wouldUse: true, 
+    engaged: ["Lightning fast response times", "Clean and well-documented SDKs"],
+    confused: ["Error messages in the dashboard can be slightly cryptic"],
+    wouldUse: true,
     suggestions: ["Add detailed error code reference table", "Implement copy-to-clipboard in docs"],
     strategicOutlook: "Linear continues to set the benchmark for developer tools. By addressing the minor cryptographic friction in error reporting, they can achieve near-perfect UX parity across their entire ecosystem.",
-    timeSpent: 480, 
-    createdAt: "2026-05-02" 
+    timeSpent: 480,
+    createdAt: "2026-05-02"
   },
-  { 
-    id: "a2", 
-    auditorId: "u2", 
-    productId: "p1", 
+  {
+    id: "a2",
+    auditorId: "u2",
+    productId: "p1",
     version: "v2.4.0",
-    metrics: { usability: 9.2, performance: 9.4, value: 8.6, trust: 9.0 }, 
+    metrics: { usability: 9.2, performance: 9.4, value: 8.6, trust: 9.0 },
     metricFeedback: {
       usability: "Extremely intuitive once you learn the hotkeys. The layout is clean and the hierarchy is well-defined.",
       performance: "Impressive speed. The app is highly optimized for fast workflows and doesn't buckle under pressure.",
       value: "Good value, although some advanced features could be more accessible for smaller teams.",
       trust: "Very trustworthy. Consistent performance and clear documentation build strong confidence in the platform."
     },
-    engaged: ["Issue tracking feels natural", "Dark mode is perfectly balanced"], 
-    confused: ["The current roadmap view lacks granular filtering capabilities, making it increasingly difficult for stakeholders to isolate specific project milestones or filter by strategic priority. This leads to information overload and significantly slows down the decision-making process for larger product dossiers."], 
-    wouldUse: true, 
+    engaged: ["Issue tracking feels natural", "Dark mode is perfectly balanced"],
+    confused: ["The current roadmap view lacks granular filtering capabilities, making it increasingly difficult for stakeholders to isolate specific project milestones or filter by strategic priority. This leads to information overload and significantly slows down the decision-making process for larger product dossiers."],
+    wouldUse: true,
     suggestions: ["Add multi-select filtering to roadmap", "Allow custom status colors"],
     strategicOutlook: "The roadmap experience is currently the primary bottleneck for power users. Resolving this will transform the tool from a tactical issue tracker into a truly strategic project management engine.",
-    timeSpent: 360, 
-    createdAt: "2026-05-01" 
+    timeSpent: 360,
+    createdAt: "2026-05-01"
   },
-  { 
-    id: "a3", 
-    auditorId: "u3", 
-    productId: "p1", 
+  {
+    id: "a3",
+    auditorId: "u3",
+    productId: "p1",
     version: "v2.3.8",
-    metrics: { usability: 4.2, performance: 4.0, value: 5.0, trust: 4.2 }, 
+    metrics: { usability: 4.2, performance: 4.0, value: 5.0, trust: 4.2 },
     metricFeedback: {
       usability: "Major friction on mobile. Many buttons are too small or completely unresponsive. The layout breaks on smaller screens.",
       performance: "Poor performance on mobile devices. Heavy assets and lack of optimization lead to slow load times and stuttering animations.",
       value: "Value is diminished due to the poor mobile experience. It's hard to justify the price when the product is unusable on the go.",
       trust: "Low trust due to the broken state of the mobile app. It feels unfinished and unpolished."
     },
-    engaged: ["Beautiful typography"], 
-    confused: ["Onboarding flow is broken on mobile", "API key is hidden in settings"], 
-    wouldUse: false, 
+    engaged: ["Beautiful typography"],
+    confused: ["Onboarding flow is broken on mobile", "API key is hidden in settings"],
+    wouldUse: false,
     suggestions: ["Fix mobile onboarding layout", "Move API keys to Developer tab"],
     strategicOutlook: "A classic case of 'form over function' on mobile. While the desktop experience is divine, the mobile onboarding requires an immediate structural overhaul to avoid massive churn at the top of the funnel.",
-    timeSpent: 1200, 
-    createdAt: "2026-04-28" 
+    timeSpent: 1200,
+    createdAt: "2026-04-28"
   },
 ];
 
@@ -198,9 +196,9 @@ export function getInitials(name: string): string {
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 85) return "#22C55E";
-  if (score >= 70) return "#F59E0B";
-  return "#EF4444";
+  if (score >= 8.5) return "#22C55E";
+  if (score >= 7.0) return "#F59E0B";
+  return "#3b82f6";
 }
 
 export function getMetricBarWidth(value: number): string {
@@ -209,6 +207,6 @@ export function getMetricBarWidth(value: number): string {
 
 export function getMetricColor(value: number): string {
   if (value >= 9.0) return "#22C55E"; // Green
-  if (value < 5.0) return "#EF4444";  // Red
+  if (value < 5.0) return "#3b82f6";  // Blue instead of Red
   return "#0070F3"; // Electric Blue
 }

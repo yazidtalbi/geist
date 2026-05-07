@@ -1,216 +1,338 @@
 .page {
   min-height: 100vh;
   background: var(--bg-base);
-}
-
-.nav {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.navInner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-}
-
-.logo {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.navLabel {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .main {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 140px 24px 80px;
+  padding: 120px 24px 80px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-section);
+  gap: 80px;
 }
 
-.profileCard {
-  background: var(--bg-card);
-  border: none;
-  border-radius: var(--radius);
-  padding: 32px;
+/* Hero Section */
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: flex-end;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.heroContent {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  animation: fadeInUp 0.4s ease both;
+  gap: 32px;
+}
+
+.avatarWrapper {
+  position: relative;
 }
 
 .profileAvatar {
-  width: 72px;
-  height: 72px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 40px;
+  font-family: var(--font-logo);
+  font-style: italic;
+  overflow: hidden;
 }
 
-.profileInfo {
-  margin-bottom: 24px;
+.profileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.statusDot {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: var(--green);
+  border: 3px solid var(--bg-base);
+  border-radius: 50%;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
 }
 
 .profileName {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--font-logo);
+  font-size: 64px;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 8px 0;
+}
+
+.settingsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.settingsBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #fafafa;
 }
 
 .profileRole {
-  font-size: 14px;
+  font-size: 18px;
   color: var(--text-secondary);
-  margin-top: 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
-.badges {
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 140px);
+  gap: 24px;
+}
+
+.statBox {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  justify-content: center;
-}
-
-.statsRow {
-  display: flex;
-  gap: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  width: 100%;
-  justify-content: center;
-}
-
-.stat {
-  text-align: center;
-}
-
-.statValue {
-  display: block;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .statLabel {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.card {
-  background: var(--bg-card);
-  border: none;
-  border-radius: var(--radius);
-  padding: 28px;
-  animation: fadeInUp 0.4s ease both;
-}
-
-.cardTitle {
-  font-size: 18px;
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.statTrend {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* Content Grid */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 80px;
+}
+
+.sideContent {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.bioText {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.tagsCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* History Section */
+.historySection {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.historyHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+
+.historyTitle {
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+.historyFilter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 50%;
 }
 
 .auditList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
 .auditItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--bg-base);
-  transition: background 0.15s;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  transition: transform 0.2s ease;
 }
 
 .auditItem:hover {
-  background: var(--bg-base);
-}
-
-.auditLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  transform: translateX(8px);
 }
 
 .auditLogo {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius);
-  background: var(--bg-base);
+  width: 56px;
+  height: 56px;
+  background: #f8fafc;
   border: 1px solid var(--border);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   font-weight: 700;
+  font-size: 16px;
   color: var(--text-secondary);
+  overflow: hidden;
 }
 
-.auditProduct {
-  font-size: 14px;
-  font-weight: 600;
+.auditLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.auditDate {
-  font-size: 12px;
-  color: var(--text-tertiary);
+.auditMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.auditRight {
+.auditTop {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+}
+
+.auditProductName {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .auditScore {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.auditMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  font-weight: 500;
 }
 
 .auditVerdict {
-  font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .heroSection {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 64px;
+  }
+  
+  .profileName {
+    font-size: 48px;
+  }
 }

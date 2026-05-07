@@ -18,7 +18,7 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  margin: 120px 0 60px;
+  margin: 120px 0 120px;
   padding-top: 60px;
   border-top: 1px solid #E2E8F0;
 }
@@ -359,11 +359,11 @@
 .firstImpressionSection,
 .observationsSection,
 .roadmapSection {
-  margin-bottom: 160px;
+  margin-bottom: 120px;
 }
 
 .metricsSection {
-  margin-bottom: 160px;
+  margin-bottom: 120px;
   margin-left: -120px;
   margin-right: -120px;
   width: calc(100% + 240px);
@@ -506,6 +506,7 @@
 }
 
 .roadmapItem:last-child {
+  padding-bottom: 0;
   border-bottom: none;
 }
 
@@ -582,7 +583,7 @@
   font-style: italic;
   letter-spacing: -0.02em;
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
 }
 
 .verdictSection {
@@ -630,7 +631,7 @@
 .pageExitActions {
   display: flex;
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 120px;
 }
 
 @media (max-width: 1024px) {

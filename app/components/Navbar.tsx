@@ -2,11 +2,32 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Drawer } from "./Drawer";
+import { AuthModal } from "./AuthModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import styles from "./Navbar.module.css";
+
+const CATEGORIES = [
+  { name: "Dev Tools", slug: "dev-tools" },
+  { name: "SaaS", slug: "saas" },
+  { name: "Productivity", slug: "productivity" },
+  { name: "Platforms", slug: "platforms" },
+  { name: "AI", slug: "ai" },
+  { name: "Design", slug: "design" },
+];
 
 export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authView, setAuthView] = useState<"login" | "signup">("login");
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Simulated state
 
   const notifications = [
     { id: 1, type: "review", user: "Sarah Chen", action: "reviewed Linear", time: "2m ago", unread: true },
@@ -24,28 +45,52 @@ export default function Navbar() {
           <span className="logoType" style={{ paddingLeft: '4px', bottom: '1px', position: 'relative' }}>revvview</span>
         </Link>
 
-        {/* Mobile Logo (Same as Desktop Icon) */}
+        {/* Mobile Logo */}
         <Link href="/" className={`${styles.logoMobile} ${styles.mobileOnly}`}>
           <img src="/logo.png" alt="revvview" className={styles.logoImg} />
         </Link>
 
-        {/* Search Bar - Center on Desktop, Right of Icon on Mobile */}
+        {/* Search Bar */}
         <div className={`${styles.searchWrap} ${searchFocused ? styles.searchFocused : ""}`}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.searchIcon}>
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
           </svg>
-          <input
-            className={styles.searchInput}
-            placeholder="Search by Inspiration"
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-          />
+          <form action="/search">
+            <input
+              name="q"
+              className={styles.searchInput}
+              placeholder="Search by Inspiration"
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+            />
+          </form>
         </div>
 
-        {/* Desktop Actions */}
-        <div className={`${styles.actions} ${styles.desktopOnly}`}>
-          <Link href="/submit-product" className="btn-primary">
+        {/* Unified Actions Group (Responsive) */}
+        <div className={styles.actions}>
+          <div className={`${styles.navGroup} ${styles.desktopOnly}`}>
+            <DropdownMenu>
+              <DropdownMenuTrigger className={styles.navLink}>
+                Explore
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Product Categories</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {CATEGORIES.map((cat) => (
+                  <Link key={cat.slug} href={`/category/${cat.slug}`}>
+                    <DropdownMenuItem>{cat.name}</DropdownMenuItem>
+                  </Link>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Link href="/leaderboard" className={styles.navLink}>Leaderboard</Link>
+          </div>
+
+          <Link href="/submit-product" className={`btn-primary ${styles.desktopOnly}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14" />
               <path d="M5 12h14" />
@@ -53,17 +98,65 @@ export default function Navbar() {
             Submit
           </Link>
 
-          <button className={styles.iconBtn} aria-label="Notifications" onClick={() => setNotificationsOpen(true)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-            </svg>
-            <span className={styles.notifDot} />
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button className={styles.iconBtn} aria-label="Notifications" onClick={() => setNotificationsOpen(true)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+                <span className={styles.notifDot} />
+              </button>
 
-          <Link href="/profile" className={styles.avatar}>
-            <span>SC</span>
-          </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger className={styles.avatarTrigger}>
+                  <div className={styles.avatar}>
+                    <span>SC</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className={styles.userDropdown}>
+                  <DropdownMenuLabel>
+                    <div className={styles.userInfo}>
+                      <span className={styles.userName}>Sarah Chen</span>
+                      <span className={styles.userRole}>Product Researcher</span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <Link href="/profile">
+                    <DropdownMenuItem>Profile Dossier</DropdownMenuItem>
+                  </Link>
+                  <Link href="/settings">
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className={styles.signOut} onClick={() => setIsLoggedIn(false)}>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <div className={styles.guestActions}>
+              <button 
+                className={styles.signInBtn}
+                onClick={() => {
+                  setAuthView("login");
+                  setAuthModalOpen(true);
+                }}
+              >
+                Sign In
+              </button>
+              <button 
+                className={styles.signUpBtn}
+                onClick={() => {
+                  setAuthView("signup");
+                  setAuthModalOpen(true);
+                }}
+              >
+                Join Now
+              </button>
+            </div>
+          )}
         </div>
 
         <Drawer 
@@ -93,15 +186,11 @@ export default function Navbar() {
           </Link>
         </Drawer>
 
-        {/* Mobile Actions (Minimal) */}
-        <div className={`${styles.rightSection} ${styles.mobileOnly}`}>
-          <Link href="/login" className={styles.iconBtn} aria-label="Profile">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </Link>
-        </div>
+        <AuthModal 
+          open={authModalOpen} 
+          onOpenChange={setAuthModalOpen} 
+          initialView={authView}
+        />
       </div>
     </nav>
   );

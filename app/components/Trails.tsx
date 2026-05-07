@@ -6,22 +6,22 @@ export default function Trails() {
     <div className={styles.trailsContainer}>
       {/* Network Card */}
       <div className={styles.networkCard}>
-        <h2 className={styles.networkTitle}>The network for product truth</h2>
+        <h2 className={styles.networkTitle}>Ship better products</h2>
         <ul className={styles.networkList}>
           <li>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-            Join 1,250 experts auditing like you
+            Get direct, high-impact feedback from a community of 1,250+ reviewers
           </li>
           <li>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-            Connect with companies, get discovered
+            Connect with the people behind the world&apos;s most successful startups
           </li>
           <li>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-            Products on Revvview improved by 40%
+            Refine your product through continuous, data-backed insights
           </li>
         </ul>
-        <button className={styles.signupBtn}>Sign up to join</button>
+        <button className={styles.signupBtn}>Join the community</button>
       </div>
 
       <div className={styles.trendingCard}>

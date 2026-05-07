@@ -1,0 +1,47 @@
+.root {
+  display: inline-flex;
+  height: 24px;
+  width: 44px;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: #f1f5f9;
+  transition: all 0.2s ease;
+  outline: none;
+  padding: 0;
+}
+
+.root:focus {
+  box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--accent);
+}
+
+.root[data-state="checked"] {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.root:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.thumb {
+  pointer-events: none;
+  display: block;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  margin-left: 2px;
+}
+
+.root[data-state="checked"] .thumb {
+  transform: translateX(20px);
+}
+
+.root[data-state="unchecked"] .thumb {
+  transform: translateX(0);
+}

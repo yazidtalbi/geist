@@ -69,7 +69,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
     }
   };
 
-  const liveScore = Math.round(((usability + performance + value + trust) / 40) * 100);
+  const liveScore = ((usability + performance + value + trust) / 4);
   const scoreColor = getScoreColor(liveScore);
 
   const isFormValid = 
@@ -86,7 +86,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
       return;
     }
     setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   if (submitted) {
@@ -167,7 +167,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div className={styles.headerScoreLabel}>Live RevvScore</div>
             <div className={styles.scoreCircle} style={{ color: scoreColor, borderColor: scoreColor }}>
-              {liveScore}
+              {liveScore.toFixed(1)}
             </div>
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             <div 
               key={item.id} 
               className={`${styles.menuItem} ${activeSection === item.id ? styles.menuItemActive : ""}`}
-              onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'auto' })}
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.menuIndicatorWrapper}>
@@ -209,6 +209,9 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
               <h2 className={styles.productName}>{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline || "Streamline issues, sprints, and product roadmaps."}</p>
             </div>
+            <a href={product.url} target="_blank" rel="noopener noreferrer" className={styles.visitBtn}>
+              Visit website
+            </a>
           </div>
           <h1 className={styles.mainTitle}>Submit a revvview</h1>
         </div>
@@ -246,7 +249,10 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
           <div className={styles.metricsList}>
             <div className={styles.metricBlock}>
               <div className={styles.metricRow}>
-                <span className={styles.metricLabel}>Usability</span>
+                <div className={styles.labelCol}>
+                  <span className={styles.metricLabel}>Usability</span>
+                  <p className={styles.metricHint}>Interface intuitiveness and navigational efficiency.</p>
+                </div>
                 <RatingSelect value={usability} onChange={setUsability} />
               </div>
               <textarea
@@ -264,7 +270,10 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
 
             <div className={styles.metricBlock}>
               <div className={styles.metricRow}>
-                <span className={styles.metricLabel}>Performance</span>
+                <div className={styles.labelCol}>
+                  <span className={styles.metricLabel}>Performance</span>
+                  <p className={styles.metricHint}>Speed, responsiveness, and technical resilience.</p>
+                </div>
                 <RatingSelect value={performance} onChange={setPerformance} />
               </div>
               <textarea
@@ -282,7 +291,10 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
 
             <div className={styles.metricBlock}>
               <div className={styles.metricRow}>
-                <span className={styles.metricLabel}>Value</span>
+                <div className={styles.labelCol}>
+                  <span className={styles.metricLabel}>Value</span>
+                  <p className={styles.metricHint}>Core utility and problem-solving efficacy.</p>
+                </div>
                 <RatingSelect value={value} onChange={setValue} />
               </div>
               <textarea
@@ -300,7 +312,10 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
 
             <div className={styles.metricBlock}>
               <div className={styles.metricRow}>
-                <span className={styles.metricLabel}>Trust</span>
+                <div className={styles.labelCol}>
+                  <span className={styles.metricLabel}>Trust</span>
+                  <p className={styles.metricHint}>Brand reliability and data transparency.</p>
+                </div>
                 <RatingSelect value={trust} onChange={setTrust} />
               </div>
               <textarea

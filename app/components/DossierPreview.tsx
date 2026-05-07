@@ -43,7 +43,7 @@ export default function DossierPreview({ product, user, data }: DossierPreviewPr
               <h1 className={styles.heroTitle}>
                 Exhaustive UX Audit: <span className={styles.italic}>{product.name}</span>
               </h1>
-              
+
               <div className={styles.integratedAuditor}>
                 <div className={styles.auditorAvatarSmall}>
                   <span>{getInitials(user.name)}</span>

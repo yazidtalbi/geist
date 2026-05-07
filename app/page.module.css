@@ -1,6 +1,6 @@
 .main {
   width: 100%;
-  max-width: 1020px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 100px 24px 80px;
 }
@@ -27,7 +27,7 @@
 }
 
 .sidebar {
-  width: 300px;
+  width: 350px;
 }
 
 @media (max-width: 1024px) {

@@ -111,16 +111,16 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
               <h2 className={styles.title}>Strategic Checklist</h2>
               <p className={styles.description}>Turn these expert suggestions into tasks. Check them off as you fix them.</p>
             </div>
-            
+
             <div className={styles.checklist}>
               {revvview.suggestions.map((s, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={`${styles.checkItem} ${checkedActions[i] ? styles.checkItemDone : ""}`}
                   onClick={() => toggleAction(i)}
                 >
                   <div className={styles.checkbox}>
-                    {checkedActions[i] && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"/></svg>}
+                    {checkedActions[i] && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12" /></svg>}
                   </div>
                   <div className={styles.checkContent}>
                     <div className={styles.checkText}>{s}</div>
@@ -146,7 +146,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
       <div className={styles.reportFooter}>
         <Link href={`/revvview/deep-dive/${revvviewId}`} className={styles.fullReportBtn}>
           View Exhaustive Editorial Report
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
         </Link>
       </div>
     </div>

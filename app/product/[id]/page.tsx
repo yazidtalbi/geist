@@ -10,6 +10,13 @@ import RevvviewReport from "../../components/revvviewReport";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../components/ui/collapsible";
 import styles from "./page.module.css";
 
+const metricExplanations = {
+  usability: "Interface intuitiveness and navigational efficiency.",
+  performance: "Speed, responsiveness, and technical resilience.",
+  value: "Core utility and problem-solving efficacy.",
+  trust: "Brand reliability and data transparency."
+};
+
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const product = products.find((p) => p.id === id) || products[0];
@@ -94,13 +101,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   const scrollToSection = (id: string) => {
     if (id === "Overview") {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
       setActiveTab(id);
       return;
     }
     const element = document.getElementById(id.toLowerCase());
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: 'auto', block: 'start' });
       setActiveTab(id);
     }
   };
@@ -144,7 +151,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               </button>
             </div>
             <div className={styles.miniScore} style={{ color: scoreColor, borderColor: scoreColor }}>
-              {product.revvScore}
+              {product.revvScore.toFixed(1)}
             </div>
           </div>
         </div>
@@ -174,7 +181,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               </button>
             </div>
             <div className={styles.overallScoreCircle} style={{ color: scoreColor, borderColor: scoreColor }}>
-              {product.revvScore}
+              {product.revvScore.toFixed(1)}
             </div>
           </div>
         </header>
@@ -282,7 +289,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     <div className={styles.truthHeaderRow}>
                       <div className={styles.truthLabelWrapper}>
                         <span className={styles.truthIcon}>{metricIcons[key]}</span>
-                        <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                        <div className={styles.labelWithTooltip}>
+                          <span className={styles.truthLabelNew}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                          <div className={styles.tooltipContainer}>
+                            <span className={styles.tooltipTrigger}>?</span>
+                            <div className={styles.tooltipContent}>
+                              {metricExplanations[key]}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div className={styles.metricsAvatars}>
@@ -415,7 +430,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                           </div>
                         </td>
                         <td style={{ textAlign: 'right' }}>
-                          <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore) + "15", color: getScoreColor(avgScore), fontSize: 16 }}>
+                          <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore / 10) + "15", color: getScoreColor(avgScore / 10), fontSize: 16 }}>
                             {(avgScore / 10).toFixed(1)}
                           </span>
                         </td>

@@ -194,8 +194,15 @@
   color: var(--text-secondary);
 }
 
-.checkIcon { color: var(--green); font-weight: 800; }
-.crossIcon { color: var(--red); font-weight: 800; }
+.checkIcon {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.crossIcon {
+  color: var(--red);
+  font-weight: 800;
+}
 
 /* Fixes Tab Styles */
 .fixesHeader {
@@ -314,6 +321,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -11,7 +11,7 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
   const product = products.find((p) => p.id === revvview.productId) || products[0];
   const user = users.find((u) => u.id === revvview.auditorId) || users[0];
   const avgScore = Math.round(((revvview.metrics.usability + revvview.metrics.performance + revvview.metrics.value + revvview.metrics.trust) / 4) * 10);
-  const scoreColor = getScoreColor(avgScore);
+  const scoreColor = getScoreColor(avgScore / 10);
 
   const [scrolled, setScrolled] = useState(false);
   const [clientInfo, setClientInfo] = useState({ browser: "", os: "" });
@@ -157,11 +157,11 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
 
         <footer className={styles.verdictSection}>
           <div className={styles.verdictScore} style={{ color: scoreColor, borderColor: scoreColor }}>
-            {avgScore}
+            {(avgScore / 10).toFixed(1)}
           </div>
           <div className={styles.verdictContent}>
             <p className={styles.verdictText}>
-              {revvview.strategicOutlook || `The product shows strong foundational promise with ${revvview.metrics.performance > 8 ? "exceptional" : "competitive"} technical performance. However, the identified friction points in ${revvview.confused[0]?.toLowerCase()} suggest a need for immediate UX refinement. Implementing the suggested phases will likely yield significant retention gains.`}
+              {revvview.strategicOutlook || `The product shows strong foundational promise with ${revvview.metrics.performance > 8 ? "exceptional" : "competitive"} technical performance. However, the identified friction points in ${revvview.confused[0]?.toLowerCase()} suggest a need for immediate UX refinement. Implementing the suggested phases will likely yield significant growth and user satisfaction.`}
             </p>
 
             <div className={styles.verdictAuditor}>

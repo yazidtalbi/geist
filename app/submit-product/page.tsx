@@ -103,7 +103,7 @@ export default function SubmitProductPage() {
             <div 
               key={item.id} 
               className={`${styles.menuItem} ${activeSection === item.id ? styles.menuItemActive : ""}`}
-              onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'auto' })}
             >
               <div className={styles.menuIndicatorWrapper}>
                 <div className={`${styles.menuDot} ${activeSection === item.id ? styles.menuDotActive : ""}`} />
