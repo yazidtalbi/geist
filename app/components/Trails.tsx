@@ -34,7 +34,7 @@ export default function Trails() {
   return (
     <div className={styles.trailsContainer}>
       {/* Network Card / Stats Card */}
-      {!user ? (
+      {!user && (
         <div className={styles.networkCard}>
           <h2 className={styles.networkTitle}>Ship better products</h2>
           <ul className={styles.networkList}>
@@ -52,47 +52,6 @@ export default function Trails() {
             </li>
           </ul>
           <button className={styles.signupBtn}>Join the community</button>
-        </div>
-      ) : (
-        <div className={styles.networkCard}>
-          <h2 className={styles.networkTitle}>Platform Insight</h2>
-          <ul className={styles.networkList}>
-            <li className={styles.insightItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
-              <div className={styles.insightContent}>
-                <span className={styles.insightTitle}>Global Audit Velocity</span>
-                <span className={styles.insightText}>48.2% increase in peer reviews this week across all categories.</span>
-              </div>
-            </li>
-            <li className={styles.insightItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              <div className={styles.insightContent}>
-                <span className={styles.insightTitle}>Tier Requirements</span>
-                <span className={styles.insightText}>2,500 reputation points now required for Beta Access.</span>
-              </div>
-            </li>
-            <li className={styles.insightItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
-              <div className={styles.insightContent}>
-                <span className={styles.insightTitle}>Upcoming: AI Audit Tools</span>
-                <span className={styles.insightText}>AI-assisted UX audit tools launching soon for all community members.</span>
-              </div>
-            </li>
-            <li className={styles.insightItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-              <div className={styles.insightContent}>
-                <span className={styles.insightTitle}>Upcoming: Creator Dashboard</span>
-                <span className={styles.insightText}>Advanced analytics for product owners to track real-time feedback impact.</span>
-              </div>
-            </li>
-            <li className={styles.insightItem}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-              <div className={styles.insightContent}>
-                <span className={styles.insightTitle}>Upcoming: Mobile App</span>
-                <span className={styles.insightText}>iOS and Android versions entering private alpha for community testing.</span>
-              </div>
-            </li>
-          </ul>
         </div>
       )}
 

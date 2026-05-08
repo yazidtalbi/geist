@@ -181,7 +181,7 @@
 }
 
 .announcement {
-  background: #0066FF;
+  background: #E6DEA1;
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 40px;
@@ -251,7 +251,7 @@
   font-size: 28px;
   font-weight: 600;
   line-height: 1.15;
-  color: #FFFFFF;
+  color: var(--text-primary);
   margin-bottom: 20px;
   max-width: 320px;
   letter-spacing: -0.02em;
@@ -261,7 +261,7 @@
   display: inline-flex;
   align-items: center;
   background: #FFFFFF;
-  color: #0066FF;
+  color: var(--text-primary);
   padding: 10px 20px;
   border-radius: 100px;
   border: none;
