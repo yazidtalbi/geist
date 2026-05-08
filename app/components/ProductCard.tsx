@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Product, getScoreColor, getInitials, getMetricColor } from "../lib/data";
 import styles from "./ProductCard.module.css";
 import { createClient } from "../lib/supabase-browser";
+import { slugify } from "../lib/utils";
 
 const metricKeys = ["usability", "performance", "value", "trust"] as const;
 
@@ -29,21 +30,21 @@ export default function ProductCard({
   const handleStartReview = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const { data: { session } } = await supabase.auth.getSession();
-    
+
     if (!session) {
       // Trigger modal on current page
       const params = new URLSearchParams(window.location.search);
       params.set('auth', 'signup');
       const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
       window.history.replaceState({}, '', newUrl);
-      
+
       // Dispatch a custom event so Navbar knows to check URL again
       window.dispatchEvent(new Event('popstate'));
     } else {
       // Navigate to audit page
-      window.location.href = `/revvview/${product.id}`;
+      window.location.href = `/revvview/${slugify(product.name)}`;
     }
   };
 
@@ -53,7 +54,7 @@ export default function ProductCard({
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       {/* Link to Product Detail View */}
-      <Link href={`/product/${product.id}`} className={styles.mainLink}>
+      <Link href={`/product/${slugify(product.name)}`} className={styles.mainLink}>
         {/* Header: Name + Score badge */}
         <div className={styles.header}>
           <div className={styles.titleArea}>
@@ -126,7 +127,7 @@ export default function ProductCard({
               </a>
             </>
           )}
-          <button 
+          <button
             onClick={handleStartReview}
             className={styles.auditBtn}
           >

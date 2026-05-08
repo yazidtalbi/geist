@@ -16,11 +16,10 @@
 /* Hero Section */
 .heroSection {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   gap: 40px;
-  align-items: flex-end;
-  padding-bottom: 40px;
-  border-bottom: 1px solid var(--border);
+  align-items: center;
+  padding-bottom: 60px;
 }
 
 .heroContent {
@@ -34,17 +33,16 @@
 }
 
 .profileAvatar {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #f1f5f9;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
-  font-family: var(--font-logo);
-  font-style: italic;
+  font-size: 24px;
+  font-weight: 700;
   overflow: hidden;
 }
 
@@ -54,16 +52,7 @@
   object-fit: cover;
 }
 
-.statusDot {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 16px;
-  height: 16px;
-  background: var(--green);
-  border: 3px solid var(--bg-base);
-  border-radius: 50%;
-}
+
 
 .profileHeader {
   display: flex;
@@ -83,31 +72,32 @@
 }
 
 .profileName {
-  font-family: var(--font-logo);
-  font-size: 64px;
-  font-weight: 500;
-  font-style: italic;
+  font-size: 24px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.04em;
-  margin: 8px 0;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
 .settingsBtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: 1px solid var(--border);
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  background: var(--bg-base);
   transition: all 0.2s ease;
+  height: fit-content;
 }
 
 .settingsBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: #fafafa;
+  border-color: var(--text-primary);
+  background: var(--text-primary);
+  color: var(--bg-base);
 }
 
 .profileRole {
@@ -214,15 +204,12 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
   padding-bottom: 16px;
 }
 
 .historyTitle {
-  font-family: var(--font-logo);
-  font-size: 32px;
-  font-weight: 500;
-  font-style: italic;
+  font-size: 24px;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -252,7 +239,6 @@
   align-items: center;
   gap: 20px;
   padding: 24px 0;
-  border-bottom: 1px solid var(--border);
   transition: transform 0.2s ease;
 }
 

@@ -27,7 +27,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
           .select('*')
           .eq('id', revvviewId)
           .single();
-        
+
         if (reviewError) throw reviewError;
 
         const { data: productData, error: productError } = await supabase
@@ -35,7 +35,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
           .select('*')
           .eq('id', reviewData.product_id)
           .single();
-        
+
         if (productError) throw productError;
 
         const { data: userData, error: userError } = await supabase
@@ -43,7 +43,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
           .select('*')
           .eq('id', reviewData.auditor_id)
           .single();
-        
+
         if (userError) throw userError;
 
         // Map data to interfaces
@@ -166,7 +166,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
             <div className={styles.auditorCard}>
               <div className={styles.auditorInfo}>
                 <div className={styles.avatar}>
-                   {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
+                  {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
                 </div>
                 <div>
                   <div className={styles.auditorName}>{user.name}</div>

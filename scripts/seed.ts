@@ -72,9 +72,9 @@ async function seed() {
   console.log('🧹 Cleaning database...');
   const { error: delReviewsError } = await supabase.from('reviews').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   const { error: delProductsError } = await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  const { error: delProfilesError } = await supabase.from('profiles').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  const { error: delNotifsError } = await supabase.from('notifications').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
-  if (delReviewsError || delProductsError || delProfilesError) {
+  if (delReviewsError || delProductsError || delNotifsError) {
     console.warn('Note: Some deletions might have failed due to RLS or constraints, continuing...');
   }
 
@@ -149,7 +149,8 @@ async function seed() {
         awards: [
           { name: 'Product of the Day', emoji: '🏆' },
           { name: 'Best UI', emoji: '✨' }
-        ]
+        ],
+        created_at: faker.date.between({ from: '2026-05-01T00:00:00.000Z', to: new Date() }).toISOString()
       });
       console.log(`Fetched: ${url}`);
     } catch (e) {
@@ -199,7 +200,8 @@ async function seed() {
           "Implement real-time collaboration indicators|The absence of presence indicators causes versioning conflicts when multiple team members edit the same dossier simultaneously, resulting in data loss and user frustration.|Medium|High"
         ],
         strategic_outlook: faker.lorem.paragraph(),
-        time_spent: faker.number.int({ min: 300, max: 1800 })
+        time_spent: faker.number.int({ min: 300, max: 1800 }),
+        created_at: faker.date.between({ from: '2026-05-01T00:00:00.000Z', to: new Date() }).toISOString()
       });
     }
   }
@@ -236,6 +238,52 @@ async function seed() {
     }
   }
   console.log('✅ Aggregates updated');
+
+  // 5. Create Notifications
+  console.log('🔔 Creating notifications...');
+  const { data: allProfiles } = await supabase.from('profiles').select('id, name');
+  const notifications = [];
+  
+  if (allProfiles) {
+    for (const user of allProfiles) {
+      const numNotifs = faker.number.int({ min: 2, max: 5 });
+      for (let i = 0; i < numNotifs; i++) {
+        const actor = faker.helpers.arrayElement(allProfiles.filter(u => u.id !== user.id) || [user]);
+        const type = faker.helpers.arrayElement(['review', 'reputation', 'mention', 'system']);
+        const product = faker.helpers.arrayElement(insertedProducts);
+        
+        let actionText = "";
+        let entityId = null;
+
+        switch (type) {
+          case 'review': 
+            actionText = `reviewed your latest product submission: ${product?.name}`; 
+            entityId = product?.id;
+            break;
+          case 'reputation': actionText = `upvoted your audit on ${product?.name}`; break;
+          case 'mention': actionText = `mentioned you in a deep-dive audit`; break;
+          case 'system': actionText = `Your account has been upgraded to Elite Tier`; break;
+        }
+
+        notifications.push({
+          user_id: user.id,
+          actor_id: type === 'system' ? allProfiles[0].id : actor.id,
+          type,
+          action_text: actionText,
+          entity_id: entityId,
+          is_read: faker.datatype.boolean(0.3),
+          created_at: faker.date.recent({ days: 7 }).toISOString()
+        });
+      }
+    }
+
+    const { error: notifError } = await supabase.from('notifications').insert(notifications);
+    if (notifError) {
+      console.warn('⚠️ Notifications insert failed:', notifError.message);
+    } else {
+      console.log('✅ Notifications seeded');
+    }
+  }
 
   console.log('🎉 Seeding complete!');
 }

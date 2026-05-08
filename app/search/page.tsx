@@ -3,18 +3,60 @@
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import ProductCard from "../components/ProductCard"
-import { products } from "../lib/data"
+import { searchProducts, Product } from "../lib/data"
+import { useState, useEffect } from "react"
 import styles from "./page.module.css"
 
 function SearchResults() {
   const searchParams = useSearchParams()
   const query = searchParams.get("q") || ""
-  
-  const results = products.filter(p => 
-    p.name.toLowerCase().includes(query.toLowerCase()) || 
-    p.tagline.toLowerCase().includes(query.toLowerCase()) ||
-    p.tags.some(t => t.toLowerCase().includes(query.toLowerCase()))
-  )
+  const [results, setResults] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      setLoading(true)
+      try {
+        if (!query) {
+          setResults([])
+          setLoading(false)
+          return
+        }
+
+        const serverResults = await searchProducts(query)
+        
+        // Client-side fuzzy enhancement
+        const tokens = query.toLowerCase().split(/\s+/).filter(t => t.length > 0)
+        
+        const enhanced = serverResults.filter(p => {
+          const name = p.name.toLowerCase()
+          const tagline = p.tagline.toLowerCase()
+          
+          return tokens.every(token => {
+            if (name.includes(token) || tagline.includes(token)) return true
+            
+            const words = name.split(/\s+/).concat(tagline.split(/\s+/))
+            return words.some(word => {
+              if (word.length < 3) return false
+              return word.startsWith(token) || token.startsWith(word)
+            })
+          })
+        })
+        
+        setResults(enhanced.length > 0 ? enhanced : serverResults)
+      } catch (err) {
+        console.error("Search error:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchResults()
+  }, [query])
+
+  if (loading) {
+    return <div className={styles.loading}>Optimizing results...</div>
+  }
 
   return (
     <div className={styles.layout}>

@@ -1,22 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
+import { createClient } from "../lib/supabase-browser";
+import { getNotifications, type Notification, getInitials } from "../lib/data";
+import { formatTimeAgo } from "../lib/utils";
 
 export default function NotificationsPage() {
-  
-  const notifications = [
-    { id: 1, type: "review", user: "Sarah Chen", action: "reviewed Linear", time: "2m ago", unread: true, detail: "Sarah provided an exhaustive v2.4.0 dossier for Linear, focusing on the new roadmap features." },
-    { id: 2, type: "reputation", user: "System", action: "Reputation increased by +50", time: "1h ago", unread: true, detail: "Your audit of Raycast was marked as 'Helpful' by 12 users." },
-    { id: 3, type: "mention", user: "Marcus Webb", action: "mentioned you in Raycast audit", time: "3h ago", unread: false, detail: "I think SC's point about the clipboard history is spot on." },
-    { id: 4, type: "system", user: "System", action: "Your dossier for Vercel is trending", time: "5h ago", unread: false, detail: "Your Vercel evaluation has reached 1,000+ views in the last 24 hours." },
-    { id: 5, type: "review", user: "Alex Rivera", action: "reviewed Cal.com", time: "1d ago", unread: false, detail: "Alex highlighted the open-source scheduling benefits." },
-    { id: 6, type: "system", user: "System", action: "Weekly Roundup: You are in the top 5% of auditors", time: "2d ago", unread: false, detail: "Consistency pays off. You've published 4 dossiers this week." },
-  ];
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadNotifications() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const data = await getNotifications(session.user.id);
+        setNotifications(data);
+      }
+      setLoading(false);
+    }
+    loadNotifications();
+  }, [supabase]);
+
+  if (loading) {
+    return <div className={styles.loading}>Loading history...</div>;
+  }
 
   return (
     <div className={styles.page}>
-      
       <main className={styles.main}>
         <header className={styles.header}>
           <h1 className={styles.title}>Notification History</h1>
@@ -24,25 +36,60 @@ export default function NotificationsPage() {
         </header>
 
         <div className={styles.notifList}>
-          {notifications.map((n) => (
-            <div key={n.id} className={`${styles.notifItem} ${n.unread ? styles.notifUnread : ""}`}>
-              <div className={styles.notifHeader}>
-                <div className={styles.notifAvatar}>
-                  {n.user[0]}
-                </div>
-                <div className={styles.notifMeta}>
-                  <div className={styles.notifText}>
-                    <strong>{n.user}</strong> {n.action}
+          {notifications.length > 0 ? (
+            notifications.map((n) => {
+              const content = (
+                <>
+                  <div className={styles.notifHeader}>
+                    <div className={styles.notifAvatar}>
+                      {n.actor?.avatar ? (
+                        <img src={n.actor.avatar} alt={n.actor.name} />
+                      ) : (
+                        <span>{getInitials(n.actor?.name || "System")}</span>
+                      )}
+                    </div>
+                    <div className={styles.notifMeta}>
+                      <div className={styles.notifText}>
+                        <strong>{n.actor?.name || "System"}</strong> {n.actionText}
+                      </div>
+                      <div className={styles.notifTime}>{formatTimeAgo(n.createdAt)}</div>
+                    </div>
+                    {!n.isRead && <div className={styles.unreadDot} />}
                   </div>
-                  <div className={styles.notifTime}>{n.time}</div>
+                  {n.type === 'review' && (
+                    <div className={styles.notifDetail}>
+                      New feedback has been posted on your product dossier. View the full report in your profile.
+                    </div>
+                  )}
+                </>
+              );
+
+              const linkHref = n.deepDiveUrl || (n.entitySlug ? `/product/${n.entitySlug}` : null);
+
+              if (linkHref) {
+                return (
+                  <Link 
+                    key={n.id} 
+                    href={linkHref}
+                    className={`${styles.notifItem} ${!n.isRead ? styles.notifUnread : ""}`}
+                  >
+                    {content}
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={n.id} className={`${styles.notifItem} ${!n.isRead ? styles.notifUnread : ""}`}>
+                  {content}
                 </div>
-                {n.unread && <div className={styles.unreadDot} />}
-              </div>
-              <div className={styles.notifDetail}>
-                {n.detail}
-              </div>
+              );
+            })
+          ) : (
+            <div className={styles.emptyState}>
+              <p>No activity recorded yet.</p>
+              <Link href="/" className="btn-primary" style={{ marginTop: '20px' }}>Explore Products</Link>
             </div>
-          ))}
+          )}
         </div>
       </main>
     </div>

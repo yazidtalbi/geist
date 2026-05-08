@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { createClient } from './lib/supabase-server'
 import { mapProduct } from './lib/data'
+import { slugify } from './lib/utils'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://revvview.com'
@@ -11,11 +12,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = await createClient()
     const { data: productData } = await supabase
       .from('products')
-      .select('id')
+      .select('id, name')
     
     if (productData) {
       productUrls = productData.map((p) => ({
-        url: `${baseUrl}/product/${p.id}`,
+        url: `${baseUrl}/product/${slugify(p.name)}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.8,

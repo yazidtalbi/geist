@@ -2,13 +2,13 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getProductById, getScoreColor, Product } from "../../lib/data";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import { getProductBySlug, getScoreColor, Product } from "../../lib/data";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "../../components/ui/select";
 import styles from "./page.module.css";
 import { createClient } from "../../lib/supabase-browser";
@@ -22,8 +22,8 @@ const AWARDS = [
   { id: "trustworthy", name: "Trustworthy", emoji: "🛡️" },
 ];
 
-export default function AuditPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function AuditPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const router = useRouter();
   const supabase = createClient();
   const [product, setProduct] = useState<Product | null>(null);
@@ -70,14 +70,14 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const prod = await getProductById(id);
+        const prod = await getProductBySlug(slug);
         const { data: { session } } = await supabase.auth.getSession();
-        
+
         setProduct(prod);
         if (session) {
           setUser(session.user);
         } else {
-          router.push(`/revvview/${id}?auth=signup`);
+          router.push(`/revvview/${slug}?auth=signup`);
         }
       } catch (err) {
         console.error("Failed to fetch product:", err);
@@ -86,7 +86,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
       }
     };
     fetchData();
-  }, [id, supabase, router]);
+  }, [slug, supabase, router]);
 
   const handleAddRoadmapItem = () => {
     setRoadmapItems([...roadmapItems, { friction: "", resolution: "", priority: "Medium", impact: "Medium" }]);
@@ -118,7 +118,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   const liveScore = ((usability + performance + value + trust) / 4);
   const scoreColor = getScoreColor(liveScore);
 
-  const isFormValid = 
+  const isFormValid =
     firstImpression.trim().length > 0 &&
     usabilityDesc.trim().length > 0 &&
     performanceDesc.trim().length > 0 &&
@@ -181,7 +181,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             The product dossier has been updated with your strategic insights.
           </p>
           <div className={styles.successActions}>
-            <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--text-primary)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>View Product Dossier</Link>
+            <Link href={`/product/${slug}`} className="btn-primary" style={{ background: 'var(--text-primary)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>View Product Dossier</Link>
             <Link href="/" className="btn-secondary" style={{ padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, border: '1px solid var(--border-subtle)' }}>Return Home</Link>
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
     <div className={styles.page}>
       <header className={styles.topHeader}>
         <div className={styles.topHeaderLeft}>
-          <Link href={`/product/${product.id}`} className={styles.backBtnHeader}>
+          <Link href={`/product/${slug}`} className={styles.backBtnHeader}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
             Back
           </Link>
@@ -235,8 +235,8 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
       <aside className={styles.sidebar}>
         <nav className={styles.sideMenu}>
           {MENU_ITEMS.map((item) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               className={`${styles.menuItem} ${activeSection === item.id ? styles.menuItemActive : ""}`}
               onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'auto' })}
               style={{ cursor: 'pointer' }}
@@ -402,15 +402,15 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
               <div key={i} className={styles.roadmapFormItem}>
                 <div className={styles.roadmapItemHeader}>
                   <div className={styles.roadmapPhaseLabel}>PHASE 0{i + 1}</div>
-                  <button 
-                    className={styles.removeBtn} 
+                  <button
+                    className={styles.removeBtn}
                     onClick={() => handleRemoveRoadmapItem(i)}
                     aria-label="Remove phase"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12" /></svg>
                   </button>
                 </div>
-                
+
                 <div className={styles.roadmapInputsRow}>
                   <div className={styles.roadmapInputGroup}>
                     <label className={styles.inputLabel}>Strategic Resolution</label>
@@ -422,7 +422,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                       rows={2}
                     />
                   </div>
-                  
+
                   <div className={styles.roadmapInputGroup}>
                     <label className={styles.inputLabel}>The Friction</label>
                     <textarea
@@ -437,7 +437,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                   <div className={styles.roadmapMetaRow}>
                     <div className={styles.metaSelector}>
                       <label className={styles.inputLabel}>Priority</label>
-                      <Select 
+                      <Select
                         value={item.priority}
                         onValueChange={(val) => handleUpdateRoadmapItem(i, "priority", val)}
                       >
@@ -454,7 +454,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
                     </div>
                     <div className={styles.metaSelector}>
                       <label className={styles.inputLabel}>Impact</label>
-                      <Select 
+                      <Select
                         value={item.impact}
                         onValueChange={(val) => handleUpdateRoadmapItem(i, "impact", val)}
                       >
@@ -497,8 +497,8 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
         </section>
 
         <section id="awards" className={styles.formSection}>
-          <div 
-            className={styles.collapsibleHeader} 
+          <div
+            className={styles.collapsibleHeader}
             onClick={() => setAwardsExpanded(!awardsExpanded)}
             style={{ cursor: 'pointer' }}
           >
@@ -512,7 +512,7 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6" /></svg>
             </div>
           </div>
-          
+
           {awardsExpanded && (
             <div className={styles.collapsibleContent}>
               <p className={styles.internalNote}>
@@ -538,8 +538,8 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
         </section>
 
         <div className={styles.submitWrapper}>
-          <button 
-            className={`${styles.submitBtn} ${!isFormValid || submitting ? styles.submitBtnDisabled : ""}`} 
+          <button
+            className={`${styles.submitBtn} ${!isFormValid || submitting ? styles.submitBtnDisabled : ""}`}
             onClick={handleSubmit}
             disabled={!isFormValid || submitting}
           >

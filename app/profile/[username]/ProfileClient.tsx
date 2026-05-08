@@ -1,14 +1,34 @@
 "use client";
 import { use } from "react";
 import Link from "next/link";
-import { users, revvvviews, products, getInitials, getScoreColor } from "../../lib/data";
+import { getProfileBySlug, revvvviews, products, getInitials, getScoreColor } from "../../lib/data";
+import { useState, useEffect } from "react";
 import styles from "../page.module.css";
 
-export default function DynamicProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const user = users.find(u => u.id === id) || users[0];
+export default function DynamicProfilePage({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = use(params);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const profile = await getProfileBySlug(username);
+        setUser(profile);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, [username]);
+
+  if (loading) return <div className={styles.page} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading profile...</div>;
+  if (!user) return <div className={styles.page}>User not found.</div>;
+
   const userrevvvviews = revvvviews.filter((a) => a.auditorId === user.id);
-  
+
   return (
     <div className={styles.page}>
 
@@ -20,27 +40,25 @@ export default function DynamicProfilePage({ params }: { params: Promise<{ id: s
               <div className={styles.profileAvatar}>
                 {user.avatar ? <img src={user.avatar} alt={user.name} /> : <span>{getInitials(user.name)}</span>}
               </div>
-              <div className={styles.statusDot}></div>
             </div>
-            
+
             <div className={styles.profileHeader}>
+              <div className={styles.nameRow}>
+                <h1 className={styles.profileName}>{user.name}</h1>
+              </div>
+              {user.role && user.role !== "User" && <p className={styles.profileRole}>{user.role}</p>}
               <div className={styles.badgeRow}>
-                {user.badges.map((b) => (
+                {(user.badges || ["Elite Tier", "Beta Tester"]).map((b: string) => (
                   <span key={b} className="pill">{b}</span>
                 ))}
               </div>
-              <div className={styles.nameRow}>
-                <h1 className={styles.profileName}>{user.name}</h1>
-                <Link href="/settings" className={styles.settingsBtn}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <span>Edit Profile</span>
-                </Link>
-              </div>
-              <p className={styles.profileRole}>{user.role}</p>
             </div>
+            <Link href="/settings" className={styles.settingsBtn} aria-label="Edit Profile">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </Link>
           </div>
 
           <div className={styles.statsGrid}>
@@ -51,7 +69,7 @@ export default function DynamicProfilePage({ params }: { params: Promise<{ id: s
             </div>
             <div className={styles.statBox}>
               <span className={styles.statLabel}>Total Revvvviews</span>
-              <span className={styles.statValue}>{user.revvvviewsCount}</span>
+              <span className={styles.statValue}>{user.revvvviewsCount || 0}</span>
               <span className={styles.statTrend}>Top 1% Auditor</span>
             </div>
             <div className={styles.statBox}>
@@ -68,11 +86,11 @@ export default function DynamicProfilePage({ params }: { params: Promise<{ id: s
             <div className={styles.section}>
               <h3 className={styles.sectionLabel}>Bio</h3>
               <p className={styles.bioText}>
-                Senior Product Researcher specializing in developer experience and blazingly fast interfaces. 
+                Senior Product Researcher specializing in developer experience and blazingly fast interfaces.
                 Focusing on the intersection of brutalist design and premium utility.
               </p>
             </div>
-            
+
             <div className={styles.section}>
               <h3 className={styles.sectionLabel}>Specialties</h3>
               <div className={styles.tagsCloud}>

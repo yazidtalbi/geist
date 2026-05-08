@@ -6,10 +6,7 @@ import Navbar from "./components/Navbar";
 import NavigationHandler from "./components/NavigationHandler";
 
 export const metadata: Metadata = {
-  title: {
-    default: "Revvview | Experience-Based Product Evaluation",
-    template: "%s | Revvview"
-  },
+  title: "Revvview | Experience-Based Product Evaluation",
   description: "The definitive platform for community-driven product audits. Beyond shallow upvotes—real experience, real data, real truth.",
   keywords: ["product audits", "software reviews", "UX research", "brutalist design", "developer tools", "SaaS evaluation"],
   authors: [{ name: "Revvview Team" }],
@@ -20,13 +17,13 @@ export const metadata: Metadata = {
     siteName: "Revvview",
     title: "Revvview | Experience-Based Product Evaluation",
     description: "Real audits, expert feedback, and the true quality of digital products.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Revvview" }],
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Revvview" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Revvview | Product Truth Trends",
     description: "Where real users audit real digital products.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image.png"],
   },
   robots: {
     index: true,
@@ -52,6 +49,8 @@ export const metadata: Metadata = {
   manifest: "/favicon/site.webmanifest",
 };
 
+import { Analytics } from "@vercel/analytics/react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -67,6 +66,7 @@ export default function RootLayout({
         </div>
         <Footer />
         <ScrollToTop />
+        <Analytics />
       </body>
     </html>
   );

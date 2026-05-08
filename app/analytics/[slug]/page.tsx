@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { products, users, getInitials, getScoreColor } from "../../lib/data";
+import { use } from "react";
+import { slugify } from "../../lib/utils";
 import styles from "./page.module.css";
 
 const funnelData = [
@@ -17,8 +19,9 @@ const inboxItems = [
   { user: users[1], product: products[0], friction: "Settings page lacks search functionality. Power users can't find what they need.", severity: "Low", date: "1 day ago" },
 ];
 
-export default function AnalyticsPage() {
-  const product = products[0];
+export default function AnalyticsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const product = products.find(p => slugify(p.name) === slug) || products[0];
   const scoreColor = getScoreColor(product.revvScore);
 
   return (

@@ -50,6 +50,105 @@ export interface User {
   revvvviewsCount: number;
 }
 
+export interface Notification {
+  id: string;
+  userId: string;
+  actorId: string;
+  type: 'review' | 'reputation' | 'mention' | 'system';
+  entityId?: string;
+  entitySlug?: string;
+  deepDiveUrl?: string;
+  actionText: string;
+  isRead: boolean;
+  createdAt: string;
+  actor?: {
+    name: string;
+    avatar: string;
+  };
+}
+
+export async function getNotifications(userId: string) {
+  const supabase = createClient();
+  
+  // 1. Fetch notifications with basic actor info
+  const { data: notifications, error } = await supabase
+    .from('notifications')
+    .select(`
+      *,
+      actor:actor_id (
+        name,
+        avatar
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Error fetching notifications:", error);
+    return [];
+  }
+
+  // 2. Fetch related entities (Products or Reviews)
+  const productIds = notifications.filter(n => n.type !== 'review' && n.entity_id).map(n => n.entity_id);
+  const reviewIds = notifications.filter(n => n.type === 'review' && n.entity_id).map(n => n.entity_id);
+
+  let productsMap: Record<string, string> = {};
+  if (productIds.length > 0) {
+    const { data: prodData } = await supabase.from('products').select('id, name').in('id', productIds);
+    prodData?.forEach(p => productsMap[p.id] = p.name);
+  }
+
+  let reviewsMap: Record<string, { id: string, productName: string }> = {};
+  if (reviewIds.length > 0) {
+    const { data: revData } = await supabase.from('reviews').select('id, products(name)').in('id', reviewIds);
+    revData?.forEach((r: any) => {
+      reviewsMap[r.id] = { id: r.id, productName: r.products?.name };
+    });
+  }
+
+  const { slugify } = await import("./utils");
+
+  return notifications.map((row: any) => {
+    let entitySlug = undefined;
+    let deepDiveUrl = undefined;
+
+    if (row.type === 'review' && row.entity_id) {
+      deepDiveUrl = `/revvview/deep-dive/${row.entity_id}`;
+    } else if (row.entity_id && productsMap[row.entity_id]) {
+      entitySlug = slugify(productsMap[row.entity_id]);
+    }
+
+    return {
+      id: row.id,
+      userId: row.user_id,
+      actorId: row.actor_id,
+      type: row.type,
+      entityId: row.entity_id,
+      entitySlug,
+      deepDiveUrl,
+      actionText: row.action_text,
+      isRead: row.is_read,
+      createdAt: row.created_at,
+      actor: row.actor
+    };
+  }) as Notification[];
+}
+
+export async function markAllAsRead(userId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('notifications')
+    .update({ is_read: true })
+    .eq('user_id', userId)
+    .eq('is_read', false);
+
+  if (error) {
+    console.error("Error marking all as read:", error);
+    throw error;
+  }
+}
+
 // Map database row to Product interface
 export function mapProduct(row: any): Product {
   return {
@@ -82,13 +181,13 @@ export function mapProduct(row: any): Product {
       discord: row.socials_discord,
     },
     awards: row.awards || [],
-    recentReviewerAvatars: row.reviews 
+    recentReviewerAvatars: row.reviews
       ? Array.from(new Set(
-          row.reviews
-            .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .map((r: any) => r.profiles?.avatar)
-            .filter(Boolean)
-        )).slice(0, 3) as string[]
+        row.reviews
+          .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .map((r: any) => r.profiles?.avatar)
+          .filter(Boolean)
+      )).slice(0, 3) as string[]
       : [],
   };
 }
@@ -139,7 +238,7 @@ export async function getProducts() {
       )
     `)
     .order('revv_score', { ascending: false });
-  
+
   if (error) throw error;
   return data.map(mapProduct);
 }
@@ -151,9 +250,24 @@ export async function getProductById(id: string) {
     .select('*')
     .eq('id', id)
     .single();
-  
+
   if (error) throw error;
   return mapProduct(data);
+}
+
+export async function getProductBySlug(slug: string) {
+  const supabase = createClient();
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*');
+
+  if (error) throw error;
+  
+  const { slugify } = await import("./utils");
+  const product = products.find((p: any) => slugify(p.name) === slug);
+  
+  if (!product) throw new Error("Product not found");
+  return mapProduct(product);
 }
 
 export async function getReviews(productId: string) {
@@ -163,7 +277,7 @@ export async function getReviews(productId: string) {
     .select('*')
     .eq('product_id', productId)
     .order('created_at', { ascending: false });
-  
+
   if (error) throw error;
   return data.map(mapReview);
 }
@@ -175,9 +289,35 @@ export async function getTopReviewers() {
     .select('*')
     .order('reputation', { ascending: false })
     .limit(5);
-  
+
   if (error) throw error;
   return data;
+}
+
+export async function getProfileBySlug(slug: string) {
+  const supabase = createClient();
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('*');
+
+  if (error) throw error;
+  
+  const profile = profiles.find((u: any) => getInitials(u.name).toLowerCase() === slug.toLowerCase());
+  
+  if (!profile) throw new Error("Profile not found");
+  return profile;
+}
+
+export async function searchProducts(query: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .or(`name.ilike.%${query}%,tagline.ilike.%${query}%,category.ilike.%${query}%`)
+    .limit(20);
+
+  if (error) throw error;
+  return data.map(mapProduct);
 }
 
 export async function getTrendingProducts(limit = 3) {
@@ -205,10 +345,10 @@ export async function getTrendingProducts(limit = 3) {
       const recentReviews = product.reviews?.filter(
         (r: any) => new Date(r.created_at) > sevenDaysAgo
       ) || [];
-      
+
       // Calculate Score: Velocity (10pts per review) + Quality (2pts per score point)
       const trendingScore = (recentReviews.length * 10) + (product.revv_score * 2);
-      
+
       return {
         ...mapProduct(product),
         trendingScore

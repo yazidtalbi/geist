@@ -40,9 +40,16 @@
   background: #f8fafc;
 }
 
+.socialBtn svg,
 .socialBtn img {
   width: 20px;
   height: 20px;
+  transition: transform 0.2s;
+}
+
+.socialBtn:hover svg,
+.socialBtn:hover img {
+  transform: scale(1.1);
 }
 
 .divider {
