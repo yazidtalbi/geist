@@ -42,7 +42,7 @@ export default function Navbar() {
         {/* Desktop Logo */}
         <Link href="/" className={`${styles.logo} ${styles.desktopOnly}`}>
           <img src="/logo.png" alt="revvview" className={styles.logoImg} />
-          <span className="logoType" style={{ paddingLeft: '4px', bottom: '1px', position: 'relative' }}>revvview</span>
+          <span className="logoType" style={{ bottom: '1px', position: 'relative' }}>revvview</span>
         </Link>
 
         {/* Mobile Logo */}
