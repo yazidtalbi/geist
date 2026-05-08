@@ -1,7 +1,6 @@
 "use client";
 import { use } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
 import { users, revvvviews, products, getInitials, getScoreColor } from "../../lib/data";
 import styles from "../page.module.css";
 
@@ -12,7 +11,6 @@ export default function DynamicProfilePage({ params }: { params: Promise<{ id: s
   
   return (
     <div className={styles.page}>
-      <Navbar />
 
       <main className={styles.main}>
         {/* Profile Hero Section */}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import Navbar from "./components/Navbar";
+import NavigationHandler from "./components/NavigationHandler";
 
 export const metadata: Metadata = {
   title: {
@@ -58,7 +60,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <NavigationHandler />
+        <Navbar />
+        <div className="page-wrapper">
+          {children}
+        </div>
         <Footer />
         <ScrollToTop />
       </body>

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Product, getScoreColor, getInitials, getMetricColor } from "../lib/data";
 import styles from "./ProductCard.module.css";
+import { createClient } from "../lib/supabase-browser";
 
 const metricKeys = ["usability", "performance", "value", "trust"] as const;
 
@@ -23,6 +24,28 @@ export default function ProductCard({
 }) {
   const scoreColor = getScoreColor(product.revvScore);
   const isCompact = variant === "compact";
+  const supabase = createClient();
+
+  const handleStartReview = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      // Trigger modal on current page
+      const params = new URLSearchParams(window.location.search);
+      params.set('auth', 'signup');
+      const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
+      window.history.replaceState({}, '', newUrl);
+      
+      // Dispatch a custom event so Navbar knows to check URL again
+      window.dispatchEvent(new Event('popstate'));
+    } else {
+      // Navigate to audit page
+      window.location.href = `/revvview/${product.id}`;
+    }
+  };
 
   return (
     <div
@@ -53,30 +76,12 @@ export default function ProductCard({
 
         {/* Screenshot area */}
         <div className={styles.screenshotWrap}>
-          <div className={styles.screenshotGrid}>
-            <div className={styles.screenshotMain}>
-              {product.screenshot ? (
-                <img src={product.screenshot} alt={product.name} className={styles.screenshotImage} />
-              ) : (
-                <div className={styles.screenshotPlaceholder}>Preview</div>
-              )}
-            </div>
-            <div className={styles.screenshotSide}>
-              <div className={styles.screenshotSmall}>
-                {product.gallery?.[0] ? (
-                  <img src={product.gallery[0]} alt="" className={styles.screenshotImage} />
-                ) : (
-                  <div className={styles.screenshotPlaceholder}>Gallery 1</div>
-                )}
-              </div>
-              <div className={styles.screenshotSmall}>
-                {product.gallery?.[1] ? (
-                  <img src={product.gallery[1]} alt="" className={styles.screenshotImage} />
-                ) : (
-                  <div className={styles.screenshotPlaceholder}>Gallery 2</div>
-                )}
-              </div>
-            </div>
+          <div className={styles.screenshotSingle}>
+            {product.screenshot ? (
+              <img src={product.screenshot} alt={product.name} className={styles.screenshotImage} />
+            ) : (
+              <div className={styles.screenshotPlaceholder}>Preview</div>
+            )}
           </div>
         </div>
 
@@ -101,8 +106,15 @@ export default function ProductCard({
       <div className={styles.footer}>
         <div className={styles.footerMeta}>
           <div className={styles.avatarStack}>
-            <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Felix" className={styles.miniAvatar} alt="revvviewer" />
-            <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Aneka" className={styles.miniAvatar} alt="revvviewer" />
+            {product.recentReviewerAvatars && product.recentReviewerAvatars.length > 0 ? (
+              product.recentReviewerAvatars.map((url, i) => (
+                <img key={i} src={url} className={styles.miniAvatar} alt="auditor" />
+              ))
+            ) : (
+              <div className={styles.emptyAvatarStack}>
+                <div className={styles.miniAvatarPlaceholder}>?</div>
+              </div>
+            )}
           </div>
           <span className={styles.auditNumber}>{product.reviewsTotal}</span>
         </div>
@@ -114,12 +126,16 @@ export default function ProductCard({
               </a>
             </>
           )}
-          <Link href={`/revvview/${product.id}`} className={styles.auditBtn}>
+          <button 
+            onClick={handleStartReview}
+            className={styles.auditBtn}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /><path d="M5 3v4" /><path d="M19 17v4" /><path d="M3 5h4" /><path d="M17 19h4" /></svg>
             <span style={{ fontWeight: 600 }}>Start</span>
             {!isCompact && (
-              <span className="logoType" style={{ fontSize: 18, color: 'inherit', position: 'relative', bottom: '1.5px', marginLeft: 4 }}>revvview</span>
+              <span className="logoType" style={{ fontSize: 18, color: 'inherit', position: 'relative', bottom: '1.5px', marginLeft: -8 }}>revvview</span>
             )}
-          </Link>
+          </button>
         </div>
       </div>
     </div>

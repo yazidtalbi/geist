@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   Select, 
   SelectContent, 
@@ -9,6 +10,7 @@ import {
   SelectValue 
 } from "../components/ui/select";
 import styles from "./page.module.css";
+import { createClient } from "../lib/supabase-browser";
 
 const MENU_ITEMS = [
   { id: "identity", label: "Product Identity" },
@@ -18,7 +20,12 @@ const MENU_ITEMS = [
 ];
 
 export default function SubmitProductPage() {
+  const router = useRouter();
+  const supabase = createClient();
   const [activeSection, setActiveSection] = useState("identity");
+  const [submitting, setSubmitting] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     tagline: "",
@@ -27,42 +34,24 @@ export default function SubmitProductPage() {
     description: "",
     twitter: "",
     discord: "",
-    instagram: "",
-    facebook: "",
-    threads: "",
     linkedin: "",
   });
   const [features, setFeatures] = useState([""]);
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [gallery, setGallery] = useState<(string | null)[]>([null, null]);
 
-  const handleAddFeature = () => setFeatures([...features, ""]);
-  const handleRemoveFeature = (index: number) => {
-    if (features.length > 1) {
-      setFeatures(features.filter((_, i) => i !== index));
-    }
-  };
-  const handleFeatureChange = (index: number, val: string) => {
-    const newFeatures = [...features];
-    newFeatures[index] = val;
-    setFeatures(newFeatures);
-  };
-
-  const handleHeroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setHeroImage(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-
-  const handleGalleryUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const newGallery = [...gallery];
-      newGallery[index] = URL.createObjectURL(e.target.files[0]);
-      setGallery(newGallery);
-    }
-  };
-
   useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Redirect to home or show login if not authenticated
+        router.push("/?auth=login");
+      } else {
+        setUser(session.user);
+      }
+    };
+    checkUser();
+
     const handleScroll = () => {
       const sections = MENU_ITEMS.map(item => document.getElementById(item.id));
       const scrollPosition = window.scrollY + 200;
@@ -78,7 +67,66 @@ export default function SubmitProductPage() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [supabase, router]);
+
+  const handleAddFeature = () => setFeatures([...features, ""]);
+  const handleRemoveFeature = (index: number) => {
+    if (features.length > 1) {
+      setFeatures(features.filter((_, i) => i !== index));
+    }
+  };
+  const handleFeatureChange = (index: number, val: string) => {
+    const newFeatures = [...features];
+    newFeatures[index] = val;
+    setFeatures(newFeatures);
+  };
+
+  const handleHeroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      // In a real app, you'd upload to Supabase Storage here
+      setHeroImage(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const handleGalleryUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const newGallery = [...gallery];
+      newGallery[index] = URL.createObjectURL(e.target.files[0]);
+      setGallery(newGallery);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!user) return;
+    setSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('products').insert({
+        name: formData.name,
+        tagline: formData.tagline,
+        url: formData.website,
+        category: formData.category,
+        long_description: formData.description,
+        services: features.filter(f => f.trim() !== ""),
+        socials_twitter: formData.twitter,
+        socials_website: formData.website,
+        socials_discord: formData.discord,
+        socials_github: "", // Add if needed
+        creator_id: user.id,
+        screenshot: heroImage || "", // Should be the URL from Storage
+        gallery: gallery.filter(g => g !== null) as string[],
+      });
+
+      if (error) throw error;
+
+      router.push("/");
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Failed to submit product. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -88,12 +136,6 @@ export default function SubmitProductPage() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
             Back
           </Link>
-        </div>
-        <div className={styles.topHeaderCenter}>
-          {/* Header Title if needed */}
-        </div>
-        <div className={styles.topHeaderRight}>
-          {/* Action buttons if needed */}
         </div>
       </header>
 
@@ -149,8 +191,10 @@ export default function SubmitProductPage() {
                 className={styles.input} 
                 placeholder="e.g. Linear" 
                 value={formData.name}
+                maxLength={10}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
+              <span className={styles.fieldHint}>{formData.name.length}/10 characters</span>
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Tagline</label>
@@ -159,8 +203,10 @@ export default function SubmitProductPage() {
                 className={styles.input} 
                 placeholder="e.g. The issue tracker you'll actually enjoy using." 
                 value={formData.tagline}
+                maxLength={60}
                 onChange={(e) => setFormData({...formData, tagline: e.target.value})}
               />
+              <span className={styles.fieldHint}>{formData.tagline.length}/60 characters</span>
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Category</label>
@@ -172,14 +218,13 @@ export default function SubmitProductPage() {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Productivity">Productivity</SelectItem>
-                  <SelectItem value="Design Tools">Design Tools</SelectItem>
-                  <SelectItem value="Developer Tools">Developer Tools</SelectItem>
-                  <SelectItem value="AI & Machine Learning">AI & Machine Learning</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
-                  <SelectItem value="E-commerce">E-commerce</SelectItem>
-                  <SelectItem value="Health & Fitness">Health & Fitness</SelectItem>
+                  <SelectItem value="SAAS">SaaS</SelectItem>
+                  <SelectItem value="DESIGN">Design Tools</SelectItem>
+                  <SelectItem value="DEV TOOL">Developer Tools</SelectItem>
+                  <SelectItem value="AI">AI & Machine Learning</SelectItem>
+                  <SelectItem value="PLATFORM">Platform</SelectItem>
+                  <SelectItem value="UTILITY">Utility</SelectItem>
+                  <SelectItem value="AGENCY">Agency</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -304,33 +349,13 @@ export default function SubmitProductPage() {
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Instagram</label>
+              <label className={styles.label}>Discord Invite</label>
               <input 
                 type="text" 
                 className={styles.input} 
-                placeholder="@username" 
-                value={formData.instagram}
-                onChange={(e) => setFormData({...formData, instagram: e.target.value})}
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Facebook</label>
-              <input 
-                type="text" 
-                className={styles.input} 
-                placeholder="Profile link" 
-                value={formData.facebook}
-                onChange={(e) => setFormData({...formData, facebook: e.target.value})}
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Threads</label>
-              <input 
-                type="text" 
-                className={styles.input} 
-                placeholder="@username" 
-                value={formData.threads}
-                onChange={(e) => setFormData({...formData, threads: e.target.value})}
+                placeholder="discord.gg/invite" 
+                value={formData.discord}
+                onChange={(e) => setFormData({...formData, discord: e.target.value})}
               />
             </div>
             <div className={styles.field}>
@@ -343,22 +368,16 @@ export default function SubmitProductPage() {
                 onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
               />
             </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Discord Invite</label>
-              <input 
-                type="text" 
-                className={styles.input} 
-                placeholder="discord.gg/invite" 
-                value={formData.discord}
-                onChange={(e) => setFormData({...formData, discord: e.target.value})}
-              />
-            </div>
           </div>
         </section>
 
         <div className={styles.submitWrapper}>
-          <button className={styles.submitBtn}>
-            Submit
+          <button 
+            className={styles.submitBtn} 
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
+            {submitting ? "Submitting..." : "Submit"}
           </button>
           <p className={styles.submitNotice}>
             By launching, your product will enter the verification queue. Once approved, it will be open for expert evaluations.

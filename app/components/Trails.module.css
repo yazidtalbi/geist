@@ -218,3 +218,18 @@
 .miniAvatar:first-child {
   margin-left: 0;
 }
+.miniIconImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.loadingPlaceholder {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  padding: 12px 0;
+  text-align: center;
+}

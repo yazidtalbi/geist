@@ -36,7 +36,6 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className={styles.close}>
         <X size={20} />
-        <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>

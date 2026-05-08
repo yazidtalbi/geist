@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar"
 import styles from "../static.module.css"
 
 export const metadata = {
@@ -9,7 +8,6 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <div className={styles.page}>
-      <Navbar />
       <main className={styles.main}>
         <div className={styles.container}>
           <header className={styles.header}>

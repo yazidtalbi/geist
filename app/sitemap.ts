@@ -1,15 +1,29 @@
 import { MetadataRoute } from 'next'
-import { products } from './lib/data'
+import { createClient } from './lib/supabase-server'
+import { mapProduct } from './lib/data'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://revvview.com'
   
-  const productUrls = products.map((p) => ({
-    url: `${baseUrl}/product/${p.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
+  let productUrls: MetadataRoute.Sitemap = []
+  
+  try {
+    const supabase = await createClient()
+    const { data: productData } = await supabase
+      .from('products')
+      .select('id')
+    
+    if (productData) {
+      productUrls = productData.map((p) => ({
+        url: `${baseUrl}/product/${p.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }))
+    }
+  } catch (error) {
+    console.error('Sitemap generation error:', error)
+  }
 
   const staticPages = [
     '',

@@ -2,7 +2,6 @@
 
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import Navbar from "../components/Navbar"
 import ProductCard from "../components/ProductCard"
 import { products } from "../lib/data"
 import styles from "./page.module.css"
@@ -49,7 +48,6 @@ function SearchResults() {
 export default function SearchPage() {
   return (
     <div className={styles.page}>
-      <Navbar />
       <main className={styles.main}>
         <Suspense fallback={<div className={styles.loading}>Searching...</div>}>
           <SearchResults />

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
 import { products, users, getInitials, getScoreColor } from "../../lib/data";
 import styles from "./page.module.css";
 
@@ -24,7 +23,6 @@ export default function AnalyticsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar  />
 
       <main className={styles.main}>
         {/* Product overview */}

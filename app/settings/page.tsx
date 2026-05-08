@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef } from "react";
-import Navbar from "../components/Navbar";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
@@ -43,7 +42,6 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
 
       <main className={styles.main}>
         <header className={styles.header}>

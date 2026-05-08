@@ -2,13 +2,14 @@
 import React, { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
+import Skeleton from "../../components/Skeleton";
 import ProductCard from "../../components/ProductCard";
-import { products, users, getInitials, getScoreColor, getMetricColor, revvvviews, User } from "../../lib/data";
+import { getProductById, getReviews, getTopReviewers, getInitials, getScoreColor, getMetricColor, Product, revvview } from "../../lib/data";
 import { Drawer } from "../../components/Drawer";
 import RevvviewReport from "../../components/revvviewReport";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../components/ui/collapsible";
 import styles from "./page.module.css";
+import { createClient } from "../../lib/supabase-browser";
 
 const metricExplanations = {
   usability: "Interface intuitiveness and navigational efficiency.",
@@ -19,21 +20,67 @@ const metricExplanations = {
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const product = products.find((p) => p.id === id) || products[0];
-  const scoreColor = getScoreColor(product.revvScore);
-  const productrevvvviews = revvvviews.filter((a) => a.productId === product.id);
-  const categorySimilar = products.filter(p => p.category === product.category && p.id !== product.id);
-  const linear = products.find(p => p.name === "Linear" && p.id !== product.id);
-  const combinedSimilar = [...categorySimilar];
-  if (linear && !combinedSimilar.some(p => p.id === linear.id)) {
-    combinedSimilar.push(linear);
-  }
-  const similarProducts = combinedSimilar.slice(0, 4);
-
+  const router = useRouter();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [productrevvvviews, setProductrevvvviews] = useState<revvview[]>([]);
+  const [reviewers, setReviewers] = useState<any[]>([]);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Overview");
   const [showMiniHeader, setShowMiniHeader] = useState(false);
-  const router = useRouter();
   const [clientInfo, setClientInfo] = useState({ date: "", browser: "", os: "" });
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const prod = await getProductById(id);
+        const reviews = await getReviews(id);
+        
+        // Fetch reviewers for these reviews
+        const reviewerIds = [...new Set(reviews.map(r => r.auditorId))];
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', reviewerIds);
+
+        setProduct(prod);
+        setProductrevvvviews(reviews);
+        setReviewers(profileData || []);
+
+        // Similar products
+        const { data: similar } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category', prod.category)
+          .neq('id', prod.id)
+          .limit(4);
+        
+        if (similar) {
+          setSimilarProducts(similar.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            url: p.url,
+            tagline: p.tagline,
+            revvScore: p.revv_score,
+            screenshot: p.screenshot,
+            logo: p.logo,
+            category: p.category,
+            tags: p.tags,
+            metrics: { usability: p.metrics_usability, performance: p.metrics_performance, value: p.metrics_value, trust: p.metrics_trust },
+            reviewsTotal: p.reviews_total,
+            createdAt: p.created_at,
+          } as any)));
+        }
+
+      } catch (err) {
+        console.error("Failed to fetch product data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id, supabase]);
 
   useEffect(() => {
     // Detect Browser
@@ -60,7 +107,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, []);
 
   useEffect(() => {
-    document.title = `${product.name} — ${product.tagline} | revvview.com`;
+    if (product) {
+      document.title = `${product.name} — ${product.tagline} | revvview.com`;
+    }
   }, [product]);
 
   useEffect(() => {
@@ -97,7 +146,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [loading]);
 
   const scrollToSection = (id: string) => {
     if (id === "Overview") {
@@ -118,17 +167,40 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     value: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1 -1.8 -1" /><path d="M12 6v2m0 8v2" /></svg>,
     trust: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2l4 -4" /><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
   };
-  const [selectedrevvviewId, setSelectedrevvviewId] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleOpenrevvview = (revvviewId: string) => {
     router.push(`/revvview/deep-dive/${revvviewId}`);
   };
 
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.pageWrapper}>
+          <main className={styles.main}>
+            <div style={{ display: 'flex', gap: '32px', marginBottom: '48px' }}>
+              <Skeleton width={80} height={80} borderRadius={16} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Skeleton width="40%" height={32} borderRadius={8} />
+                <Skeleton width="20%" height={20} borderRadius={8} />
+              </div>
+            </div>
+            <Skeleton width="100%" height={500} borderRadius={12} className="mb-8" />
+            <Skeleton width="100%" height={200} borderRadius={12} />
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return <div className={styles.page}>Product not found.</div>;
+  }
+
+  const scoreColor = getScoreColor(product.revvScore);
+
   return (
     <div className={styles.page}>
       <div className={styles.pageWrapper}>
-        <Navbar />
       {/* Sticky Mini Header on Scroll */}
       <div className={`${styles.miniHeader} ${showMiniHeader ? styles.miniHeaderVisible : ""}`}>
         <div className={styles.miniHeaderInner}>
@@ -197,16 +269,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
         </section>
 
-        {/* Dual Image Showcase */}
-        <section className={styles.showcaseSection}>
-          <div className={styles.dualGrid}>
-            {product.gallery?.slice(0, 2).map((img, i) => (
-              <div key={i} className={styles.showcaseItem}>
-                <img src={img} alt={`${product.name} showcase ${i + 1}`} />
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* Info Section */}
         <div className={styles.infoSection} id="overview">
@@ -262,7 +324,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </section>
 
         {/* Awards Section */}
-        {product.awards && (
+        {product.awards && product.awards.length > 0 && (
           <section className={`${styles.awardsSection} ${styles.whiteCard}`} id="awards">
             <h4 className={styles.metaGroupTitle} style={{ marginBottom: 32 }}>Awards</h4>
             <div className={styles.awardsGrid}>
@@ -302,10 +364,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div className={styles.metricsAvatars}>
                           {reviewersForMetric.slice(0, 5).map((rev, idx) => {
-                            const reviewer = users.find(u => u.id === rev.auditorId);
+                            const reviewer = reviewers.find(u => u.id === rev.auditorId);
                             return (
                               <div key={idx} className={styles.miniAvatar} title={reviewer?.name}>
-                                {reviewer ? getInitials(reviewer.name) : "?"}
+                                {reviewer?.avatar ? <img src={reviewer.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : (reviewer ? getInitials(reviewer.name) : "?")}
                               </div>
                             );
                           })}
@@ -331,13 +393,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <CollapsibleContent>
                     <div className={styles.collapsibleContent}>
                       {reviewersForMetric.map((rev, idx) => {
-                        const reviewer = users.find(u => u.id === rev.auditorId);
+                        const reviewer = reviewers.find(u => u.id === rev.auditorId);
                         if (!reviewer) return null;
                         return (
                           <div key={idx} className={styles.reviewerFeedbackItem}>
                             <div className={styles.feedbackReviewerHeader}>
                               <div className={styles.feedbackAvatar}>
-                                {getInitials(reviewer.name)}
+                                {reviewer.avatar ? <img src={reviewer.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : getInitials(reviewer.name)}
                               </div>
                               <div className={styles.feedbackReviewerInfo}>
                                 <span className={styles.feedbackReviewerName}>{reviewer.name}</span>
@@ -391,17 +453,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 </thead>
                 <tbody>
                   {productrevvvviews.map((review) => {
-                    const reviewer = users.find(u => u.id === review.auditorId) || users[0];
-                    const avgScore = Math.round(((review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4) * 10);
+                    const reviewer = reviewers.find(u => u.id === review.auditorId) || { name: "User", role: "Auditor" };
+                    const avgScore = (review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4;
 
                     return (
                       <tr key={review.id} onClick={() => handleOpenrevvview(review.id)} className={styles.clickableRow}>
                         <td>
                           <div className={styles.reviewerInfo}>
-                            <div className={styles.avatarCircle}><span>{getInitials(reviewer.name)}</span></div>
+                            <div className={styles.avatarCircle}>
+                              {(reviewer as any).avatar ? <img src={(reviewer as any).avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(reviewer.name)}</span>}
+                            </div>
                             <div>
                               <div className={styles.reviewerNameMini}>{reviewer.name}</div>
-                              <div className={styles.reviewerRole}>{reviewer.role}</div>
+                              <div className={styles.reviewerRole}>{(reviewer as any).role}</div>
                             </div>
                           </div>
                         </td>
@@ -430,8 +494,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                           </div>
                         </td>
                         <td style={{ textAlign: 'right' }}>
-                          <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore / 10) + "15", color: getScoreColor(avgScore / 10), fontSize: 16 }}>
-                            {(avgScore / 10).toFixed(1)}
+                          <span className={styles.scoreBadge} style={{ background: getScoreColor(avgScore) + "15", color: getScoreColor(avgScore), fontSize: 16 }}>
+                            {avgScore.toFixed(1)}
                           </span>
                         </td>
                       </tr>

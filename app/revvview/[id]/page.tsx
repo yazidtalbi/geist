@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import { products, users, getScoreColor } from "../../lib/data";
+import { useRouter } from "next/navigation";
+import { getProductById, getScoreColor, Product } from "../../lib/data";
 import { 
   Select, 
   SelectContent, 
@@ -11,6 +11,7 @@ import {
   SelectValue 
 } from "../../components/ui/select";
 import styles from "./page.module.css";
+import { createClient } from "../../lib/supabase-browser";
 
 const AWARDS = [
   { id: "elite_ux", name: "Elite UX", emoji: "🏆" },
@@ -23,7 +24,13 @@ const AWARDS = [
 
 export default function AuditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const product = products.find((p) => p.id === id) || products[0];
+  const router = useRouter();
+  const supabase = createClient();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
   const [firstImpression, setFirstImpression] = useState("");
   const [roadmapItems, setRoadmapItems] = useState<{ friction: string, resolution: string, priority: string, impact: string }[]>([
     { friction: "", resolution: "", priority: "Critical", impact: "High" }
@@ -40,6 +47,46 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
   const [selectedAwards, setSelectedAwards] = useState<string[]>([]);
   const [awardsExpanded, setAwardsExpanded] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [activeSection, setActiveSection] = useState("impression");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((section) => observer.observe(section));
+
+    return () => sections.forEach((section) => observer.unobserve(section));
+  }, [loading, submitted]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const prod = await getProductById(id);
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        setProduct(prod);
+        if (session) {
+          setUser(session.user);
+        } else {
+          router.push(`/revvview/${id}?auth=signup`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch product:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id, supabase, router]);
 
   const handleAddRoadmapItem = () => {
     setRoadmapItems([...roadmapItems, { friction: "", resolution: "", priority: "Medium", impact: "Medium" }]);
@@ -56,7 +103,6 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
       const newItems = roadmapItems.filter((_, i) => i !== index);
       setRoadmapItems(newItems);
     } else {
-      // Just clear the first one if it's the only one
       setRoadmapItems([{ friction: "", resolution: "", priority: "Critical", impact: "High" }]);
     }
   };
@@ -80,14 +126,49 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
     trustDesc.trim().length > 0 &&
     strategicOutlook.trim().length > 0;
 
-  const handleSubmit = () => {
-    if (!isFormValid) {
+  const handleSubmit = async () => {
+    if (!isFormValid || !user || !product) {
       alert("Please complete all required editorial sections before publishing.");
       return;
     }
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    setSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('reviews').insert({
+        product_id: product.id,
+        auditor_id: user.id,
+        first_impression: firstImpression,
+        metrics: { usability, performance, value, trust },
+        metric_feedback: {
+          usability: usabilityDesc,
+          performance: performanceDesc,
+          value: valueDesc,
+          trust: trustDesc
+        },
+        roadmap: roadmapItems.filter(item => item.friction.trim() !== "" || item.resolution.trim() !== ""),
+        strategic_outlook: strategicOutlook,
+        awards: selectedAwards.map(id => AWARDS.find(a => a.id === id))
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Failed to publish review. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return <div className={styles.page} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', opacity: 0.5 }}>Loading auditor...</div>;
+  }
+
+  if (!product) {
+    return <div className={styles.page}>Product not found.</div>;
+  }
 
   if (submitted) {
     return (
@@ -100,8 +181,8 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             The product dossier has been updated with your strategic insights.
           </p>
           <div className={styles.successActions}>
-            <Link href={`/product/${product.id}`} className="btn-primary">View Product Dossier</Link>
-            <Link href="/" className="btn-secondary">Return Home</Link>
+            <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--text-primary)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>View Product Dossier</Link>
+            <Link href="/" className="btn-secondary" style={{ padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, border: '1px solid var(--border-subtle)' }}>Return Home</Link>
           </div>
         </div>
       </div>
@@ -123,25 +204,6 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
     </div>
   );
 
-  const [activeSection, setActiveSection] = useState("impression");
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    const sections = document.querySelectorAll("section[id]");
-    sections.forEach((section) => observer.observe(section));
-
-    return () => sections.forEach((section) => observer.unobserve(section));
-  }, []);
 
   const MENU_ITEMS = [
     { id: "impression", label: "Impression" },
@@ -159,9 +221,6 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
             Back
           </Link>
-        </div>
-        <div className={styles.topHeaderCenter}>
-          {/* Title moved to main flow */}
         </div>
         <div className={styles.topHeaderRight}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -203,11 +262,11 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
           <div className={styles.contextLabel}>You are reviewing</div>
           <div className={styles.productContext}>
             <div className={styles.productIcon}>
-              <span>{product.name[0]}</span>
+              {product.logo ? <img src={product.logo} alt="" /> : <span>{product.name[0]}</span>}
             </div>
             <div className={styles.productMeta}>
               <h2 className={styles.productName}>{product.name}</h2>
-              <p className={styles.productTagline}>{product.tagline || "Streamline issues, sprints, and product roadmaps."}</p>
+              <p className={styles.productTagline}>{product.tagline}</p>
             </div>
             <a href={product.url} target="_blank" rel="noopener noreferrer" className={styles.visitBtn}>
               Visit website
@@ -235,8 +294,6 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
             {firstImpression.length} / 250
           </div>
         </section>
-
-
 
         <section id="ratings" className={styles.formSection}>
           <div className={styles.sectionHeader}>
@@ -482,18 +539,15 @@ export default function AuditPage({ params }: { params: Promise<{ id: string }> 
 
         <div className={styles.submitWrapper}>
           <button 
-            className={`${styles.submitBtn} ${!isFormValid ? styles.submitBtnDisabled : ""}`} 
+            className={`${styles.submitBtn} ${!isFormValid || submitting ? styles.submitBtnDisabled : ""}`} 
             onClick={handleSubmit}
-            disabled={!isFormValid}
+            disabled={!isFormValid || submitting}
           >
-            Publish
+            {submitting ? "Publishing..." : "Publish"}
           </button>
           <p className={styles.submitNotice}>Your review will be integrated into the main page for {product.name}</p>
         </div>
       </main>
-
-
     </div>
   );
 }
-

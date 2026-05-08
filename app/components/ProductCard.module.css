@@ -207,38 +207,21 @@
   flex-direction: column;
 }
 
-.screenshotGrid {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr;
-  gap: 4px;
-  height: 300px;
-}
-
-.screenshotMain {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+.screenshotSingle {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
+  background: #F8F8F8;
+  border: 1px solid var(--border);
 }
 
-.screenshotSide {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.screenshotSmall {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
-
-.screenshotSmall:first-child {
-  border-top-right-radius: 12px;
-}
-
-.screenshotSmall:last-child {
-  border-bottom-right-radius: 12px;
+.screenshotImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: inherit;
 }
 
 .screenshotFrame {
@@ -279,11 +262,6 @@
   background: #fff;
 }
 
-.screenshotImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .screenshotPlaceholder {
   display: flex;
@@ -391,10 +369,10 @@
   align-items: center;
   justify-content: center;
   height: 40px;
-  gap: 8px;
-  padding: 0 24px;
-  background: var(--accent);
-  color: #FFFFFF;
+  gap: 6px;
+  padding: 0 18px;
+  background: #F5F6F8;
+  color: #000;
   border: none;
   border-radius: 100px;
   font-size: 14px;
@@ -404,7 +382,7 @@
 }
 
 .auditBtn:hover {
-  background: var(--accent-hover);
+  background: #EEEEEE;
   transform: translateY(-1px);
 }
 
@@ -431,6 +409,25 @@
 
 .miniAvatar:first-child {
   margin-left: 0;
+}
+
+.emptyAvatarStack {
+  display: flex;
+}
+
+.miniAvatarPlaceholder {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .footerActions {

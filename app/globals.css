@@ -276,6 +276,23 @@ input[type="range"]::-webkit-slider-thumb {
   animation: fadeInUp 0.4s ease both;
 }
 
+.page-wrapper {
+  animation: fadeInPage 0.3s ease-out;
+  min-height: calc(100vh - var(--nav-height));
+  padding-top: var(--nav-height);
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Progress bar fill */
 .progress-fill {
   height: 100%;

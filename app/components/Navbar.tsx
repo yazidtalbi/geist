@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Drawer } from "./Drawer";
 import { AuthModal } from "./AuthModal";
@@ -12,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import styles from "./Navbar.module.css";
+import { createClient } from "@/app/lib/supabase-browser";
+import { getInitials } from "@/app/lib/data";
 
 const CATEGORIES = [
   { name: "Dev Tools", slug: "dev-tools" },
@@ -27,7 +30,61 @@ export default function Navbar() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authView, setAuthView] = useState<"login" | "signup">("login");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Simulated state
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const supabase = createClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        setProfile(profileData);
+      }
+    };
+
+    const checkAuthParam = () => {
+      const params = new URLSearchParams(window.location.search);
+      const authParam = params.get('auth');
+      if (authParam === 'login' || authParam === 'signup') {
+        setAuthView(authParam as "login" | "signup");
+        setAuthModalOpen(true);
+        
+        // Clean up URL
+        const newUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, '', newUrl);
+      }
+    };
+
+    checkAuthParam();
+    window.addEventListener('popstate', checkAuthParam);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUser();
+      } else {
+        setProfile(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('popstate', checkAuthParam);
+    };
+  }, [supabase]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   const notifications = [
     { id: 1, type: "review", user: "Sarah Chen", action: "reviewed Linear", time: "2m ago", unread: true },
@@ -90,15 +147,26 @@ export default function Navbar() {
             <Link href="/leaderboard" className={styles.navLink}>Leaderboard</Link>
           </div>
 
-          <Link href="/submit-product" className={`btn-primary ${styles.desktopOnly}`}>
+          <button 
+            onClick={(e) => {
+              if (!user) {
+                e.preventDefault();
+                setAuthView("signup");
+                setAuthModalOpen(true);
+              } else {
+                router.push("/submit-product");
+              }
+            }} 
+            className={`btn-primary ${styles.desktopOnly}`}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14" />
               <path d="M5 12h14" />
             </svg>
             Submit
-          </Link>
+          </button>
 
-          {isLoggedIn ? (
+          {user ? (
             <>
               <button className={styles.iconBtn} aria-label="Notifications" onClick={() => setNotificationsOpen(true)}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -111,14 +179,18 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger className={styles.avatarTrigger}>
                   <div className={styles.avatar}>
-                    <span>SC</span>
+                    {profile?.avatar ? (
+                      <img src={profile.avatar} alt={profile.name} className={styles.avatarImg} />
+                    ) : (
+                      <span>{getInitials(profile?.name || user.email || "User")}</span>
+                    )}
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className={styles.userDropdown}>
                   <DropdownMenuLabel>
                     <div className={styles.userInfo}>
-                      <span className={styles.userName}>Sarah Chen</span>
-                      <span className={styles.userRole}>Product Researcher</span>
+                      <span className={styles.userName}>{profile?.name || user.email}</span>
+                      <span className={styles.userRole}>{profile?.role || "User"}</span>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -129,7 +201,7 @@ export default function Navbar() {
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className={styles.signOut} onClick={() => setIsLoggedIn(false)}>
+                  <DropdownMenuItem className={styles.signOut} onClick={handleSignOut}>
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -137,15 +209,6 @@ export default function Navbar() {
             </>
           ) : (
             <div className={styles.guestActions}>
-              <button 
-                className={styles.signInBtn}
-                onClick={() => {
-                  setAuthView("login");
-                  setAuthModalOpen(true);
-                }}
-              >
-                Sign In
-              </button>
               <button 
                 className={styles.signUpBtn}
                 onClick={() => {

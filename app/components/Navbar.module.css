@@ -13,7 +13,6 @@
 }
 
 .inner {
-  max-width: 1400px;
   width: 100%;
   padding: 0 40px;
   display: flex;
@@ -202,18 +201,17 @@
 }
 
 .signUpBtn {
-  height: 40px;
-  padding: 0 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-  color: #fff;
-  border-radius: 100px;
+  background: none;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
+  transition: color 0.2s;
+}
+
+.signUpBtn:hover {
+  color: var(--text-primary);
 }
 
 .mobileActions {

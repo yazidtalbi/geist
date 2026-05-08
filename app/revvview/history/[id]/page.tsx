@@ -1,20 +1,64 @@
 "use client";
-import { use } from "react";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
-import Navbar from "../../../components/Navbar";
 import RevvviewReport from "../../../components/revvviewReport";
-import { products, revvvviews } from "../../../lib/data";
+import { Product } from "../../../lib/data";
 import styles from "./page.module.css";
-import { useState } from "react";
+import Skeleton from "../../../components/Skeleton";
+import { createClient } from "../../../lib/supabase-browser";
 
 export default function revvviewHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const revvview = revvvviews.find((a) => a.id === id) || revvvviews[0];
-  const product = products.find((p) => p.id === revvview.productId) || products[0];
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: reviewData } = await supabase
+          .from('reviews')
+          .select('product_id')
+          .eq('id', id)
+          .single();
+        
+        if (reviewData) {
+          const { data: productData } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', reviewData.product_id)
+            .single();
+          
+          if (productData) {
+            setProduct({
+              id: productData.id,
+              name: productData.name,
+            } as any);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch history data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id, supabase]);
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <Skeleton width="40%" height={24} borderRadius={8} className="mb-8" />
+          <Skeleton width="100%" height={600} borderRadius={12} />
+        </div>
+      </div>
+    );
+  }
+  if (!product) return <div className={styles.page}>Review not found.</div>;
 
   return (
     <div className={styles.page}>
-      <Navbar  />
       
       <main className={styles.container}>
         <div className={styles.topNav}>

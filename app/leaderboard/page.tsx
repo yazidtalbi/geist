@@ -1,18 +1,59 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import { products, users, getInitials } from "../lib/data";
+import Skeleton from "../components/Skeleton";
+import { getProducts, getTopReviewers, getInitials, Product } from "../lib/data";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
 import styles from "./page.module.css";
+import { createClient } from "../lib/supabase-browser";
 
 export default function LeaderboardPage() {
-  const rankedProducts = [...products].sort((a, b) => b.revvScore - a.revvScore);
-  const rankedUsers = [...users].sort((a, b) => b.reputation - a.reputation);
+  const [rankedProducts, setRankedProducts] = useState<Product[]>([]);
+  const [rankedUsers, setRankedUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const productsData = await getProducts();
+        
+        // Fetch more reviewers for the leaderboard
+        const { data: reviewersData } = await supabase
+          .from('profiles')
+          .select('*')
+          .order('reputation', { ascending: false })
+          .limit(20);
+
+        setRankedProducts(productsData);
+        setRankedUsers(reviewersData || []);
+      } catch (err) {
+        console.error("Failed to fetch leaderboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [supabase]);
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <Skeleton width="60%" height={40} borderRadius={8} className="mb-4" />
+          <Skeleton width="40%" height={24} borderRadius={8} className="mb-12" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[1, 2, 3, 4, 5].map(i => (
+              <Skeleton key={i} width="100%" height={100} borderRadius={12} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
-      <Navbar />
       <main className={styles.main}>
         <div className={styles.container}>
           <header className={styles.header}>
@@ -92,7 +133,7 @@ export default function LeaderboardPage() {
                           <span className={styles.statLabel}>XP</span>
                         </div>
                         <div className={styles.stat}>
-                          <span className={styles.statValue}>{user.revvvviewsCount}</span>
+                          <span className={styles.statValue}>{user.revvvviews_count || 0}</span>
                           <span className={styles.statLabel}>Reviews</span>
                         </div>
                       </div>

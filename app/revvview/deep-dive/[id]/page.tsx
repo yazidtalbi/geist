@@ -1,17 +1,101 @@
 "use client";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
-import Navbar from "../../../components/Navbar";
-import { products, users, revvvviews, getInitials, getScoreColor, getMetricColor } from "../../../lib/data";
+import { getInitials, getScoreColor, getMetricColor, Product, revvview } from "../../../lib/data";
 import styles from "./page.module.css";
+import Skeleton from "../../../components/Skeleton";
+import { createClient } from "../../../lib/supabase-browser";
 
 export default function DeepDiveReport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const revvview = revvvviews.find((a) => a.id === id) || revvvviews[0];
-  const product = products.find((p) => p.id === revvview.productId) || products[0];
-  const user = users.find((u) => u.id === revvview.auditorId) || users[0];
-  const avgScore = Math.round(((revvview.metrics.usability + revvview.metrics.performance + revvview.metrics.value + revvview.metrics.trust) / 4) * 10);
-  const scoreColor = getScoreColor(avgScore / 10);
+  const [review, setReview] = useState<revvview | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: reviewData, error: reviewError } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (reviewError) throw reviewError;
+
+        const { data: productData, error: productError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', reviewData.product_id)
+          .single();
+        
+        if (productError) throw productError;
+
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', reviewData.auditor_id)
+          .single();
+        
+        if (userError) throw userError;
+
+        // Map data to interfaces
+        const mappedReview: revvview = {
+          id: reviewData.id,
+          auditorId: reviewData.auditor_id,
+          productId: reviewData.product_id,
+          version: reviewData.version,
+          metrics: {
+            usability: reviewData.metrics_usability,
+            performance: reviewData.metrics_performance,
+            value: reviewData.metrics_value,
+            trust: reviewData.metrics_trust
+          },
+          metricFeedback: {
+            usability: reviewData.feedback_usability,
+            performance: reviewData.feedback_performance,
+            value: reviewData.feedback_value,
+            trust: reviewData.feedback_trust
+          },
+          firstImpression: reviewData.first_impression,
+          engaged: reviewData.engaged || [],
+          confused: reviewData.confused || [],
+          wouldUse: reviewData.would_use,
+          suggestions: reviewData.suggestions || [],
+          strategicOutlook: reviewData.strategic_outlook,
+          timeSpent: reviewData.time_spent,
+          createdAt: reviewData.created_at,
+          roadmap: (reviewData.suggestions || []).map((s: string) => {
+            if (typeof s === 'string' && s.includes('|')) {
+              const [resolution, friction, priority, impact] = s.split('|');
+              return { resolution, friction, priority, impact };
+            }
+            return null;
+          }).filter(Boolean)
+        } as any;
+
+        const mappedProduct: Product = {
+          id: productData.id,
+          name: productData.name,
+          url: productData.url,
+          tagline: productData.tagline,
+          logo: productData.logo,
+          revvScore: productData.revv_score,
+        } as any;
+
+        setReview(mappedReview);
+        setProduct(mappedProduct);
+        setUser(userData);
+      } catch (err) {
+        console.error("Failed to fetch deep dive data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id, supabase]);
 
   const [scrolled, setScrolled] = useState(false);
   const [clientInfo, setClientInfo] = useState({ browser: "", os: "" });
@@ -42,9 +126,36 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
     setClientInfo({ browser, os });
   }, []);
 
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '40px' }}>
+            <Skeleton width="60%" height={48} borderRadius={8} />
+            <Skeleton width="40%" height={24} borderRadius={8} />
+            <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+              <Skeleton width={48} height={48} borderRadius="50%" />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Skeleton width="30%" height={20} borderRadius={4} />
+                <Skeleton width="20%" height={16} borderRadius={4} />
+              </div>
+            </div>
+            <Skeleton width="100%" height={300} borderRadius={12} style={{ marginTop: '40px' }} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!review || !product || !user) {
+    return <div className={styles.page}>Review not found.</div>;
+  }
+
+  const avgScore = (review.metrics.usability + review.metrics.performance + review.metrics.value + review.metrics.trust) / 4;
+  const scoreColor = getScoreColor(avgScore);
+
   return (
     <div className={styles.page}>
-      <Navbar  />
 
       <main className={styles.main}>
         {/* Hero Section */}
@@ -68,13 +179,15 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
               {/* Integrated Smaller Auditor Profile */}
               <div className={styles.integratedAuditor}>
                 <div className={styles.auditorAvatarSmall}>
-                  <span>{getInitials(user.name)}</span>
+                  {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
                 </div>
                 <div className={styles.auditorDetailsSmall}>
                   <div className={styles.auditorNameRow}>
                     <h3 className={styles.auditorNameSmall}>{user.name}</h3>
                     <span className={styles.dotSeparator}>•</span>
-                    <span className={styles.dateLabelHero}>{revvview.createdAt}</span>
+                    <span className={styles.dateLabelHero}>
+                      {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
                   </div>
                   <p className={styles.auditorRoleSmall}>{user.role}</p>
                 </div>
@@ -90,83 +203,103 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
             <h2 className={styles.sectionTitle}>First Impression</h2>
           </div>
           <div className={styles.firstImpressionContent}>
-            <p>{revvview.firstImpression || `Upon initial landing, the product communicates an immediate sense of ${revvview.metrics.usability > 8 ? "sophistication and clarity" : "ambition, though hindered by cognitive friction"}. The visual hierarchy is ${revvview.metrics.performance > 8 ? "expertly handled" : "serviceable"}, but the core value proposition requires ${revvview.metrics.value < 7 ? "significant structural re-alignment" : "subtle refinement"} to truly resonate with the target demographic.`}</p>
+            <p>{review.firstImpression}</p>
           </div>
         </section>
 
         {/* Metrics Deep Dive */}
         <section className={styles.metricsSection}>
           <div className={styles.metricsGrid}>
-            {Object.entries(revvview.metrics).map(([key, val]) => (
-              <div key={key} className={styles.metricCard}>
-                <div className={styles.metricCardHeader}>
-                  <span className={styles.metricKey}>{key}</span>
-                  <span className={styles.metricVal}>{val.toFixed(1)}</span>
-                </div>
-                <div className={styles.metricBarTrack}>
-                  <div
-                    className={styles.metricBarFill}
-                    style={{ width: `${(val as number) * 10}%`, background: getMetricColor(val as number) }}
-                  />
-                </div>
-                <p className={styles.metricDesc}>
-                  {key === "usability" && "A comprehensive evaluation of the interface's core intuitiveness, navigational efficiency, and the cognitive load required for first-time users to achieve their primary objectives. This includes a deep dive into information architecture, and the consistency of visual metaphors across the entire user journey."}
-                  {key === "performance" && "A technical assessment of the system's underlying speed, responsiveness, and resilience under various network conditions. We analyze critical rendering paths, time-to-interactive (TTI), and the smoothness of micro-animations to ensure the platform feels instantaneous and reliable, minimizing friction during high-frequency tasks."}
-                  {key === "value" && "An objective measurement of the core utility provided to the end-user relative to the time, effort, and financial investment required. We look beyond basic features to assess the long-term benefit, problem-solving efficacy, and the product's ability to integrate seamlessly into existing professional or personal workflows."}
-                  {key === "trust" && "An evaluation of the platform's perceived security, data transparency, and overall brand reliability. This involves a thorough review of privacy disclosures, the clarity of transactional feedback, and the subtle UX cues that either build or erode user confidence during sensitive operations like data entry or financial checkout."}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-
-
-        {/* Strategic Roadmap */}
-        <section className={styles.roadmapSection}>
-          <div className={`${styles.sectionHeader} ${styles.noBorderHeader}`}>
-            <h2 className={styles.sectionTitle}>The execution roadmap</h2>
-            <p className={styles.sectionSubtitle}>Friction points and their specific strategic resolutions.</p>
-          </div>
-          <div className={styles.roadmapList}>
-            {revvview.suggestions.map((s, i) => (
-              <div key={i} className={styles.roadmapItem}>
-                <div className={styles.roadmapHeader}>
-                  <div className={styles.roadmapStatus}>
-                    <span className={styles.phaseLabel}>PHASE 0{i + 1}</span>
-                    <h4 className={styles.roadmapTask}>{s}</h4>
+            {(["usability", "performance", "value", "trust"] as const).map((key) => {
+              const val = review.metrics[key];
+              const feedback = review.metricFeedback[key];
+              return (
+                <div key={key} className={styles.metricCard}>
+                  <div className={styles.metricCardHeader}>
+                    <span className={styles.metricKey}>{key}</span>
+                    <span className={styles.metricVal}>{val.toFixed(1)}</span>
                   </div>
-                </div>
-
-                <div className={styles.roadmapFriction}>
-                  <p className={styles.roadmapFrictionText}>
-                    {revvview.confused[i] || revvview.confused[0] || "The current interface architecture presents significant cognitive load during high-density operations, specifically when users attempt to navigate multi-layered project hierarchies without adequate filtering or sorting mechanisms."}
+                  <div className={styles.metricBarTrack}>
+                    <div
+                      className={styles.metricBarFill}
+                      style={{ width: `${val * 10}%`, background: getMetricColor(val) }}
+                    />
+                  </div>
+                  <p className={styles.metricDesc}>
+                    {feedback || `A comprehensive evaluation of the interface's core ${key}.`}
                   </p>
                 </div>
-
-                <div className={styles.roadmapMetaTags}>
-                  <span className={styles.metaTag}>Priority: Critical</span>
-                  <span className={styles.metaTag}>Impact: High</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
+
+        {/* Strategic Roadmap */}
+        {((review as any).roadmap && (review as any).roadmap.length > 0) ? (
+          <section className={styles.roadmapSection}>
+            <div className={`${styles.sectionHeader} ${styles.noBorderHeader}`}>
+              <h2 className={styles.sectionTitle}>The execution roadmap</h2>
+              <p className={styles.sectionSubtitle}>Friction points and their specific strategic resolutions.</p>
+            </div>
+            <div className={styles.roadmapList}>
+              {(review as any).roadmap.map((item: any, i: number) => (
+                <div key={i} className={styles.roadmapItem}>
+                  <div className={styles.roadmapHeader}>
+                    <div className={styles.roadmapStatus}>
+                      <span className={styles.phaseLabel}>PHASE 0{i + 1}</span>
+                      <h4 className={styles.roadmapTask}>{item.resolution}</h4>
+                    </div>
+                  </div>
+
+                  <div className={styles.roadmapFriction}>
+                    <p className={styles.roadmapFrictionText}>
+                      {item.friction}
+                    </p>
+                  </div>
+
+                  <div className={styles.roadmapMetaTags}>
+                    <span className={styles.metaTag}>Priority: {item.priority}</span>
+                    <span className={styles.metaTag}>Impact: {item.impact}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : review.suggestions.length > 0 && (
+          <section className={styles.roadmapSection}>
+            <div className={`${styles.sectionHeader} ${styles.noBorderHeader}`}>
+              <h2 className={styles.sectionTitle}>The execution roadmap</h2>
+              <p className={styles.sectionSubtitle}>Friction points and their specific strategic resolutions.</p>
+            </div>
+            <div className={styles.roadmapList}>
+              {review.suggestions.map((s, i) => (
+                <div key={i} className={styles.roadmapItem}>
+                  <div className={styles.roadmapHeader}>
+                    <div className={styles.roadmapStatus}>
+                      <span className={styles.phaseLabel}>PHASE 0{i + 1}</span>
+                      <h4 className={styles.roadmapTask}>{s}</h4>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <h2 className={styles.verdictTitle}>The verdict</h2>
 
         <footer className={styles.verdictSection}>
           <div className={styles.verdictScore} style={{ color: scoreColor, borderColor: scoreColor }}>
-            {(avgScore / 10).toFixed(1)}
+            {avgScore.toFixed(1)}
           </div>
           <div className={styles.verdictContent}>
             <p className={styles.verdictText}>
-              {revvview.strategicOutlook || `The product shows strong foundational promise with ${revvview.metrics.performance > 8 ? "exceptional" : "competitive"} technical performance. However, the identified friction points in ${revvview.confused[0]?.toLowerCase()} suggest a need for immediate UX refinement. Implementing the suggested phases will likely yield significant growth and user satisfaction.`}
+              {review.strategicOutlook}
             </p>
 
             <div className={styles.verdictAuditor}>
               <div className={styles.auditorAvatarSmall}>
-                <span>{getInitials(user.name)}</span>
+                {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
               </div>
               <div className={styles.auditorDetailsSmall}>
                 <div className={styles.auditorNameRow}>
@@ -198,7 +331,7 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
 
         <div className={styles.pageExitActions}>
           <Link href={`/product/${product.id}`}>
-            <button className="btn-primary">Return to Product Page</button>
+            <button className="btn-primary" style={{ background: 'var(--text-primary)', color: 'white', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Return to Product Page</button>
           </Link>
         </div>
       </main>

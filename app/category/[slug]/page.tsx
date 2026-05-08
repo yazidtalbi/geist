@@ -1,7 +1,6 @@
 "use client"
 
 import { use } from "react"
-import Navbar from "../../components/Navbar"
 import ProductCard from "../../components/ProductCard"
 import { products } from "../../lib/data"
 import styles from "../../search/page.module.css"
@@ -23,7 +22,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <div className={styles.page}>
-      <Navbar />
 
       <main className={styles.main}>
         <div className={styles.layout}>

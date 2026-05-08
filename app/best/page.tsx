@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
+import Skeleton from "../components/Skeleton";
 import ProductCard from "../components/ProductCard";
-import { products } from "../lib/data";
+import { getProducts, Product } from "../lib/data";
+
 const MODE_RANGES: Record<string, { id: string; label: string }[]> = {
   daily: [
     { id: "may10", label: "mai 10" },
@@ -33,11 +34,27 @@ import { DateRangePicker } from "../components/ui/date-range-picker";
 import styles from "./page.module.css";
 
 export default function BestPage() {
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [mode, setMode] = useState("weekly");
   const [activeRange, setActiveRange] = useState("may4-may10");
   const [visibleCount, setVisibleCount] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getProducts();
+        setDbProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setLoadingInitial(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Update activeRange when mode changes
   useEffect(() => {
@@ -48,7 +65,7 @@ export default function BestPage() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
+        if (entries[0].isIntersecting && !isLoading && !loadingInitial) {
           loadMore();
         }
       },
@@ -60,10 +77,10 @@ export default function BestPage() {
     }
 
     return () => observer.disconnect();
-  }, [isLoading]);
+  }, [isLoading, loadingInitial, dbProducts.length]);
 
   const loadMore = () => {
-    if (visibleCount >= products.length * 3) return; // Cap for demo
+    if (visibleCount >= dbProducts.length) return;
     setIsLoading(true);
     setTimeout(() => {
       setVisibleCount((prev) => prev + 4);
@@ -71,12 +88,10 @@ export default function BestPage() {
     }, 800);
   };
 
-  // Mock list for infinite scroll (cycling the products data)
-  const displayProducts = Array.from({ length: visibleCount }).map((_, i) => products[i % products.length]);
+  const displayProducts = dbProducts.slice(0, visibleCount);
 
   return (
     <>
-      <Navbar />
 
       <main className={styles.main}>
         <div className={styles.layout}>
@@ -104,11 +119,21 @@ export default function BestPage() {
               </div>
             </header>
 
-            <div className={styles.productGrid}>
-              {displayProducts.map((p, i) => (
-                <ProductCard key={`${p.id}-${i}`} product={p} index={i} />
-              ))}
-            </div>
+            {loadingInitial ? (
+              <div className={styles.productGrid}>
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <Skeleton key={i} height={400} borderRadius={12} />
+                ))}
+              </div>
+            ) : dbProducts.length === 0 ? (
+              <div style={{ padding: '80px 0', textAlign: 'center', opacity: 0.5 }}>No products found.</div>
+            ) : (
+              <div className={styles.productGrid}>
+                {displayProducts.map((p, i) => (
+                  <ProductCard key={`${p.id}-${i}`} product={p} index={i} />
+                ))}
+              </div>
+            )}
 
             <div ref={loaderRef} className={styles.loaderArea}>
               {isLoading && (

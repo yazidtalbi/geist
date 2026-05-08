@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 import styles from "./page.module.css";
 
 export default function NotificationsPage() {
@@ -17,7 +16,6 @@ export default function NotificationsPage() {
 
   return (
     <div className={styles.page}>
-      <Navbar />
       
       <main className={styles.main}>
         <header className={styles.header}>

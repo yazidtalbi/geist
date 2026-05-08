@@ -1,7 +1,27 @@
 "use client";
+import { useEffect, useState } from "react";
 import styles from "./Trails.module.css";
+import { getTrendingProducts, Product } from "../lib/data";
+import Link from "next/link";
 
 export default function Trails() {
+  const [trending, setTrending] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTrending() {
+      try {
+        const data = await getTrendingProducts(3);
+        setTrending(data);
+      } catch (error) {
+        console.error("Failed to load trending products:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTrending();
+  }, []);
+
   return (
     <div className={styles.trailsContainer}>
       {/* Network Card */}
@@ -31,32 +51,30 @@ export default function Trails() {
         </div>
 
         <div className={styles.trendingList}>
-          <div className={styles.trendingItem}>
-            <div className={styles.miniIcon}>L</div>
-            <div className={styles.trendingInfo}>
-              <div className={styles.trendingTitle}>Linear</div>
-              <div className={styles.trendingSub}>Issue tracking</div>
-            </div>
-            <div className={styles.avatarStack}>
-              <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Milo" className={styles.miniAvatar} alt="User" />
-              <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Luna" className={styles.miniAvatar} alt="User" />
-              <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Oliver" className={styles.miniAvatar} alt="User" />
-            </div>
-          </div>
-          <div className={styles.trendingItem}>
-            <div className={styles.miniIcon} style={{ background: '#000', color: '#FFF' }}>▲</div>
-            <div className={styles.trendingInfo}>
-              <div className={styles.trendingTitle}>Vercel</div>
-              <div className={styles.trendingSub}>Deployment</div>
-            </div>
-          </div>
-          <div className={styles.trendingItem}>
-            <div className={styles.miniIcon}>R</div>
-            <div className={styles.trendingInfo}>
-              <div className={styles.trendingTitle}>Raycast</div>
-              <div className={styles.trendingSub}>Productivity</div>
-            </div>
-          </div>
+          {loading ? (
+            <div className={styles.loadingPlaceholder}>Calculating trends...</div>
+          ) : (
+            trending.map((product) => (
+              <Link href={`/product/${product.id}`} key={product.id} className={styles.trendingItem}>
+                {product.logo ? (
+                  <img src={product.logo} alt={product.name} className={styles.miniIconImage} />
+                ) : (
+                  <div className={styles.miniIcon}>{product.name[0]}</div>
+                )}
+                <div className={styles.trendingInfo}>
+                  <div className={styles.trendingTitle}>{product.name}</div>
+                  <div className={styles.trendingSub}>{product.category}</div>
+                </div>
+                {product.recentReviewerAvatars && product.recentReviewerAvatars.length > 0 && (
+                  <div className={styles.avatarStack}>
+                    {product.recentReviewerAvatars.map((avatar, i) => (
+                      <img key={i} src={avatar} className={styles.miniAvatar} alt="Reviewer" />
+                    ))}
+                  </div>
+                )}
+              </Link>
+            ))
+          )}
         </div>
       </div>
     </div>
