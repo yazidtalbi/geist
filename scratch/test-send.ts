@@ -1,9 +1,10 @@
-import { sendEmail } from '../lib/email';
 import dotenv from 'dotenv';
 import path from 'path';
 
 // Load env vars from .env.local
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+import { sendEmail } from '../lib/email';
 
 async function main() {
   console.log('Attempting to send test email to mti.yazid@gmail.com...');

@@ -44,18 +44,11 @@ export default function Navbar() {
     setUser(session?.user ?? null);
 
     if (session?.user) {
-      // Upsert profile to ensure it exists for new Google logins
+      // Fetch profile (it should already exist thanks to auth/callback/route.ts)
       const { data: profileData } = await supabase
         .from('profiles')
-        .upsert({
-          id: session.user.id,
-          name: session.user.user_metadata.full_name || session.user.email?.split('@')[0] || "User",
-          avatar: session.user.user_metadata.avatar_url || "",
-          role: "User",
-          reputation: 0,
-          badges: ["Explorer"]
-        }, { onConflict: 'id' })
-        .select()
+        .select('*')
+        .eq('id', session.user.id)
         .single();
 
       // Fetch notifications
