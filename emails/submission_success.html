@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Website Submitted Successfully</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+    <style>
+        /* RESET STYLES */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #ffffff; font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a; }
+
+        /* BRUTALIST LUXURY STYLES */
+        .container { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; }
+        .header { padding-bottom: 40px; text-align: center; }
+        .logo-type { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 28px; color: #000000; text-decoration: none; letter-spacing: -0.05em; display: block; margin-top: 10px; }
+        .content { padding: 40px 0; text-align: left; }
+        .footer { padding-top: 40px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
+        
+        .status-pill { display: inline-block; padding: 4px 12px; background-color: #f1f5f9; color: #475569; border-radius: 100px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px; }
+        
+        h1 { font-size: 36px; font-weight: 600; line-height: 1.2; margin: 0 0 24px 0; letter-spacing: -0.03em; }
+        p { font-size: 16px; line-height: 1.6; margin: 0 0 20px 0; color: #475569; }
+        
+        .submission-card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 30px 0; }
+        .website-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+        .website-url { font-size: 14px; color: #94a3b8; }
+
+        .btn { display: inline-block; background-color: #000000; color: #ffffff !important; padding: 12px 32px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background-color 0.2s; }
+        
+        .unsubscribe { color: #94a3b8; text-decoration: underline; }
+
+        @media screen and (max-width: 600px) {
+            .container { padding: 20px; }
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center">
+                <table class="container" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <!-- TOP SPACER -->
+                    <tr>
+                        <td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td>
+                    </tr>
+                    <!-- HEADER -->
+                    <tr>
+                        <td class="header" align="center">
+                            <img src="https://revvview.com/logo.png" alt="Revvview Logo" width="52" style="display: block; margin: 0 auto;">
+                            <a href="https://revvview.com" class="logo-type">revvview</a>
+                        </td>
+                    </tr>
+
+                    <!-- TITLE -->
+                    <tr>
+                        <td align="center" style="padding-bottom: 20px;">
+                            <h1 style="margin: 0;">{{first_name}}, your website is in the queue.</h1>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENT -->
+                    <tr>
+                        <td class="content" align="left">
+                            <div class="status-pill">Submission Received</div>
+                            <p>Thank you for submitting your project to Revvview. Our team of reviewers will now begin a technical and aesthetic audit of your work.</p>
+                            
+                            <div class="submission-card" style="text-align: left;">
+                                <div class="website-title">{{website_name}}</div>
+                                <div class="website-url">{{website_url}}</div>
+                            </div>
+
+                            <p>We'll notify you as soon as the review is complete and your deep-dive report is published.</p>
+                            
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 30px; margin-bottom: 30px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{submission_url}}" class="btn">Track Submission</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin-top: 40px;">Thanks,<br><strong>Revvview Team</strong></p>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td class="footer">
+                            <p style="margin-bottom: 10px;">&copy; 2026 Revvview. All rights reserved.</p>
+                            <p>You received this email because you submitted a website to Revvview.</p>
+                            <p><a href="{{preferences_url}}" class="unsubscribe">Manage Preferences</a> &nbsp;&bull;&nbsp; <a href="{{unsubscribe_url}}" class="unsubscribe">Unsubscribe</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

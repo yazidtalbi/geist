@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Top Reviewed This Week</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+    <style>
+        /* RESET STYLES */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #ffffff; font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a; }
+
+        /* BRUTALIST LUXURY STYLES */
+        .container { max-width: 600px; margin: 0 auto; padding: 0 20px 40px 20px; }
+        .header { padding-bottom: 40px; text-align: center; }
+        .logo-type { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 28px; color: #000000; text-decoration: none; letter-spacing: -0.05em; display: block; margin-top: 10px; }
+        .content { padding: 40px 0; text-align: left; }
+        .footer { padding-top: 40px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
+        
+        h1 { font-size: 36px; font-weight: 600; line-height: 1.2; margin: 0 0 24px 0; letter-spacing: -0.03em; }
+        p { font-size: 16px; line-height: 1.6; margin: 0 0 20px 0; color: #475569; }
+        
+        .product-list { margin: 30px 0; }
+        .product-item { padding: 16px 0; border-bottom: 1px solid #f1f5f9; }
+        .product-item:last-child { border-bottom: none; }
+        .product-icon { width: 48px; height: 48px; border-radius: 12px; background-color: #f8fafc; border: 1px solid #e2e8f0; }
+        .product-info { padding-left: 16px; }
+        .product-title { font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 2px; }
+        .product-sub { font-size: 14px; color: #64748b; }
+
+        .btn { display: inline-block; background-color: #000000; color: #ffffff !important; padding: 12px 32px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background-color 0.2s; }
+        .btn-outline { display: inline-block; padding: 10px 24px; border: 1px solid #e2e8f0; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 13px; color: #0f172a !important; margin-top: 20px; }
+        
+        .unsubscribe { color: #94a3b8; text-decoration: underline; }
+
+        @media screen and (max-width: 600px) {
+            .container { padding: 20px; }
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center">
+                <table class="container" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <!-- TOP SPACER -->
+                    <tr>
+                        <td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td>
+                    </tr>
+                    <!-- HEADER -->
+                    <tr>
+                        <td class="header" align="center">
+                            <img src="https://revvview.com/logo.png" alt="Revvview Logo" width="52" style="display: block; margin: 0 auto;">
+                            <a href="https://revvview.com" class="logo-type">revvview</a>
+                        </td>
+                    </tr>
+
+                    <!-- TITLE -->
+                    <tr>
+                        <td align="center" style="padding-bottom: 20px;">
+                            <h1 style="margin: 0;">The Week in Review, {{first_name}}.</h1>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENT -->
+                    <tr>
+                        <td class="content" align="left">
+                            <p>Here are the top-performing products that captured our attention this week. These projects represent the pinnacle of craft and technical execution.</p>
+                            
+                            <table class="product-list" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <!-- Product 1 -->
+                                <tr>
+                                    <td class="product-item">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <img src="{{product_1_icon}}" alt="" width="48" height="48" class="product-icon">
+                                                </td>
+                                                <td class="product-info" valign="top">
+                                                    <div class="product-title">{{product_1_title}}</div>
+                                                    <div class="product-sub">{{product_1_sub}}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Product 2 -->
+                                <tr>
+                                    <td class="product-item">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <img src="{{product_2_icon}}" alt="" width="48" height="48" class="product-icon">
+                                                </td>
+                                                <td class="product-info" valign="top">
+                                                    <div class="product-title">{{product_2_title}}</div>
+                                                    <div class="product-sub">{{product_2_sub}}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Product 3 -->
+                                <tr>
+                                    <td class="product-item">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <img src="{{product_3_icon}}" alt="" width="48" height="48" class="product-icon">
+                                                </td>
+                                                <td class="product-info" valign="top">
+                                                    <div class="product-title">{{product_3_title}}</div>
+                                                    <div class="product-sub">{{product_3_sub}}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Product 4 -->
+                                <tr>
+                                    <td class="product-item">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <img src="{{product_4_icon}}" alt="" width="48" height="48" class="product-icon">
+                                                </td>
+                                                <td class="product-info" valign="top">
+                                                    <div class="product-title">{{product_4_title}}</div>
+                                                    <div class="product-sub">{{product_4_sub}}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- Product 5 -->
+                                <tr>
+                                    <td class="product-item">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="48" valign="top">
+                                                    <img src="{{product_5_icon}}" alt="" width="48" height="48" class="product-icon">
+                                                </td>
+                                                <td class="product-info" valign="top">
+                                                    <div class="product-title">{{product_5_title}}</div>
+                                                    <div class="product-sub">{{product_5_sub}}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 30px; margin-bottom: 30px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://revvview.com/leaderboard" class="btn-outline">View All Leaderboards</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin-top: 40px;">Thanks,<br><strong>Revvview Team</strong></p>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td class="footer">
+                            <p style="margin-bottom: 10px;">&copy; 2026 Revvview. All rights reserved.</p>
+                            <p>You received this email because you're subscribed to the weekly digest.</p>
+                            <p><a href="{{preferences_url}}" class="unsubscribe">Manage Preferences</a> &nbsp;&bull;&nbsp; <a href="{{unsubscribe_url}}" class="unsubscribe">Unsubscribe</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
