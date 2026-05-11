@@ -130,14 +130,7 @@ export default function SubmitProductPage() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.topHeader}>
-        <div className={styles.topHeaderLeft}>
-          <Link href="/" className={styles.backBtnHeader}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
-            Back
-          </Link>
-        </div>
-      </header>
+
 
       <aside className={styles.sidebar}>
         <nav className={styles.sideMenu}>
@@ -209,20 +202,23 @@ export default function SubmitProductPage() {
               <span className={styles.fieldHint}>{formData.tagline.length}/60 characters</span>
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Category</label>
+              <label className={styles.label}>Primary Tag</label>
               <Select 
                 value={formData.category}
                 onValueChange={(val) => setFormData({...formData, category: val})}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
+                  <SelectValue placeholder="Select a primary tag" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="SAAS">SaaS</SelectItem>
                   <SelectItem value="DESIGN">Design Tools</SelectItem>
-                  <SelectItem value="DEV TOOL">Developer Tools</SelectItem>
+                  <SelectItem value="DEV">Dev</SelectItem>
                   <SelectItem value="AI">AI & Machine Learning</SelectItem>
                   <SelectItem value="PLATFORM">Platform</SelectItem>
+                  <SelectItem value="MARKETING">Marketing</SelectItem>
+                  <SelectItem value="ANALYTICS">Analytics</SelectItem>
+                  <SelectItem value="WEB3">Web3</SelectItem>
                   <SelectItem value="UTILITY">Utility</SelectItem>
                   <SelectItem value="AGENCY">Agency</SelectItem>
                 </SelectContent>

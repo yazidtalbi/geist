@@ -7,10 +7,12 @@ import ProductCard from "./components/ProductCard";
 import Toprevvviewers from "./components/Toprevvviewers";
 import { getProducts, Product } from "./lib/data";
 import styles from "./page.module.css";
+import FollowingFeed from "./components/FollowingFeed";
 
 export default function Home() {
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"discovery" | "following">("discovery");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,7 +57,44 @@ export default function Home() {
               <div style={{ padding: '40px 0', textAlign: 'center', opacity: 0.5 }}>No products found. Seed the database to get started.</div>
             ) : (
               <>
-                <h2 className={styles.feedTitle}>Explore</h2>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
+                  <button 
+                    onClick={() => setActiveTab("discovery")}
+                    style={{ 
+                      padding: '10px 24px', 
+                      fontSize: '15px', 
+                      fontWeight: '600', 
+                      borderRadius: '99px',
+                      background: activeTab === "discovery" ? 'var(--text-primary)' : 'rgba(0,0,0,0.05)',
+                      color: activeTab === "discovery" ? 'white' : 'var(--text-primary)',
+                      cursor: 'pointer',
+                      border: 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Discovery
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("following")}
+                    style={{ 
+                      padding: '10px 24px', 
+                      fontSize: '15px', 
+                      fontWeight: '600', 
+                      borderRadius: '99px',
+                      background: activeTab === "following" ? 'var(--text-primary)' : 'rgba(0,0,0,0.05)',
+                      color: activeTab === "following" ? 'white' : 'var(--text-primary)',
+                      cursor: 'pointer',
+                      border: 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Following
+                  </button>
+                </div>
+
+                {activeTab === "discovery" ? (
+                  <>
+                    <h2 className={styles.feedTitle}>Explore</h2>
                 <div className={styles.feed}>
                   {dbProducts.slice(0, 2).map((p, i) => (
                     <ProductCard key={p.id} product={p} index={i} />
@@ -95,6 +134,10 @@ export default function Home() {
                   </div>
                   <Link href="/best?mode=weekly&date=may4-may10" className={styles.seeAllBtn}>See all last week&apos;s top products</Link>
                 </section>
+                  </>
+                ) : (
+                  <FollowingFeed />
+                )}
               </>
             )}
           </div>

@@ -1,4 +1,5 @@
 import { createClient } from "./supabase-browser";
+import { slugify } from "./utils";
 
 export interface Product {
   id: string;
@@ -65,6 +66,20 @@ export interface Notification {
     name: string;
     avatar: string;
   };
+}
+
+export interface Follow {
+  id: string;
+  followerId: string;
+  followingId: string;
+  createdAt: string;
+}
+
+export interface Watch {
+  id: string;
+  userId: string;
+  productId: string;
+  createdAt: string;
 }
 
 export async function getNotifications(userId: string) {
@@ -282,11 +297,44 @@ export async function getReviews(productId: string) {
   return data.map(mapReview);
 }
 
+export async function getReviewsByAuditor(auditorId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('reviews')
+    .select(`
+      *,
+      products (*)
+    `)
+    .eq('auditor_id', auditorId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data.map(r => ({
+    ...mapReview(r),
+    product: mapProduct(r.products)
+  }));
+}
+
 export async function getTopReviewers() {
   const supabase = createClient();
+  
+  // Get users active in the last 7 days
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  
+  const { data: recentReviews } = await supabase
+    .from('reviews')
+    .select('auditor_id')
+    .gte('created_at', sevenDaysAgo.toISOString());
+    
+  const activeIds = Array.from(new Set(recentReviews?.map(r => r.auditor_id) || []));
+  
+  if (activeIds.length === 0) return [];
+
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
+    .in('id', activeIds)
     .order('reputation', { ascending: false })
     .limit(5);
 
@@ -302,7 +350,7 @@ export async function getProfileBySlug(slug: string) {
 
   if (error) throw error;
   
-  const profile = profiles.find((u: any) => getInitials(u.name).toLowerCase() === slug.toLowerCase());
+  const profile = profiles.find((u: any) => slugify(u.name) === slug.toLowerCase());
   
   if (!profile) throw new Error("Profile not found");
   return profile;
@@ -413,4 +461,123 @@ export function getMetricColor(value: number): string {
   if (value >= 9.0) return "#22C55E"; // Green
   if (value < 5.0) return "#3b82f6";  // Blue instead of Red
   return "#0070F3"; // Electric Blue
+}
+
+// Social Graph Functions
+export async function followUser(followerId: string, followingId: string) {
+  if (followerId === followingId) throw new Error("Users cannot follow themselves.");
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('follows')
+    .insert({ follower_id: followerId, following_id: followingId });
+  if (error) throw error;
+}
+
+export async function unfollowUser(followerId: string, followingId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('follows')
+    .delete()
+    .eq('follower_id', followerId)
+    .eq('following_id', followingId);
+  if (error) throw error;
+}
+
+export async function isFollowing(followerId: string, followingId: string) {
+  if (!followerId || !followingId) return false;
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('follows')
+    .select('id')
+    .eq('follower_id', followerId)
+    .eq('following_id', followingId)
+    .maybeSingle();
+  if (error) return false;
+  return !!data;
+}
+
+export async function watchProduct(userId: string, productId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('watches')
+    .insert({ user_id: userId, product_id: productId });
+  if (error) throw error;
+}
+
+export async function unwatchProduct(userId: string, productId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('watches')
+    .delete()
+    .eq('user_id', userId)
+    .eq('product_id', productId);
+  if (error) throw error;
+}
+
+export async function isWatching(userId: string, productId: string) {
+  if (!userId || !productId) return false;
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('watches')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('product_id', productId)
+    .maybeSingle();
+  if (error) return false;
+  return !!data;
+}
+
+export async function getFollowStats(userId: string) {
+  const supabase = createClient();
+  const { count: followersCount } = await supabase
+    .from('follows')
+    .select('id', { count: 'exact', head: true })
+    .eq('following_id', userId);
+  
+  const { count: followingCount } = await supabase
+    .from('follows')
+    .select('id', { count: 'exact', head: true })
+    .eq('follower_id', userId);
+    
+  return { followersCount: followersCount || 0, followingCount: followingCount || 0 };
+}
+
+export async function getFollowingFeed(userId: string) {
+  const supabase = createClient();
+  
+  // 1. Get IDs of followed users and watched products
+  const { data: followed } = await supabase.from('follows').select('following_id').eq('follower_id', userId);
+  const { data: watched } = await supabase.from('watches').select('product_id').eq('user_id', userId);
+  
+  const followingIds = followed?.map(f => f.following_id) || [];
+  const watchedProductIds = watched?.map(w => w.product_id) || [];
+  
+  if (followingIds.length === 0 && watchedProductIds.length === 0) return [];
+
+  // 2. Fetch reviews from followed users OR for watched products
+  let query = supabase
+    .from('reviews')
+    .select(`
+      *,
+      products (*),
+      profiles (*)
+    `)
+    .order('created_at', { ascending: false });
+
+  if (followingIds.length > 0 && watchedProductIds.length > 0) {
+    query = query.or(`auditor_id.in.(${followingIds.join(',')}),product_id.in.(${watchedProductIds.join(',')})`);
+  } else if (followingIds.length > 0) {
+    query = query.in('auditor_id', followingIds);
+  } else {
+    query = query.in('product_id', watchedProductIds);
+  }
+
+  const { data: reviews, error } = await query.limit(20);
+  if (error) throw error;
+
+  return reviews.map(r => ({
+    ...mapReview(r),
+    product: mapProduct(r.products),
+    auditor: r.profiles
+  }));
 }

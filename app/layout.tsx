@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import NavigationHandler from "./components/NavigationHandler";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://revvview.com"),
   title: "Revvview | Experience-Based Product Evaluation",
   description: "The definitive platform for community-driven product audits. Beyond shallow upvotes—real experience, real data, real truth.",
   keywords: ["product audits", "software reviews", "UX research", "brutalist design", "developer tools", "SaaS evaluation"],
@@ -17,13 +18,13 @@ export const metadata: Metadata = {
     siteName: "Revvview",
     title: "Revvview | Experience-Based Product Evaluation",
     description: "Real audits, expert feedback, and the true quality of digital products.",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Revvview" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Revvview" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Revvview | Product Truth Trends",
     description: "Where real users audit real digital products.",
-    images: ["/opengraph-image.png"],
+    images: ["/og.jpg"],
   },
   robots: {
     index: true,

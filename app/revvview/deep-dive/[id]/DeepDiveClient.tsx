@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import Skeleton from "../../../components/Skeleton";
 import { createClient } from "../../../lib/supabase-browser";
 import { slugify } from "../../../lib/utils";
+import FollowButton from "../../../components/FollowButton";
 
 export default function DeepDiveReport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -189,6 +190,9 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
                     <span className={styles.dateLabelHero}>
                       {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
+                    <div style={{ marginLeft: '12px' }}>
+                      <FollowButton followingId={user.id} variant="minimal" />
+                    </div>
                   </div>
                   <p className={styles.auditorRoleSmall}>{user.role}</p>
                 </div>

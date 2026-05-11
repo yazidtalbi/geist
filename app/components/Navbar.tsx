@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Drawer } from "./Drawer";
 import { AuthModal } from "./AuthModal";
@@ -15,20 +15,25 @@ import {
 import styles from "./Navbar.module.css";
 import { createClient } from "@/app/lib/supabase-browser";
 import { getInitials, getNotifications, type Notification, markAllAsRead } from "@/app/lib/data";
-import { formatTimeAgo } from "@/app/lib/utils";
+import { formatTimeAgo, slugify } from "@/app/lib/utils";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 
-const CATEGORIES = [
-  { name: "Dev Tools", slug: "dev-tools" },
+const TAGS = [
+  { name: "Dev", slug: "dev" },
   { name: "SaaS", slug: "saas" },
   { name: "Productivity", slug: "productivity" },
   { name: "Platforms", slug: "platforms" },
   { name: "AI", slug: "ai" },
   { name: "Design", slug: "design" },
+  { name: "Marketing", slug: "marketing" },
+  { name: "Analytics", slug: "analytics" },
+  { name: "Web3", slug: "web3" },
+  { name: "Utilities", slug: "utilities" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -38,6 +43,8 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const supabase = createClient();
   const router = useRouter();
+
+  const isSubmissionPage = pathname === "/submit-product" || pathname?.startsWith("/revvview/");
 
   const fetchUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -102,6 +109,26 @@ export default function Navbar() {
     window.location.reload();
   };
 
+  if (isSubmissionPage) {
+    // Determine where to go back to
+    const backHref = pathname === "/submit-product" ? "/" : pathname?.split('/').slice(0, -1).join('/') || "/";
+    // For /revvview/[slug], the back button should probably go back to the product page /product/[slug]
+    const actualBackHref = pathname?.startsWith("/revvview/") ? pathname.replace("/revvview/", "/product/") : backHref;
+
+    return (
+      <nav className={styles.nav}>
+        <div className={styles.inner}>
+          <Link href={actualBackHref} className={styles.backLink}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '8px' }}>
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+            Back
+          </Link>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className={styles.nav}>
       <div className={styles.inner}>
@@ -152,11 +179,9 @@ export default function Navbar() {
                 </svg>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuLabel>Product Categories</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {CATEGORIES.map((cat) => (
-                  <Link key={cat.slug} href={`/category/${cat.slug}`}>
-                    <DropdownMenuItem>{cat.name}</DropdownMenuItem>
+                {TAGS.map((tag) => (
+                  <Link key={tag.slug} href={`/tag/${tag.slug}`}>
+                    <DropdownMenuItem>{tag.name}</DropdownMenuItem>
                   </Link>
                 ))}
               </DropdownMenuContent>
@@ -213,7 +238,7 @@ export default function Navbar() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <Link href={`/profile/${getInitials(profile?.name || user?.user_metadata?.full_name || "User")}`}>
+                  <Link href={`/profile/${slugify(profile?.name || user?.user_metadata?.full_name || "User")}`}>
                     <DropdownMenuItem>Profile Dossier</DropdownMenuItem>
                   </Link>
                   <Link href="/settings">

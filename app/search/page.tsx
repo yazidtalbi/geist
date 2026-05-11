@@ -31,11 +31,12 @@ function SearchResults() {
         const enhanced = serverResults.filter(p => {
           const name = p.name.toLowerCase()
           const tagline = p.tagline.toLowerCase()
+          const tags = p.tags?.map(t => t.toLowerCase()) || []
           
           return tokens.every(token => {
-            if (name.includes(token) || tagline.includes(token)) return true
+            if (name.includes(token) || tagline.includes(token) || tags.some(t => t.includes(token))) return true
             
-            const words = name.split(/\s+/).concat(tagline.split(/\s+/))
+            const words = name.split(/\s+/).concat(tagline.split(/\s+/)).concat(tags)
             return words.some(word => {
               if (word.length < 3) return false
               return word.startsWith(token) || token.startsWith(word)

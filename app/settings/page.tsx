@@ -1,17 +1,51 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { users, getInitials } from "../lib/data";
+import { createClient } from "../lib/supabase-browser";
 import styles from "./page.module.css";
 
 export default function SettingsPage() {
-  const [user, setUser] = useState(users[0]);
+  const [user, setUser] = useState<any>(users[0]);
+  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [verified, setVerified] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        // Fetch profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile) {
+          setUser({
+            ...profile,
+            email: session.user.email
+          });
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, [supabase]);
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -39,6 +73,30 @@ export default function SettingsPage() {
   };
 
   const [activeSection, setActiveSection] = useState("profile");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          name: user.name,
+          role: user.role,
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      alert("Changes saved successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save changes.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className={styles.page} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading settings...</div>;
 
   return (
     <div className={styles.page}>
@@ -116,12 +174,31 @@ export default function SettingsPage() {
                   <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
                       <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" defaultValue={user.name} />
+                      <Input 
+                        id="name" 
+                        value={user.name} 
+                        onChange={(e) => setUser({ ...user, name: e.target.value })}
+                      />
                     </div>
                     
                     <div className={styles.formGroup}>
                       <Label htmlFor="role">Role</Label>
-                      <Input id="role" defaultValue={user.role} />
+                      <Select 
+                        value={user.role} 
+                        onValueChange={(value) => setUser({ ...user, role: value })}
+                      >
+                        <SelectTrigger id="role">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Product Designer">Product Designer</SelectItem>
+                          <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                          <SelectItem value="UX Researcher">UX Researcher</SelectItem>
+                          <SelectItem value="Product Manager">Product Manager</SelectItem>
+                          <SelectItem value="Founder">Founder</SelectItem>
+                          <SelectItem value="Creative Director">Creative Director</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className={styles.formGroupFull}>
@@ -130,7 +207,8 @@ export default function SettingsPage() {
                         id="bio" 
                         className={styles.textarea} 
                         placeholder="Tell us about yourself..."
-                        defaultValue="Senior Product Researcher specializing in developer experience and blazingly fast interfaces."
+                        value={user.bio}
+                        onChange={(e) => setUser({ ...user, bio: e.target.value })}
                       />
                     </div>
                   </div>
@@ -175,11 +253,11 @@ export default function SettingsPage() {
                 <div className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" defaultValue="sarah@example.com" />
+                    <Input id="email" defaultValue={user.email} disabled />
                   </div>
                   <div className={styles.formGroup}>
                     <Label htmlFor="username">Username</Label>
-                    <Input id="username" defaultValue="sarahchen" />
+                    <Input id="username" defaultValue={getInitials(user.name).toLowerCase()} />
                   </div>
                 </div>
               </section>
@@ -229,7 +307,9 @@ export default function SettingsPage() {
             )}
 
             <div className={styles.footer}>
-              <Button>Save Changes</Button>
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </Button>
               <Button variant="ghost">Cancel</Button>
             </div>
           </div>

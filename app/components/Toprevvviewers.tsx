@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getTopReviewers, getInitials } from "../lib/data";
+import { slugify } from "../lib/utils";
 import styles from "./Toprevvviewers.module.css";
 import Skeleton from "./Skeleton";
 
@@ -40,7 +41,7 @@ export default function Toprevvviewers() {
           <div style={{ padding: '20px', textAlign: 'center', opacity: 0.5, fontSize: '12px' }}>No reviewers yet.</div>
         ) : (
           top.map((u, i) => (
-            <Link key={u.id} href={`/profile/${getInitials(u.name).toLowerCase()}`} className={styles.row}>
+            <Link key={u.id} href={`/profile/${slugify(u.name)}`} className={styles.row}>
               <span className={styles.rank}>
                 {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
               </span>
@@ -56,8 +57,7 @@ export default function Toprevvviewers() {
                 <div className={styles.role}>{u.role}</div>
               </div>
               <div className={styles.repWrap}>
-                <span className={styles.rep}>{u.reputation.toLocaleString()}</span>
-                <span className={styles.repLabel}>XP</span>
+                <span className={styles.rep}>✦{u.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
               </div>
             </Link>
           ))

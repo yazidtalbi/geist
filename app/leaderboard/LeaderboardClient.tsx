@@ -109,7 +109,7 @@ export default function LeaderboardPage() {
               <TabsContent value="users" className={styles.tabContent}>
                 <div className={styles.list}>
                   {rankedUsers.map((user, index) => (
-                    <Link href={`/profile/${getInitials(user.name).toLowerCase()}`} key={user.id} className={styles.item}>
+                    <Link href={`/profile/${slugify(user.name)}`} key={user.id} className={styles.item}>
                       <div className={styles.rankCol}>
                         <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
                           {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : index + 1}
@@ -130,8 +130,7 @@ export default function LeaderboardPage() {
                       </div>
                       <div className={styles.statsCol}>
                         <div className={styles.stat}>
-                          <span className={styles.statValue}>{user.reputation.toLocaleString()}</span>
-                          <span className={styles.statLabel}>XP</span>
+                          <span className={styles.statValue}>✦{user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
                         </div>
                         <div className={styles.stat}>
                           <span className={styles.statValue}>{user.revvvviews_count || 0}</span>

@@ -3,10 +3,11 @@
   min-height: 100vh;
   display: flex;
   color: var(--text-primary);
-  padding-top: 72px; /* Matches header height */
+  padding-top: 0;
 }
 
 .topHeader {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -96,6 +97,14 @@
   font-size: 18px;
   font-weight: 800;
   color: var(--text-primary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.productIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .productMeta {
@@ -120,9 +129,9 @@
 .sidebar {
   width: 280px;
   background: #FFF;
-  height: calc(100vh - 72px);
+  height: calc(100vh - var(--nav-height));
   position: fixed;
-  top: 72px;
+  top: var(--nav-height);
   left: 0;
   display: flex;
   flex-direction: column;
@@ -141,8 +150,8 @@
   flex: 1;
   margin-left: 280px;
   background: #f8fafc;
-  padding: 64px 0; /* Changed to use auto margin and max-width on children */
-  min-height: calc(100vh - 72px);
+  padding: 40px 0; /* Changed to use auto margin and max-width on children */
+  min-height: calc(100vh - var(--nav-height));
   display: flex;
   flex-direction: column;
   align-items: center;

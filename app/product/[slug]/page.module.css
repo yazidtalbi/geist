@@ -377,7 +377,7 @@
   border: 1px solid var(--border);
   border-radius: 100px;
   transition: all 0.2s ease;
-  cursor: default;
+  cursor: pointer;
 }
 
 .tagFull:hover {
@@ -754,12 +754,6 @@
   scroll-margin-top: 160px;
 }
 
-@media (min-width: 1300px) {
-  .auditSection {
-    width: 1300px;
-    margin-left: calc((1200px - 1300px) / 2);
-  }
-}
 
 .auditPromo {
   display: flex;
@@ -1015,7 +1009,7 @@
 }
 
 .similarInner {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }

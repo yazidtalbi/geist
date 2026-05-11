@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/lib/supabase-server";
-import { getInitials } from "@/app/lib/data";
+import { slugify } from "@/app/lib/utils";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -10,7 +10,7 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  // Fetch profile to get the name for initials
+  // Fetch profile to get the name for slug
   const { data: profile } = await supabase
     .from('profiles')
     .select('name')
@@ -18,7 +18,7 @@ export default async function ProfilePage() {
     .single();
 
   const name = profile?.name || user.user_metadata?.full_name || "User";
-  const initials = getInitials(name);
+  const slug = slugify(name);
 
-  redirect(`/profile/${initials}`);
+  redirect(`/profile/${slug}`);
 }

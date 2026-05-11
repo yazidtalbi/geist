@@ -25,11 +25,11 @@ const Footer = () => {
 
           <div className={styles.linksGrid}>
             <div className={styles.linkColumn}>
-              <span className={styles.columnTitle}>Categories</span>
-              <Link href="/">Dev Tools</Link>
-              <Link href="/">Productivity</Link>
-              <Link href="/">SaaS</Link>
-              <Link href="/">Platforms</Link>
+              <span className={styles.columnTitle}>Company</span>
+              <Link href="/about">About Us</Link>
+              <Link href="/contact">Contact Us</Link>
+              <Link href="/faq">FAQs</Link>
+              <Link href="/privacy">Privacy Policy</Link>
             </div>
             <div className={styles.linkColumn}>
               <span className={styles.columnTitle}>App</span>
@@ -39,11 +39,14 @@ const Footer = () => {
               <Link href="/leaderboard">Leaderboard</Link>
             </div>
             <div className={styles.linkColumn}>
-              <span className={styles.columnTitle}>Company</span>
-              <Link href="/about">About Us</Link>
-              <Link href="/contact">Contact Us</Link>
-              <Link href="/faq">FAQs</Link>
-              <Link href="/privacy">Privacy Policy</Link>
+              <span className={styles.columnTitle}>Tags</span>
+              <Link href="/tag/dev">Dev</Link>
+              <Link href="/tag/productivity">Productivity</Link>
+              <Link href="/tag/saas">SaaS</Link>
+              <Link href="/tag/ai">AI</Link>
+              <Link href="/tag/design">Design</Link>
+              <Link href="/tag/marketing">Marketing</Link>
+              <Link href="/tag/web3">Web3</Link>
             </div>
           </div>
         </div>

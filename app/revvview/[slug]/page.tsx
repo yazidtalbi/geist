@@ -215,22 +215,7 @@ export default function AuditPage({ params }: { params: Promise<{ slug: string }
 
   return (
     <div className={styles.page}>
-      <header className={styles.topHeader}>
-        <div className={styles.topHeaderLeft}>
-          <Link href={`/product/${slug}`} className={styles.backBtnHeader}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
-            Back
-          </Link>
-        </div>
-        <div className={styles.topHeaderRight}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div className={styles.headerScoreLabel}>Live RevvScore</div>
-            <div className={styles.scoreCircle} style={{ color: scoreColor, borderColor: scoreColor }}>
-              {liveScore.toFixed(1)}
-            </div>
-          </div>
-        </div>
-      </header>
+
 
       <aside className={styles.sidebar}>
         <nav className={styles.sideMenu}>
@@ -268,11 +253,13 @@ export default function AuditPage({ params }: { params: Promise<{ slug: string }
               <h2 className={styles.productName}>{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
             </div>
-            <a href={product.url} target="_blank" rel="noopener noreferrer" className={styles.visitBtn}>
-              Visit website
-            </a>
+            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <a href={product.url} target="_blank" rel="noopener noreferrer" className={styles.visitBtn}>
+                Visit website
+              </a>
+            </div>
           </div>
-          <h1 className={styles.mainTitle}>Submit a revvview</h1>
+          <h1 className={styles.mainTitle} style={{ marginTop: '32px' }}>Submit a revvview</h1>
         </div>
 
         <section id="impression" className={styles.formSection}>

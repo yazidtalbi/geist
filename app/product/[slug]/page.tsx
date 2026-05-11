@@ -28,10 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: `${product.name} — Revvview`,
         description: product.tagline,
+        images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Revvview" }],
       },
       twitter: {
         title: `${product.name} — Revvview`,
         description: product.tagline,
+        images: ["/og.jpg"],
       }
     };
   } catch (e) {

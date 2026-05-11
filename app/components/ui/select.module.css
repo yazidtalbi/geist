@@ -1,16 +1,16 @@
 .trigger {
   display: flex;
-  height: 40px;
+  height: 52px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  border-radius: 8px;
-  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
   background-color: #f8fafc;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #0f172a;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
   outline: none;
   cursor: pointer;
   transition: all 0.2s;

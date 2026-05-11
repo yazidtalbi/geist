@@ -97,7 +97,7 @@ export default function AnalyticsPage({ params }: { params: Promise<{ slug: stri
                     <div className={styles.inboxAvatar}><span>{getInitials(item.user.name)}</span></div>
                     <div>
                       <div className={styles.inboxName}>{item.user.name}</div>
-                      <div className={styles.inboxRole}>{item.user.role} · {item.user.reputation} XP</div>
+                      <div className={styles.inboxRole}>{item.user.role} · ✦{item.user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</div>
                     </div>
                   </div>
                   <div className={styles.inboxMeta}>
