@@ -57,7 +57,7 @@ export default function Toprevvviewers() {
                 <div className={styles.role}>{u.role}</div>
               </div>
               <div className={styles.repWrap}>
-                <span className={styles.rep}>✦{u.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
+                <span className={styles.rep}>✦&nbsp;{u.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
               </div>
             </Link>
           ))

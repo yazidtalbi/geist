@@ -130,7 +130,7 @@ export default function LeaderboardPage() {
                       </div>
                       <div className={styles.statsCol}>
                         <div className={styles.stat}>
-                          <span className={styles.statValue}>✦{user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
+                          <span className={styles.statValue}>✦&nbsp;{user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
                         </div>
                         <div className={styles.stat}>
                           <span className={styles.statValue}>{user.revvvviews_count || 0}</span>

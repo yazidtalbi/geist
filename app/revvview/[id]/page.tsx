@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import DeepDiveClient from "./DeepDiveClient";
-import { createClient } from "../../../lib/supabase-server";
+import { createClient } from "../../lib/supabase-server";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;

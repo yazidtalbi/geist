@@ -8,7 +8,7 @@
 .main {
   max-width: 960px;
   margin: 0 auto;
-  padding: 120px 24px 120px;
+  padding: 60px 24px 120px;
   position: relative;
 }
 
@@ -82,6 +82,7 @@
   top: 60px;
   /* Reduced to touch Navbar */
   z-index: 50;
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .topNavInner {

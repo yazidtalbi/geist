@@ -131,7 +131,7 @@ export default function DynamicProfilePage({ params }: { params: Promise<{ usern
                 <p className={styles.profileRole} style={{ fontSize: '18px', fontWeight: 500, opacity: 0.5, margin: 0 }}>{user.role}</p>
               )}
               <div style={{ marginTop: '8px' }}>
-                <span className={styles.xpBadge}>✦{user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
+                <span className={styles.xpBadge}>✦&nbsp;{user.reputation.toLocaleString('fr-FR').replace(/\u00a0/g, ' ')}</span>
               </div>
             </div>
             

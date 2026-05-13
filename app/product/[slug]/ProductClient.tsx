@@ -167,7 +167,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   };
 
   const handleOpenrevvview = (revvviewId: string) => {
-    router.push(`/revvview/deep-dive/${revvviewId}`);
+    router.push(`/revvview/${revvviewId}`);
   };
 
   if (loading) {
@@ -468,7 +468,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               <p className={styles.promoText}>
                 Have your say, if you used <strong>{product.name}</strong> make your revvview here!
               </p>
-              <Link href={`/revvview/${product.id}`} style={{ textDecoration: 'none' }}>
+              <Link href={`/revvview/audit/${slug}`} style={{ textDecoration: 'none' }}>
                 <button className={styles.promoButton}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
                   Start deep revvvviews

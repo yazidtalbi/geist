@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { getInitials, getScoreColor, getMetricColor } from "../lib/data";
-import styles from "../revvview/deep-dive/[id]/page.module.css";
+import styles from "../revvview/[id]/page.module.css";
 
 interface DossierPreviewProps {
   product: any;

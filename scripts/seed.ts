@@ -34,6 +34,34 @@ const SAAS_URLS = [
   'https://instrument.com'
 ];
 
+const MALE_AVATARS = [
+  "https://images.unsplash.com/photo-1777969381736-bec95bde3431",
+  "https://images.unsplash.com/photo-1773645056335-8d17a12f16a0",
+  "https://images.unsplash.com/photo-1775318661371-13498e8ce5a5",
+  "https://images.unsplash.com/photo-1776111842991-4a189c07e609",
+  "https://images.unsplash.com/photo-1776781205743-33b4c1106adc",
+  "https://images.unsplash.com/photo-1544723795-3fb6469f5b39",
+  "https://images.unsplash.com/photo-1639747280804-dd2d6b3d88ac",
+  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7",
+  "https://plus.unsplash.com/premium_photo-1773781519660-f4b478b6cb68",
+  "https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de",
+  "https://images.unsplash.com/photo-1695927621677-ec96e048dce2",
+  "https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6"
+];
+
+const FEMALE_AVATARS = [
+  "https://images.unsplash.com/photo-1777398576506-39202506824f",
+  "https://images.unsplash.com/photo-1777398567886-09c02d8f563a",
+  "https://images.unsplash.com/photo-1776275758873-31603dd06112",
+  "https://images.unsplash.com/photo-1619895862022-09114b41f16f",
+  "https://plus.unsplash.com/premium_photo-1688572454849-4348982edf7d",
+  "https://plus.unsplash.com/premium_photo-1689551671541-31a345ce6ae0",
+  "https://images.unsplash.com/photo-1776404527423-f94fda9f43aa",
+  "https://plus.unsplash.com/premium_photo-1773429403565-81f90a4603d3",
+  "https://plus.unsplash.com/premium_photo-1773230080509-dead00768926",
+  "https://images.unsplash.com/photo-1773866175042-e3ac5f74360d"
+];
+
 const PRODUCT_REVIEWS: Record<string, any> = {
   'stripe.com': {
     reviews: [
@@ -591,21 +619,21 @@ async function seed() {
   }
 
   // 1. Create Users
-  console.log('👤 Creating 20 users...');
+  console.log('👤 Creating 40 users...');
   const users = [];
-  for (let i = 0; i < 20; i++) {
-    const firstName = faker.person.firstName();
+  for (let i = 0; i < 40; i++) {
+    const sex = faker.person.sex() as 'male' | 'female';
+    const firstName = faker.person.firstName(sex);
     const lastName = faker.person.lastName();
     const name = `${firstName} ${lastName}`;
     const role = faker.helpers.arrayElement(['Product Designer', 'Frontend Engineer', 'SaaS Founder', 'UX Researcher', 'Design Lead']);
     
-    // Unsplash Portrait with grayscale transformation
-    const avatar = `https://images.unsplash.com/photo-${faker.helpers.arrayElement([
-      '1507003211169-0a1dd7228f2d', '1500648767791-00dcc994a43e', '1544005313-94ddf0286df2',
-      '1438761681033-6461ffad8d80', '1472099645785-5658abf4ff4e', '1506794778202-cad84cf45f1d',
-      '1534528741775-53994a69daeb', '1531746020798-e6953c6e8e04', '1527980972134-d538a5b5a56b',
-      '1552058544-1e808064463b'
-    ])}?auto=format&fit=crop&w=150&h=150&q=80&sat=-100`;
+    // Pick avatar based on gender pool
+    const avatarBase = sex === 'male' 
+      ? faker.helpers.arrayElement(MALE_AVATARS)
+      : faker.helpers.arrayElement(FEMALE_AVATARS);
+    
+    const avatar = `${avatarBase}?auto=format&fit=crop&w=150&h=150&q=80&sat=-100`;
 
     users.push({
       id: faker.string.uuid(),

@@ -44,7 +44,7 @@ export default function ProductCard({
       window.dispatchEvent(new Event('popstate'));
     } else {
       // Navigate to audit page
-      window.location.href = `/revvview/${slugify(product.name)}`;
+      window.location.href = `/revvview/audit/${slugify(product.name)}`;
     }
   };
 

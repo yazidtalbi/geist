@@ -129,7 +129,7 @@ export async function getNotifications(userId: string) {
     let deepDiveUrl = undefined;
 
     if (row.type === 'review' && row.entity_id) {
-      deepDiveUrl = `/revvview/deep-dive/${row.entity_id}`;
+      deepDiveUrl = `/revvview/${row.entity_id}`;
     } else if (row.entity_id && productsMap[row.entity_id]) {
       entitySlug = slugify(productsMap[row.entity_id]);
     }

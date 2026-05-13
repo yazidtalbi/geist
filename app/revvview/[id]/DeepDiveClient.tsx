@@ -1,12 +1,12 @@
 "use client";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
-import { getInitials, getScoreColor, getMetricColor, Product, revvview } from "../../../lib/data";
+import { getInitials, getScoreColor, getMetricColor, Product, revvview } from "../../lib/data";
 import styles from "./page.module.css";
-import Skeleton from "../../../components/Skeleton";
-import { createClient } from "../../../lib/supabase-browser";
-import { slugify } from "../../../lib/utils";
-import FollowButton from "../../../components/FollowButton";
+import Skeleton from "../../components/Skeleton";
+import { createClient } from "../../lib/supabase-browser";
+import { slugify } from "../../lib/utils";
+import FollowButton from "../../components/FollowButton";
 
 export default function DeepDiveReport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -158,28 +158,35 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
 
   return (
     <div className={styles.page}>
+      <div className={styles.topNav}>
+        <div className={styles.topNavInner}>
+          <div className={styles.topNavLeft}>
+            <div className={styles.heroMeta} style={{ marginBottom: 0 }}>
+              <Link href={`/product/${slugify(product.name)}`} className={styles.inlineBackBtn}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="m15 18-6-6 6-6" /></svg>
+              </Link>
+              <div className={styles.breadcrumb}>
+                <span className={styles.breadcrumbProduct}>{product.name}</span>
+                <span className={styles.breadcrumbSeparator}>/</span>
+                <span className={styles.breadcrumbPage}>revvview</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main className={styles.main}>
+
         {/* Hero Section */}
         <header className={styles.hero}>
           <div className={styles.heroFlex}>
             <div className={styles.heroTitleContent}>
-              <div className={styles.heroMeta}>
-                <Link href={`/product/${slugify(product.name)}`} className={styles.inlineBackBtn}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="m15 18-6-6 6-6" /></svg>
-                </Link>
-                <div className={styles.breadcrumb}>
-                  <span className={styles.breadcrumbProduct}>{product.name}</span>
-                  <span className={styles.breadcrumbSeparator}>/</span>
-                  <span className={styles.breadcrumbPage}>revvview</span>
-                </div>
-              </div>
               <h1 className={styles.heroTitle}>
                 The revvview: <span className={styles.italic}>{product.name}</span>
               </h1>
 
               {/* Integrated Smaller Auditor Profile */}
-              <div className={styles.integratedAuditor}>
+              <Link href={`/profile/${slugify(user.name)}`} className={styles.integratedAuditor} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className={styles.auditorAvatarSmall}>
                   {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
                 </div>
@@ -190,13 +197,13 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
                     <span className={styles.dateLabelHero}>
                       {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
-                    <div style={{ marginLeft: '12px' }}>
+                    <div style={{ marginLeft: '12px' }} onClick={(e) => e.preventDefault()}>
                       <FollowButton followingId={user.id} variant="minimal" />
                     </div>
                   </div>
                   <p className={styles.auditorRoleSmall}>{user.role}</p>
                 </div>
-              </div>
+              </Link>
             </div>
 
           </div>
@@ -302,7 +309,7 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
               {review.strategicOutlook}
             </p>
 
-            <div className={styles.verdictAuditor}>
+            <Link href={`/profile/${slugify(user.name)}`} className={styles.verdictAuditor} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.auditorAvatarSmall}>
                 {user.avatar ? <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : <span>{getInitials(user.name)}</span>}
               </div>
@@ -312,7 +319,7 @@ export default function DeepDiveReport({ params }: { params: Promise<{ id: strin
                 </div>
                 <p className={styles.auditorRoleSmall}>{user.role}</p>
               </div>
-            </div>
+            </Link>
           </div>
         </footer>
 

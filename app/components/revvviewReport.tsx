@@ -255,7 +255,7 @@ export default function RevvviewReport({ revvviewId }: revvviewReportProps) {
       </div>
 
       <div className={styles.reportFooter}>
-        <Link href={`/revvview/deep-dive/${revvviewId}`} className={styles.fullReportBtn}>
+        <Link href={`/revvview/${revvviewId}`} className={styles.fullReportBtn}>
           View Exhaustive Editorial Report
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
         </Link>

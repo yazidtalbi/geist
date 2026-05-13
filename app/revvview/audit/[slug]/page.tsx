@@ -2,16 +2,16 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getProductBySlug, getScoreColor, Product } from "../../lib/data";
+import { getProductBySlug, getScoreColor, Product } from "../../../lib/data";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "../../components/ui/select";
+} from "../../../components/ui/select";
 import styles from "./page.module.css";
-import { createClient } from "../../lib/supabase-browser";
+import { createClient } from "../../../lib/supabase-browser";
 
 const AWARDS = [
   { id: "elite_ux", name: "Elite UX", emoji: "🏆" },
@@ -77,7 +77,7 @@ export default function AuditPage({ params }: { params: Promise<{ slug: string }
         if (session) {
           setUser(session.user);
         } else {
-          router.push(`/revvview/${slug}?auth=signup`);
+          router.push(`/revvview/audit/${slug}?auth=signup`);
         }
       } catch (err) {
         console.error("Failed to fetch product:", err);

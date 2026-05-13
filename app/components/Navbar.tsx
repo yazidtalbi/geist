@@ -44,7 +44,7 @@ export default function Navbar() {
   const supabase = createClient();
   const router = useRouter();
 
-  const isSubmissionPage = pathname === "/submit-product" || pathname?.startsWith("/revvview/");
+  const isSubmissionPage = pathname === "/submit-product" || pathname?.startsWith("/revvview/audit/");
 
   const fetchUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -112,8 +112,8 @@ export default function Navbar() {
   if (isSubmissionPage) {
     // Determine where to go back to
     const backHref = pathname === "/submit-product" ? "/" : pathname?.split('/').slice(0, -1).join('/') || "/";
-    // For /revvview/[slug], the back button should probably go back to the product page /product/[slug]
-    const actualBackHref = pathname?.startsWith("/revvview/") ? pathname.replace("/revvview/", "/product/") : backHref;
+    // For /revvview/audit/[slug], the back button should probably go back to the product page /product/[slug]
+    const actualBackHref = pathname?.startsWith("/revvview/audit/") ? pathname.replace("/revvview/audit/", "/product/") : backHref;
 
     return (
       <nav className={styles.nav}>
